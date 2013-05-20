@@ -1899,7 +1899,7 @@ public class MiscTest2 extends CommonTestMethodBase {
             ks.getEntryPoint( "x" ).insert( new Integer( j ) );
         }
 
-        Thread.sleep( 1000 );
+        Thread.sleep( 5000 );
         ks.halt();
 
         assertEquals( N, list.size() );
