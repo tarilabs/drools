@@ -42,11 +42,6 @@ import org.kie.api.runtime.rule.SessionEntryPoint;
  */
 public class MultithreadTest extends CommonTestMethodBase {
 
-    @Test @Ignore
-    public void testDummy() {
-        
-    }
-
     @Test(timeout = 10000)
     public void testConcurrentInsertions() {
         String str = "import " + MultithreadTest.Bean.class.getCanonicalName() + "\n" +
