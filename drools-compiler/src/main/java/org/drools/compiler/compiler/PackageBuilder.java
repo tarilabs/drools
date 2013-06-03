@@ -1375,7 +1375,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         processEntryPointDeclarations(pkgRegistry, packageDescr);
 
         // process types in 2 steps to deal with circular and recursive declarations
-        processUnresolvedTypes( pkgRegistry, processTypeDeclarations( pkgRegistry, packageDescr ) );
+        processUnresolvedTypes( pkgRegistry, processTypeDeclarations( pkgRegistry, packageDescr, new ArrayList<TypeDefinition>() ) );
 
         processOtherDeclarations( pkgRegistry, packageDescr );
     }
@@ -1438,9 +1438,13 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     void processUnresolvedTypes(PackageRegistry pkgRegistry, List<TypeDefinition> unresolvedTypeDefinitions) {
         if (unresolvedTypeDefinitions != null) {
             for (TypeDefinition typeDef : unresolvedTypeDefinitions) {
-                processTypeFields(pkgRegistry, typeDef.typeDescr, typeDef.type, false);
+                processUnresolvedType(pkgRegistry, typeDef);
             }
         }
+    }
+
+    void processUnresolvedType(PackageRegistry pkgRegistry, TypeDefinition unresolvedTypeDefinition) {
+        processTypeFields(pkgRegistry, unresolvedTypeDefinition.typeDescr, unresolvedTypeDefinition.type, false);
     }
 
     public TypeDeclaration getAndRegisterTypeDeclaration( Class<?> cls, String packageName ) {
@@ -2067,7 +2071,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     /**
      * @param packageDescr
      */
-    List<TypeDefinition> processTypeDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
+    List<TypeDefinition> processTypeDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr, List<TypeDefinition> unresolvedTypes) {
         for ( AbstractClassTypeDeclarationDescr typeDescr : packageDescr.getClassAndEnumDeclarationDescrs() ) {
 
             String qName = typeDescr.getType().getFullName();
@@ -2152,8 +2156,6 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         for ( AbstractClassTypeDeclarationDescr typeDescr : sortedTypeDescriptors ) {
             registerGeneratedType( typeDescr );
         }
-
-        List<TypeDefinition> unresolvedTypeDefinitions = null;
 
         for ( AbstractClassTypeDeclarationDescr typeDescr : sortedTypeDescriptors ) {
 
@@ -2251,7 +2253,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 generateDeclaredBean( typeDescr,
                                       type,
                                       pkgRegistry,
-                                      unresolvedTypeDefinitions );
+                                      unresolvedTypes );
 
                 Class clazz = pkgRegistry.getTypeResolver().resolveType(typeDescr.getType().getFullName());
                 type.setTypeClass( clazz );
@@ -2265,14 +2267,11 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             }
 
             if ( ! processTypeFields( pkgRegistry, typeDescr, type, true ) ) {
-                if (unresolvedTypeDefinitions == null) {
-                    unresolvedTypeDefinitions = new ArrayList<TypeDefinition>();
-                }
-                unresolvedTypeDefinitions.add( new TypeDefinition( type, typeDescr ) );
+                unresolvedTypes.add( new TypeDefinition( type, typeDescr ) );
             }
         }
 
-        return unresolvedTypeDefinitions;
+        return unresolvedTypes;
     }
 
     private boolean processTypeFields(PackageRegistry pkgRegistry, AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type, boolean firstAttempt) {
@@ -2580,19 +2579,19 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         switch ( type.getKind() ) {
             case TRAIT :
                 def = new ClassDefinition( fullName,
-                        "java.lang.Object",
-                        fullSuperTypes );
+                                           "java.lang.Object",
+                                           fullSuperTypes );
                 break;
             case ENUM :
                 def = new EnumClassDefinition( fullName,
-                        fullSuperTypes[0],
-                        null );
+                                               fullSuperTypes[0],
+                                               null );
                 break;
             case CLASS :
             default :
                 def = new ClassDefinition( fullName,
-                        fullSuperTypes[0],
-                        interfaces );
+                                           fullSuperTypes[0],
+                                           interfaces );
                 def.setTraitable( traitable );
         }
 
@@ -3720,6 +3719,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
         public String getTypeClassName() {
             return type.getTypeClassName();
+        }
+
+        public String getNamespace() {
+            return typeDescr.getNamespace();
         }
     }
 
