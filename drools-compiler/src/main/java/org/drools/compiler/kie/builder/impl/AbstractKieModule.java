@@ -1,6 +1,8 @@
 package org.drools.compiler.kie.builder.impl;
 
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.core.rule.TypeMetaInfo;
 import org.drools.core.util.StringUtils;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
@@ -13,7 +15,6 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.utils.CompositeClassLoader;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.io.ResourceTypeImpl;
@@ -30,6 +31,8 @@ import java.util.Properties;
 import java.util.Set;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
+import static org.drools.core.rule.TypeMetaInfo.unmarshallMetaInfos;
+import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
 public abstract class AbstractKieModule
     implements
@@ -46,7 +49,8 @@ public abstract class AbstractKieModule
     private final KieModuleModel                            kModuleModel;
 
     private Map<ReleaseId, InternalKieModule>               dependencies;
-    
+
+    private Map<String, TypeMetaInfo>                       typesMetaInfo;
 
     public AbstractKieModule(ReleaseId releaseId, KieModuleModel kModuleModel) {
         this.releaseId = releaseId;
@@ -93,24 +97,39 @@ public abstract class AbstractKieModule
         resultsCache.put(kieBaseName, results);
     }
 
-    public Map<String, byte[]> getClassesMap() {
+    public Map<String, byte[]> getClassesMap(boolean includeTypeDeclarations) {
         Map<String, byte[]> classes = new HashMap<String, byte[]>();
         for ( String fileName : getFileNames() ) {
             if ( fileName.endsWith( ".class" ) ) {
-                classes.put( fileName, getBytes( fileName ) );
+                if ( includeTypeDeclarations || !isTypeDeclaration(fileName) ) {
+                    classes.put( fileName, getBytes( fileName ) );
+                }
             }
         }
         return classes;
+    }
+
+    private boolean isTypeDeclaration(String fileName) {
+        Map<String, TypeMetaInfo> info = getTypesMetaInfo();
+        TypeMetaInfo typeInfo = info == null ? null : info.get(convertResourceToClassName( fileName ));
+        return typeInfo != null && typeInfo.isDeclaredType();
+    }
+
+    private Map<String, TypeMetaInfo> getTypesMetaInfo() {
+        if (typesMetaInfo == null) {
+            byte[] bytes = getBytes( KieModuleModelImpl.KMODULE_INFO_JAR_PATH );
+            if (bytes != null) {
+                typesMetaInfo = unmarshallMetaInfos(new String(bytes));
+            }
+        }
+        return typesMetaInfo;
     }
 
     @SuppressWarnings("deprecation")
     static KnowledgeBuilder buildKnowledgePackages(KieBaseModelImpl kBaseModel,
                                                    KieProject kieProject,
                                                    ResultsImpl messages) {
-        CompositeClassLoader cl = kieProject.getClassLoader(); // the most clone the CL, as each builder and rbase populates it
-
-        PackageBuilderConfiguration pconf = new PackageBuilderConfiguration( null,
-                                                                             cl.clone() );
+        PackageBuilderConfiguration pconf = new PackageBuilderConfiguration( kieProject.getClassLoader() );
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(pconf);
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();

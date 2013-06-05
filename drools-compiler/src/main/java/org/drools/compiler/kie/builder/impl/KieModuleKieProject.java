@@ -1,15 +1,16 @@
 package org.drools.compiler.kie.builder.impl;
 
-import org.drools.core.util.ClassUtils;
+import org.drools.core.common.ProjectClassLoader;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.KieRepository;
-import org.kie.internal.utils.ClassLoaderUtil;
-import org.kie.internal.utils.CompositeClassLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
+import static org.drools.core.rule.JavaDialectRuntimeData.convertResourceToClassName;
 
 /**
  * Discovers all KieModules on the classpath, via the kmodule.xml file.
@@ -27,13 +28,13 @@ public class KieModuleKieProject extends AbstractKieProject {
 
     private final InternalKieModule              kieModule;
     private final KieRepository                  kr;
-    private final CompositeClassLoader           cl;
+    private ProjectClassLoader cl;
 
     public KieModuleKieProject(InternalKieModule kieModule,
                                KieRepository kr) {
         this.kieModule = kieModule;
         this.kr = kr;
-        this.cl = ClassLoaderUtil.getClassLoader( null, null, true );
+        this.cl = createProjectClassLoader();
     }
 
     public void init() {
@@ -48,16 +49,20 @@ public class KieModuleKieProject extends AbstractKieProject {
     }
 
     private void initClassLoader() {
-        Map<String, byte[]> classes = getClassesMap();
-        if ( !classes.isEmpty() ) {
-            cl.addClassLoaderToEnd( new ClassUtils.MapClassLoader( classes, cl ) );
+        for (Map.Entry<String, byte[]> entry : getClassesMap().entrySet()) {
+            if (entry.getValue() != null) {
+                String resourceName = entry.getKey();
+                String className = convertResourceToClassName(resourceName);
+                cl.storeClass(className, resourceName, entry.getValue());
+            }
         }
     }
 
     private Map<String, byte[]> getClassesMap() {
         Map<String, byte[]> classes = new HashMap<String, byte[]>();
         for ( InternalKieModule kModule : kieModules.values() ) {
-            classes.putAll(kModule.getClassesMap());
+            // avoid to take type declarations defined directly in this kieModule since they have to be recompiled
+            classes.putAll(kModule.getClassesMap(kModule != this.kieModule));
         }
         return classes;
     }
@@ -75,7 +80,7 @@ public class KieModuleKieProject extends AbstractKieProject {
     }
 
     @Override
-    public CompositeClassLoader getClassLoader() {
+    public ClassLoader getClassLoader() {
         return this.cl;
     }
 

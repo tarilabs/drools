@@ -16,6 +16,7 @@
 
 package org.drools.compiler.compiler;
 
+import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.PackageIntegrationException;
 import org.drools.core.RuleBase;
 import org.drools.core.RuntimeDroolsException;
@@ -114,7 +115,6 @@ import org.kie.api.definition.type.FactField;
 import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.PropertyReactive;
-import org.kie.internal.utils.CompositeClassLoader;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
@@ -191,7 +191,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
      */
     private final String                             defaultDialect;
 
-    private CompositeClassLoader                     rootClassLoader;
+    private ClassLoader                              rootClassLoader;
 
     private final Map<String, Class<?>>              globals;
 
@@ -280,7 +280,6 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
 
         this.rootClassLoader = this.configuration.getClassLoader();
-        this.rootClassLoader.addClassLoader( getClass().getClassLoader() );
 
         this.defaultDialect = this.configuration.getDefaultDialect();
 
@@ -307,7 +306,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     }
 
     public PackageBuilder( RuleBase ruleBase,
-            PackageBuilderConfiguration configuration ) {
+                           PackageBuilderConfiguration configuration ) {
         if (configuration == null) {
             this.configuration = new PackageBuilderConfiguration();
         } else {
@@ -319,8 +318,6 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         } else {
             this.rootClassLoader = this.configuration.getClassLoader();
         }
-
-        this.rootClassLoader.addClassLoader(getClass().getClassLoader());
 
         this.dateFormats = null;//(DateFormats) this.environment.get( EnvironmentName.DATE_FORMATS );
         if (this.dateFormats == null) {
@@ -2879,15 +2876,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             switch ( type.getKind() ) {
                 case TRAIT :
                     try {
-                        ClassBuilder tb = this.configuration.getClassBuilderFactory().getTraitBuilder();
-                        byte[] d = tb.buildClass( def );
-                        String resourceName = JavaDialectRuntimeData.convertClassToResourcePath( fullName );
-                        dialect.putClassDefinition( resourceName, d );
-                        if ( ruleBase != null ) {
-                            ruleBase.registerAndLoadTypeDefinition( fullName, d );
-                        } else {
-                            dialect.write( resourceName, d );
-                        }
+                        buildClass(def, fullName, dialect, configuration.getClassBuilderFactory().getTraitBuilder());
                     } catch ( Exception e ) {
                         this.results.add( new TypeDeclarationError( typeDescr,
                                                                     "Unable to compile declared trait " + fullName +
@@ -2896,15 +2885,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                     break;
                 case ENUM :
                     try {
-                        ClassBuilder eb = this.configuration.getClassBuilderFactory().getEnumClassBuilder();
-                        byte[] d = eb.buildClass( def );
-                        String resourceName = JavaDialectRuntimeData.convertClassToResourcePath( fullName );
-                        dialect.putClassDefinition( resourceName, d );
-                        if ( ruleBase != null ) {
-                            ruleBase.registerAndLoadTypeDefinition( fullName, d );
-                        } else {
-                            dialect.write( resourceName, d );
-                        }
+                        buildClass(def, fullName, dialect, configuration.getClassBuilderFactory().getEnumClassBuilder());
                     } catch ( Exception e ) {
                         e.printStackTrace();
                         this.results.add( new TypeDeclarationError( typeDescr,
@@ -2915,16 +2896,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 case CLASS :
                 default :
                     try {
-                        ClassBuilder cb = this.configuration.getClassBuilderFactory().getBeanClassBuilder();
-                        byte[] d = cb.buildClass( def );
-                        String resourceName = JavaDialectRuntimeData.convertClassToResourcePath( fullName );
-                        dialect.putClassDefinition( resourceName, d );
-                        if ( ruleBase != null ) {
-                            ruleBase.registerAndLoadTypeDefinition( fullName, d );
-                        }
-                        else {
-                            dialect.write( resourceName, d );
-                        }
+                        buildClass(def, fullName, dialect, configuration.getClassBuilderFactory().getBeanClassBuilder());
                     } catch ( Exception e ) {
                         this.results.add( new TypeDeclarationError( typeDescr,
                                                                     "Unable to create a class for declared type " + fullName +
@@ -2935,6 +2907,21 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
         }
 
+    }
+
+    private void buildClass(ClassDefinition def, String fullName, JavaDialectRuntimeData dialect, ClassBuilder cb) throws Exception {
+        byte[] bytecode = cb.buildClass( def );
+        String resourceName = JavaDialectRuntimeData.convertClassToResourcePath( fullName );
+        dialect.putClassDefinition( resourceName, bytecode );
+        if ( ruleBase != null ) {
+            ruleBase.registerAndLoadTypeDefinition( fullName, bytecode );
+        } else {
+            if (rootClassLoader instanceof ProjectClassLoader) {
+                ((ProjectClassLoader)rootClassLoader).defineClass(fullName, resourceName, bytecode);
+            } else {
+                dialect.write( resourceName, bytecode );
+            }
+        }
     }
 
     /**
@@ -3479,7 +3466,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
     }
 
-    public CompositeClassLoader getRootClassLoader() {
+    public ClassLoader getRootClassLoader() {
         return this.rootClassLoader;
     }
 

@@ -17,11 +17,11 @@
 package org.drools.core.rule;
 
 import org.drools.core.RuntimeDroolsException;
+import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.core.util.StringUtils;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.Wireable;
-import org.kie.internal.utils.CompositeClassLoader;
 import org.kie.internal.utils.FastClassLoader;
 
 import java.io.ByteArrayInputStream;
@@ -61,7 +61,7 @@ public class JavaDialectRuntimeData
 
     private Map<String, Object>            invokerLookups;
 
-    private Map<String,byte[]>             classLookups;
+    private Map<String, byte[]>            classLookups;
 
     private Map<String, byte[]>            store;
 
@@ -69,7 +69,7 @@ public class JavaDialectRuntimeData
 
     private transient PackageClassLoader   classLoader;
 
-    private transient CompositeClassLoader rootClassLoader;
+    private transient ClassLoader          rootClassLoader;
 
     private boolean                        dirty;
 
@@ -231,16 +231,15 @@ public class JavaDialectRuntimeData
     }
 
     public void onAdd( DialectRuntimeRegistry registry,
-            CompositeClassLoader rootClassLoader ) {
+                       ClassLoader rootClassLoader ) {
         this.registry = registry;
         this.rootClassLoader = rootClassLoader;
         this.classLoader = new PackageClassLoader( this,
                                                    this.rootClassLoader );
-        this.rootClassLoader.addClassLoader( this.classLoader );
     }
 
     public void onRemove() {
-        this.rootClassLoader.removeClassLoader( this.classLoader );
+
     }
 
     public void onBeforeExecute() {
@@ -262,12 +261,12 @@ public class JavaDialectRuntimeData
     }
 
     public DialectRuntimeData clone( DialectRuntimeRegistry registry,
-                                     CompositeClassLoader rootClassLoader ) {
+                                     ClassLoader rootClassLoader ) {
         return clone( registry, rootClassLoader, false );
     }
 
     public DialectRuntimeData clone( DialectRuntimeRegistry registry,
-                                     CompositeClassLoader rootClassLoader,
+                                     ClassLoader rootClassLoader,
                                      boolean excludeClasses ) {
         DialectRuntimeData cloneOne = new JavaDialectRuntimeData();
         cloneOne.merge( registry,
@@ -281,7 +280,7 @@ public class JavaDialectRuntimeData
     public void merge( DialectRuntimeRegistry registry,
                 DialectRuntimeData newData ) {
         // false for backward compatibility, should probably be true by default
-        merge( registry, newData, false );
+        merge(registry, newData, false);
     }
 
     public void merge( DialectRuntimeRegistry registry,
@@ -330,11 +329,22 @@ public class JavaDialectRuntimeData
         this.dirty = dirty;
     }
 
-    public Map<String, byte[]> getStore() {
+    private Map<String, byte[]> getStore() {
         if (store == null) {
             store = new HashMap<String, byte[]>();
         }
         return store;
+    }
+
+    public byte[] getBytecode(String resourceName) {
+        byte[] bytecode = null;
+        if (store != null) {
+            bytecode = store.get(resourceName);
+        }
+        if (bytecode == null && rootClassLoader instanceof ProjectClassLoader) {
+            bytecode = ((ProjectClassLoader)rootClassLoader).getBytecode(resourceName);
+        }
+        return bytecode;
     }
 
     public ClassLoader getClassLoader() {
@@ -342,7 +352,7 @@ public class JavaDialectRuntimeData
     }
 
     public void removeRule( Package pkg,
-            Rule rule ) {
+                            Rule rule ) {
 
         if (!( rule instanceof Query )) {
             // Query's don't have a consequence, so skip those
@@ -427,7 +437,7 @@ public class JavaDialectRuntimeData
     }
 
     public void wire( final String className, final Object invoker ) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        final Class clazz = this.rootClassLoader.loadClass( className );
+        final Class clazz = classLoader.loadClass( className );
 
         if (clazz != null) {
             if (invoker instanceof Wireable) {
@@ -466,10 +476,8 @@ public class JavaDialectRuntimeData
      */
     public void reload() throws RuntimeDroolsException {
         // drops the classLoader and adds a new one
-        this.rootClassLoader.removeClassLoader( this.classLoader );
         this.classLoader = new PackageClassLoader( this,
                                                    this.rootClassLoader );
-        this.rootClassLoader.addClassLoader( this.classLoader );
 
         // Wire up invokers
         try {
@@ -533,19 +541,18 @@ public class JavaDialectRuntimeData
 
     public void putAllClassDefinitions( final Map classDefinitions ) {
         getClassDefinitions().putAll( classDefinitions );
-
     }
 
-    public Map getClassDefinitions() {
+    public Map<String, byte[]> getClassDefinitions() {
         if (this.classLookups == null) {
-            this.classLookups = new HashMap();
+            this.classLookups = new HashMap<String, byte[]>();
         }
         return this.classLookups;
     }
 
     public byte[] getClassDefinition( String className ) {
         if (this.classLookups == null) {
-            this.classLookups = new HashMap();
+            this.classLookups = new HashMap<String, byte[]>();
         }
         Object classDef = this.classLookups.get( className );
         return classDef != null ? (byte[]) classDef : null;
@@ -561,24 +568,20 @@ public class JavaDialectRuntimeData
     public static class PackageClassLoader extends ClassLoader implements FastClassLoader {
 
         protected JavaDialectRuntimeData store;
-        CompositeClassLoader             rootClassLoader;
 
-        public PackageClassLoader(JavaDialectRuntimeData store,
-                CompositeClassLoader rootClassLoader) {
+        public PackageClassLoader( JavaDialectRuntimeData store,
+                                   ClassLoader rootClassLoader ) {
             super( rootClassLoader );
-            this.rootClassLoader = rootClassLoader;
             this.store = store;
         }
 
         public Class<?> loadClass( final String name,
-                final boolean resolve ) throws ClassNotFoundException {
+                                   final boolean resolve ) throws ClassNotFoundException {
             Class<?> cls = fastFindClass( name );
 
             if (cls == null) {
-                final CompositeClassLoader parent = (CompositeClassLoader) getParent();
-                cls = parent.loadClass( name,
-                                        resolve,
-                                        this );
+                ClassLoader parent = getParent();
+                cls = parent.loadClass( name );
             }
 
             if (cls == null) {
@@ -684,7 +687,7 @@ public class JavaDialectRuntimeData
     public static class TypeDeclarationClassLoader extends PackageClassLoader {
 
         public TypeDeclarationClassLoader( JavaDialectRuntimeData store,
-                                           CompositeClassLoader rootClassLoader ) {
+                                           ClassLoader rootClassLoader ) {
             super( store, rootClassLoader );
             store.rootClassLoader = rootClassLoader;
             store.classLoader = this;

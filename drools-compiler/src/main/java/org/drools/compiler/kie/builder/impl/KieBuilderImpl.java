@@ -185,7 +185,7 @@ public class KieBuilderImpl
 
                     String className = factType.getName();
                     String internalName = className.replace('.', '/') + ".class";
-                    byte[] bytes = runtimeData.getStore().get(internalName);
+                    byte[] bytes = runtimeData.getBytecode(internalName);
                     trgMfs.write( internalName, bytes, true );
                 }
             }
