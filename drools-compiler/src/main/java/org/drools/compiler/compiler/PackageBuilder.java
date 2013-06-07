@@ -1128,7 +1128,11 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
     public void updateResults() {
         // some of the rules and functions may have been redefined
-        this.results = getResults( this.results );
+        updateResults( this.results );
+    }
+
+    public void updateResults(List<KnowledgeBuilderResult> results) {
+        this.results = getResults( results );
     }
 
     public void compileAll() {
