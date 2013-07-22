@@ -178,6 +178,8 @@ public abstract class AbstractWorkingMemory
 
     private transient ObjectMarshallingStrategyStore marshallingStore;
 
+    private transient Queue<TimedRuleExecution> timedExecutionsQueue;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -1341,4 +1343,11 @@ public abstract class AbstractWorkingMemory
         return this.marshallingStore;
     }
 
+    public Queue<TimedRuleExecution> getTimedExecutionsQueue() {
+        return timedExecutionsQueue;
+    }
+
+    public void setTimedExecutionsQueue(Queue<TimedRuleExecution> timedExecutionsQueue) {
+        this.timedExecutionsQueue = timedExecutionsQueue;
+    }
 }
