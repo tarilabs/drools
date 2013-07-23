@@ -46,7 +46,7 @@ import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleBaseEventListener;
 import org.drools.core.event.WorkingMemoryEventListener;
 import org.drools.core.event.WorkingMemoryEventSupport;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Rule;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
@@ -66,7 +66,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.time.SessionClock;
 
 @SuppressWarnings( "deprecation" )
@@ -145,7 +145,7 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public EntryPoint getEntryPoint() {
+    public EntryPointId getEntryPoint() {
         throw new IllegalStateException( ERRORMSG );
     }
 
@@ -201,7 +201,7 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public Map<String, ? extends SessionEntryPoint> getEntryPoints() {
+    public Map<String, ? extends EntryPoint> getEntryPoints() {
         throw new IllegalStateException( ERRORMSG );
     }
 
@@ -514,7 +514,7 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
         throw new IllegalStateException( ERRORMSG );
     }
 
-    public Collection<? extends SessionEntryPoint> getWorkingMemoryEntryPoints() {
+    public Collection<? extends EntryPoint> getWorkingMemoryEntryPoints() {
         throw new IllegalStateException( ERRORMSG );
     }
 
