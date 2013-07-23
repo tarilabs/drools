@@ -98,8 +98,6 @@ public interface InternalWorkingMemory
     public Lock getLock();
 
     public boolean isSequential();
-
-    public void addLIANodePropagation(LIANodePropagation liaNodePropagation);
     
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
     
