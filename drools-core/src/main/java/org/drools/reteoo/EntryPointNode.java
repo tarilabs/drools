@@ -399,10 +399,9 @@ public class EntryPointNode extends ObjectSource
 
     public void attach( BuildContext context ) {
         this.source.addObjectSink( this );
-        if (context == null) {
-            return;
-        }
+    }
 
+    public void updateSinkOnAttach(BuildContext context) {
         for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             workingMemory.updateEntryPointsCache();
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),

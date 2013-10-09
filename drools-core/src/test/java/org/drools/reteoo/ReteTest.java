@@ -247,6 +247,7 @@ public class ReteTest extends DroolsTestCase {
                                                            new ClassObjectType( List.class ),
                                                            buildContext );
         listOtn.attach(buildContext);
+        listOtn.updateSinkOnAttach(buildContext);
 
         // Will automatically create an ArrayList ObjectTypeNode
         FactHandle handle = workingMemory.insert( new ArrayList() );
@@ -296,7 +297,9 @@ public class ReteTest extends DroolsTestCase {
         final MockObjectSink collectionSink = new MockObjectSink();
         collectionOtn.addObjectSink( collectionSink );
 
-        collectionOtn.attach( new TestBuildContext( new InternalWorkingMemory[]{workingMemory} ) );
+        TestBuildContext testBuildContext = new TestBuildContext( new InternalWorkingMemory[]{workingMemory} );
+        collectionOtn.attach( testBuildContext );
+        collectionOtn.updateSinkOnAttach( testBuildContext );
 
         assertEquals( 1,
                       collectionSink.getAsserted().size() );

@@ -165,6 +165,10 @@ public class Rete extends ObjectSource
         throw new UnsupportedOperationException( "cannot call attach() from the root Rete node" );
     }
 
+    public void updateSinkOnAttach(BuildContext context) {
+        throw new UnsupportedOperationException( "cannot call updateSinkOnAttach() from the root Rete node" );
+    }
+
     public void networkUpdated(UpdateContext updateContext) {
         // nothing to do
     }

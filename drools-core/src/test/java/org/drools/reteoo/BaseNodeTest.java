@@ -59,6 +59,11 @@ public class BaseNodeTest {
 
         }
 
+        public void updateSinkOnAttach(BuildContext context) {
+            // TODO Auto-generated method stub
+
+        }
+
         public void updateNewNode(final InternalWorkingMemory workingMemory,
                                   final PropagationContext context) {
             // TODO Auto-generated method stub

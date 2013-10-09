@@ -113,10 +113,9 @@ public class QueryRiaFixerNode extends LeftTupleSource
 
     public void attach( BuildContext context ) {
         this.tupleSource.addTupleSink( this, context );
-        if (context == null) {
-            return;
-        }
+    }
 
+    public void updateSinkOnAttach(BuildContext context) {
         for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RULE_ADDITION,

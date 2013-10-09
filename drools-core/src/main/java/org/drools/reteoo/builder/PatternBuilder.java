@@ -284,6 +284,7 @@ public class PatternBuilder
                                           ruleBase.getRete(),
                                           context );
                 epn.attach( context );
+                epn.updateSinkOnAttach( context );
             }
 
             ObjectTypeNode otn = new ObjectTypeNode( context.getNextId(),
@@ -296,6 +297,7 @@ public class PatternBuilder
             otn.setExpirationOffset( expirationOffset );
 
             otn.attach( context );
+            otn.updateSinkOnAttach( context );
 
             return otn;
         } finally {

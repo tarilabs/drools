@@ -390,17 +390,15 @@ public abstract class BetaNode extends LeftTupleSource
 
         this.rightInput.addObjectSink( this );
         this.leftInput.addTupleSink( this, context );
+    }
 
-        if (context == null) {
-            return;
-        }
-
+    public void updateSinkOnAttach(BuildContext context) {
         for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             final PropagationContext propagationContext = new PropagationContextImpl(workingMemory.getNextPropagationIdCounter(),
-                    PropagationContext.RULE_ADDITION,
-                    null,
-                    null,
-                    null);
+                                                                                     PropagationContext.RULE_ADDITION,
+                                                                                     null,
+                                                                                     null,
+                                                                                     null);
 
             /* FIXME: This should be generalized at BetaNode level and the
              * instanceof should be removed!
@@ -412,15 +410,16 @@ public abstract class BetaNode extends LeftTupleSource
             if (!lrUnlinkingEnabled || !(this instanceof JoinNode)) {
 
                 this.rightInput.updateSink(this,
-                        propagationContext,
-                        workingMemory);
+                                           propagationContext,
+                                           workingMemory);
             }
 
-            this.leftInput.updateSink(this,
-                    propagationContext,
-                    workingMemory);
+            if (!(this.leftInput instanceof LeftInputAdapterNode)) {
+                this.leftInput.updateSink(this,
+                                          propagationContext,
+                                          workingMemory);
+            }
         }
-
     }
 
     protected void doRemove(final RuleRemovalContext context,
@@ -774,5 +773,9 @@ public abstract class BetaNode extends LeftTupleSource
 
     public void setRightInputOtnId(ObjectTypeNode.Id rightInputOtnId) {
         this.rightInputOtnId = rightInputOtnId;
+    }
+
+    public ObjectSource getRightInput() {
+        return rightInput;
     }
 }

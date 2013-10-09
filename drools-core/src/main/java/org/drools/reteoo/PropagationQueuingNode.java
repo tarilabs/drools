@@ -126,6 +126,10 @@ public class PropagationQueuingNode extends ObjectSource
         // this node does not require update, so nothing else to do.
     }
 
+    public void updateSinkOnAttach(BuildContext context) {
+
+    }
+
     /**
      * @see org.drools.reteoo.ObjectSinkNode#getNextObjectSinkNode()
      */

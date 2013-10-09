@@ -268,6 +268,7 @@ public class InputMarshaller {
                 try {
                     // Yeah, I know, because one session is being deserialized, we go and lock all of them...
                     initialFactNode.attach( buildContext );
+                    initialFactNode.updateSinkOnAttach( buildContext );
                 } finally {
                     context.ruleBase.unlock();
                 }

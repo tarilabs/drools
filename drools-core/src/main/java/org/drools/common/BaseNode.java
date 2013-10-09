@@ -94,6 +94,8 @@ public abstract class BaseNode
      */
     public abstract void attach(BuildContext context);
 
+    public abstract void updateSinkOnAttach(BuildContext context);
+
     /**
      * A method that is called for all nodes whose network below them
      * changed, after the change is complete, providing them with an oportunity

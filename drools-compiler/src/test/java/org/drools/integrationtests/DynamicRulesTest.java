@@ -654,7 +654,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         ruleBase.addPackage( pkg2 );
         workingMemory.fireAllRules();
 
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        //ruleBase = SerializationHelper.serializeObject( ruleBase );
 
         // fire all rules is automatic
         assertEquals( 1,

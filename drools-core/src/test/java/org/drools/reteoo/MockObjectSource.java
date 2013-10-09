@@ -95,7 +95,10 @@ public class MockObjectSource extends ObjectSource {
 
     public void attach(BuildContext context) {
     }
-    
+
+    public void updateSinkOnAttach(BuildContext context) {
+    }
+
     @Override
     public long calculateDeclaredMask(List<String> settableProperties) {
         throw new UnsupportedOperationException();

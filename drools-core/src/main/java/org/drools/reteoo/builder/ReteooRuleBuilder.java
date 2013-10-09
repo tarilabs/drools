@@ -23,8 +23,14 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.UpdateContext;
 import org.drools.conf.EventProcessingOption;
+import org.drools.reteoo.AlphaNode;
+import org.drools.reteoo.BetaNode;
+import org.drools.reteoo.LeftInputAdapterNode;
+import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooBuilder;
+import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.reteoo.RuleBuilder;
+import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.TerminalNode;
 import org.drools.reteoo.WindowNode;
 import org.drools.rule.Accumulate;
@@ -169,14 +175,23 @@ public class ReteooRuleBuilder implements RuleBuilder {
                                                                   context );
 
         BaseNode baseTerminalNode = (BaseNode) terminal;
-        baseTerminalNode.networkUpdated(new UpdateContext());
         baseTerminalNode.attach(context);
-        
-        // adds the terminal node to the list of nodes created/added by this sub-rule
-        context.getNodes().add( baseTerminalNode );
+        baseTerminalNode.networkUpdated(new UpdateContext());
 
-        // assigns partition IDs to the new nodes
-        //assignPartitionId(context);
+        // adds the terminal node to the list of nodes created/added by this sub-rule
+        context.addNode(baseTerminalNode);
+
+        for (BaseNode node : context.getNodes()) {
+
+            System.out.println("TRAVERSING: " + node);
+            if (!(node instanceof BetaNode) && !(node instanceof LeftInputAdapterNode)) continue;
+            if (node instanceof BetaNode) {
+                if (((BetaNode)node).getRightInput() instanceof RightInputAdapterNode) continue;
+            }
+            System.out.println("UPDATING: " + node);
+
+            node.updateSinkOnAttach(context);
+        }
 
         return terminal;
     }

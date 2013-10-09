@@ -117,10 +117,9 @@ public class AlphaNode extends ObjectSource
 
     public void attach(BuildContext context) {
         this.source.addObjectSink( this );
-        if (context == null) {
-            return;
-        }
+    }
 
+    public void updateSinkOnAttach(BuildContext context) {
         for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RULE_ADDITION,
@@ -131,8 +130,8 @@ public class AlphaNode extends ObjectSource
                                     propagationContext,
                                     workingMemory );
         }
-    }   
-    
+    }
+
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {

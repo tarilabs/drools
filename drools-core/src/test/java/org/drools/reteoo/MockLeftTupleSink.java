@@ -103,6 +103,11 @@ public class MockLeftTupleSink extends LeftTupleSource
 
     }
 
+    public void updateSinkOnAttach(BuildContext context) {
+        // TODO Auto-generated method stub
+
+    }
+
     public List getPropagatedTuples(final ReteooWorkingMemory workingMemory,
                                     final LeftTupleSink sink) {
         // TODO Auto-generated method stub

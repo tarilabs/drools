@@ -64,6 +64,11 @@ public class MockTupleSource extends LeftTupleSource {
 
     }
 
+    public void updateSinkOnAttach(BuildContext context) {
+        // TODO Auto-generated method stub
+
+    }
+
     @Override
     public void networkUpdated(UpdateContext updateContext) {
         // TODO Auto-generated method stub

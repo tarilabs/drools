@@ -3,6 +3,8 @@ package org.drools.reteoo.builder;
 import org.drools.ActivationListenerFactory;
 import org.drools.common.BaseNode;
 import org.drools.common.UpdateContext;
+import org.drools.reteoo.AlphaNode;
+import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.TerminalNode;
 import org.drools.rule.GroupElement;
@@ -21,7 +23,11 @@ public class NamedConsequenceBuilder implements ReteooComponentBuilder {
         terminalNode.networkUpdated(new UpdateContext());
 
         // adds the terminal node to the list of nodes created/added by this sub-rule
-        context.getNodes().add( terminalNode );
+        context.addNode(terminalNode);
+
+        for (BaseNode node : context.getNodes()) {
+            node.updateSinkOnAttach(context);
+        }
     }
 
     public boolean requiresLeftActivation(BuildUtils utils, RuleConditionElement rce) {
