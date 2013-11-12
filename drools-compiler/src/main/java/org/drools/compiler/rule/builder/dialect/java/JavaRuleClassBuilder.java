@@ -22,9 +22,17 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.spi.KnowledgeHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class JavaRuleClassBuilder
     implements
         RuleClassBuilder {
+
+    protected static List<String> systemImports = new ArrayList<String>();
+    static {
+        systemImports.add(org.drools.core.util.KieFunctions.class.getName());
+    }
 
     /* (non-Javadoc)
      * @see org.kie.rule.builder.dialect.java.RuleClassBuilder#buildRule(org.kie.rule.builder.BuildContext, org.kie.rule.builder.dialect.java.BuildUtils, org.kie.lang.descr.RuleDescr)
@@ -39,6 +47,12 @@ public class JavaRuleClassBuilder
 
         final StringBuilder buffer = new StringBuilder();
         buffer.append("package ").append(context.getPkg().getName()).append(";").append(lineSeparator);
+
+        for (String systemImport : systemImports) {
+            if (!context.getPkg().getImports().containsKey(systemImport)) {
+                buffer.append("import ").append(systemImport).append(";");
+            }
+        }
 
         for (String s : context.getPkg().getImports().keySet()) {
             buffer.append("import ").append(s).append(";");
