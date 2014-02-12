@@ -33,8 +33,6 @@ import org.drools.compiler.FactC;
 import org.drools.compiler.Message;
 import org.drools.compiler.Person;
 import org.drools.compiler.Primitives;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.integrationtests.IteratorToList;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.core.ClockType;
@@ -106,8 +104,8 @@ public class MarshallingTest extends CommonTestMethodBase {
 
     @Test
     public void testSerializable() throws Exception {
-        Package pkg = loadPackage( "../test_Serializable.drl" );
-        KnowledgePackage kpkg = new KnowledgePackageImp( pkg );
+        Collection<KnowledgePackage>  kpkgs = loadKnowledgePackages("../test_Serializable.drl" );
+        KnowledgePackage kpkg = kpkgs.iterator().next();
         kpkg = SerializationHelper.serializeObject( kpkg );
 
         KnowledgeBase kbase = loadKnowledgeBase();
@@ -2718,12 +2716,4 @@ public class MarshallingTest extends CommonTestMethodBase {
                                                                  new ObjectMarshallingStrategy[]{strategy} );
         return marshaller;
     }
-
-    protected RuleBase getRuleBase(Package pkg) throws Exception {
-        RuleBase ruleBase = getRuleBase();
-
-        ruleBase.addPackage( pkg );
-        return SerializationHelper.serializeObject( ruleBase );
-    }
-
 }

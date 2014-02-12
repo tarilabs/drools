@@ -2,10 +2,8 @@ package org.drools.compiler.integrationtests;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Serializable;
-import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.AccessController;
@@ -24,9 +22,6 @@ import org.drools.compiler.Address;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.StatefulSession;
 import org.drools.compiler.TestEnum;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldReader;
@@ -35,8 +30,6 @@ import org.drools.core.base.extractors.MVELObjectClassFieldReader;
 import org.drools.core.base.mvel.MVELDebugHandler;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.DateUtils;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.AlphaNode;
@@ -49,6 +42,9 @@ import org.drools.core.spi.FieldValue;
 import org.drools.core.type.DateFormatsImpl;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -66,23 +62,21 @@ public class MVELTest extends CommonTestMethodBase {
     @Test
     public void testHelloWorld() throws Exception {
         // read in the source
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_mvel.drl" ) );
-        RuleBase ruleBase = loadRuleBase( reader );
+        KieBase kbase = loadKnowledgeBase("test_mvel.drl");
+        KieSession ksession = kbase.newKieSession();
 
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        
         final List list = new ArrayList();
-        workingMemory.setGlobal( "list",
+        ksession.setGlobal( "list",
                                  list );
 
         final List list2 = new ArrayList();
-        workingMemory.setGlobal( "list2",
+        ksession.setGlobal( "list2",
                                  list2 );
 
         Cheese c = new Cheese( "stilton",
                                10 );
-        workingMemory.insert( c );
-        workingMemory.fireAllRules();
+        ksession.insert( c );
+        ksession.fireAllRules();
         assertEquals( 2,
                       list.size() );
         assertEquals( BigInteger.valueOf( 30 ),
@@ -182,27 +176,20 @@ public class MVELTest extends CommonTestMethodBase {
 
     @Test
     public void testLocalVariableMVELConsequence() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LocalVariableMVELConsequence.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        KieBase kbase = loadKnowledgeBase("test_LocalVariableMVELConsequence.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
-        workingMemory.setGlobal( "results",
+        ksession.setGlobal( "results",
                                  list );
 
-        workingMemory.insert( new Person( "bob",
+        ksession.insert( new Person( "bob",
                                           "stilton" ) );
-        workingMemory.insert( new Person( "mark",
+        ksession.insert( new Person( "mark",
                                           "brie" ) );
 
         try {
-            workingMemory.fireAllRules();
+            ksession.fireAllRules();
 
             assertEquals( "should have fired twice",
                           2,
@@ -219,14 +206,10 @@ public class MVELTest extends CommonTestMethodBase {
     public void testMVELUsingGlobalsInDebugMode() throws Exception {
         MVELDebugHandler.setDebugMode( true );
         try {
-            final PackageBuilder builder = new PackageBuilder();
-            builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MVELGlobalDebug.drl" ) ) );
-            final Package pkg = builder.getPackage();
-            RuleBase ruleBase = getRuleBase();
-            ruleBase.addPackage( pkg );
-            ruleBase = SerializationHelper.serializeObject( ruleBase );
-            final StatefulSession session = ruleBase.newStatefulSession();
-            session.dispose();
+            KieBase kbase = loadKnowledgeBase("test_MVELGlobalDebug.drl");
+            KieSession ksession = kbase.newKieSession();
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, false);
+            ksession.dispose();
             MVELDebugHandler.setDebugMode( false );
         } catch ( Exception e ) {
             MVELDebugHandler.setDebugMode( false );
@@ -238,10 +221,10 @@ public class MVELTest extends CommonTestMethodBase {
 
     @Test
     public void testDuplicateLocalVariableMVELConsequence() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DuplicateLocalVariableMVELConsequence.drl" ) ) );
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream("test_DuplicateLocalVariableMVELConsequence.drl")), ResourceType.DRL);
 
-        assertTrue( builder.hasErrors() );
+        assertTrue( kbuilder.hasErrors() );
     }
 
     @Test
@@ -260,17 +243,12 @@ public class MVELTest extends CommonTestMethodBase {
         text += "then\n";
         text += "    $fact.applyValueAddPromo(1,2,3,4,\"mvel\");\n";
         text += "end";
-        
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        // get the java dialect
-        ruleBase.addPackage( compileRule( text.replaceAll( "mvel",
-                                                          "java" ) ) );
-        // get the mvel dialect
-        ruleBase.addPackage( compileRule( text ) );
+
+        KieBase kieBase = loadKnowledgeBaseFromString(text.replaceAll( "mvel", "java" ), text);
+        StatelessKieSession statelessKieSession = kieBase.newStatelessKieSession();
 
         List<String> list = new ArrayList<String>();
-        
-        ruleBase.newStatelessSession().execute( new TestObject( list ) );
+        statelessKieSession.execute(new TestObject(list));
         
         assertEquals( 6, list.size() );
 
@@ -822,19 +800,6 @@ public class MVELTest extends CommonTestMethodBase {
         public void setDeliveries(List<Map<String, Object>> deliveries) {
                 this.deliveries = deliveries;
         }        
-    }
-    
-
-    private Package compileRule(String drl) throws Exception {
-        PackageBuilder builder = new PackageBuilder( new PackageBuilderConfiguration() );
-
-        builder.addPackageFromDrl( new StringReader( drl ) );
-        Package pkg = builder.getPackage();
-
-        if ( !pkg.isValid() ) {
-            throw new DroolsParserException( pkg.getErrorSummary() );
-        }
-        return pkg;
     }
     
     public Object compiledExecute(String ex) {

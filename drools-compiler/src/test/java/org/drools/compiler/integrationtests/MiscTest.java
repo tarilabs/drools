@@ -79,7 +79,6 @@ import org.drools.compiler.Target;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsError;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilder.PackageMergeException;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.compiler.ParserError;
@@ -7679,19 +7678,13 @@ import static org.mockito.Mockito.verify;
          List<JarInputStream> jarInputStreams = new ArrayList<JarInputStream>();
          jarInputStreams.add( jis );
 
-         Properties properties = new Properties();
-         properties.setProperty( DefaultPackageNameOption.PROPERTY_NAME,
-                                 "foo.bar" );
-         PackageBuilder builder = new PackageBuilder( new PackageBuilderConfiguration( properties,
-                                                                                       loader ) );
-
-         PackageDescr pc = new PackageDescr( "foo.bar" );
-         builder.addPackage( pc );
+         KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, loader);
+         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
 
          String header = "import fr.gouv.agriculture.dag.agorha.business.primes.SousPeriodePrimeAgent\n";
 
-         builder.addPackageFromDrl( new StringReader( header ) );
-         assertFalse( builder.hasErrors() );
+         kbuilder.add(ResourceFactory.newByteArrayResource(header.getBytes()), ResourceType.DRL);
+         assertFalse( kbuilder.hasErrors() );
 
          String passingRule = "rule \"rule1\"\n"
                               + "dialect \"mvel\"\n"
@@ -7707,18 +7700,11 @@ import static org.mockito.Mockito.verify;
                               + "then\n"
                               + "end\n";
 
-         builder.addPackageFromDrl( new StringReader( passingRule ) );
-         if ( builder.hasErrors() ) {
-             logger.warn( builder.getErrors().getErrors()[0].getMessage() );
-         }
-         assertFalse( builder.hasErrors() );
+         kbuilder.add(ResourceFactory.newByteArrayResource(passingRule.getBytes()), ResourceType.DRL);
+         assertFalse( kbuilder.hasErrors() );
 
-         builder.addPackageFromDrl( new StringReader( failingRule ) );
-         if ( builder.hasErrors() ) {
-             logger.warn( builder.getErrors().getErrors()[0].getMessage() );
-         }
-         assertFalse( builder.hasErrors() );
-
+         kbuilder.add(ResourceFactory.newByteArrayResource(failingRule.getBytes()), ResourceType.DRL);
+         assertFalse( kbuilder.hasErrors() );
      }
 
      @Test
@@ -9621,16 +9607,16 @@ import static org.mockito.Mockito.verify;
                        " System.out.println( getFieldValue($bean) ); \n" +
                        "end\n";
 
-         PackageBuilder packageBuilder = new PackageBuilder();
-         packageBuilder.addPackageFromDrl( new StringReader( declaredFactType ) );
-         packageBuilder.addPackageFromDrl( new StringReader( function ) );
-         packageBuilder.addPackageFromDrl( new StringReader( rule ) );
+         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+         kbuilder.add(ResourceFactory.newByteArrayResource(declaredFactType.getBytes()), ResourceType.DRL);
+         kbuilder.add(ResourceFactory.newByteArrayResource(function.getBytes()), ResourceType.DRL);
+         kbuilder.add(ResourceFactory.newByteArrayResource(rule.getBytes()), ResourceType.DRL);
 
-         for ( KnowledgeBuilderError error : packageBuilder.getErrors() ) {
+         for ( KnowledgeBuilderError error : kbuilder.getErrors() ) {
              System.out.println( "ERROR:" );
              System.out.println( error.getMessage() );
          }
-         assertFalse( packageBuilder.hasErrors() );
+         assertFalse( kbuilder.hasErrors() );
      }
 
      public void testGenericsList() throws Exception {

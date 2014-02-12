@@ -12,7 +12,6 @@ import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.StatefulSession;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.rule.Package;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
@@ -78,37 +77,4 @@ public class StatefulSessionTest extends CommonTestMethodBase {
             
         }
     }
-    
-    private StatefulSession getExceptionSession() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConsequenceException.drl" ) ) );
-        
-        if ( builder.hasErrors() ) {
-            throw new RuntimeException( builder.getErrors().toString() );
-        }
-        
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
-        return ruleBase.newStatefulSession();
-    }
-
-    private StatefulSession getSession() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "literal_rule_test.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase    = SerializationHelper.serializeObject(ruleBase);
-        StatefulSession session = ruleBase.newStatefulSession();
-
-//        session    = SerializationHelper.serializeObject(session);
-        session.setGlobal( "list",
-                           this.list );
-        return session;
-    }
-      
 }

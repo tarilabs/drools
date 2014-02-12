@@ -27,7 +27,6 @@ import org.drools.compiler.Order;
 import org.drools.compiler.OrderItem;
 import org.drools.compiler.OuterClass;
 import org.drools.compiler.Person;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseFactory;

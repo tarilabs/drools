@@ -1,7 +1,5 @@
 package org.drools.compiler.integrationtests;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -20,36 +18,30 @@ import org.drools.compiler.Person;
 import org.drools.compiler.PersonInterface;
 import org.drools.compiler.Pet;
 import org.drools.compiler.TotalHolder;
-import org.drools.core.FactHandle;
-import org.drools.core.RuleBase;
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryActions;
-import org.drools.core.event.ActivationCancelledEvent;
-import org.drools.core.event.ActivationCreatedEvent;
-import org.drools.core.event.AgendaEventListener;
-import org.drools.core.event.DefaultAgendaEventListener;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.runtime.rule.impl.AgendaImpl;
-import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
 import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaGroupPoppedEvent;
 import org.kie.api.event.rule.AgendaGroupPushedEvent;
 import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.api.event.rule.DebugAgendaEventListener;
+import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.event.rule.MatchEvent;
 import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.conf.RuleEngineOption;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import static org.mockito.Mockito.*;
@@ -58,8 +50,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test(timeout = 10000)
     public void testSalienceIntegerAndLoadOrder() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase("test_salienceIntegerRule.drl");
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBase("test_salienceIntegerRule.drl");
+        KieSession ksession = kbase.newKieSession();
         final List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
@@ -79,8 +71,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test
     public void testSalienceExpression() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase("test_salienceExpressionRule.drl");
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBase("test_salienceExpressionRule.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -117,8 +109,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
                       + "    foo.setId( 'xxx' );\n"
                       + "end\n" + "\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(text);
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString(text);
+        KieSession ksession = kbase.newKieSession();
         List list = new ArrayList();
         ksession.setGlobal( "list", list );        
         ksession.insert ( new Foo(null, null) );
@@ -167,8 +159,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
                       + "    list.add( \"c\" );\n"
                       + "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(text);
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString(text);
+        KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -219,8 +211,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
                       + "    list.add( s );\n"
                       + "end\n" + "\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(text);
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString(text);
+        KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -261,9 +253,9 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
                       + "    list.add( f1 );\n"
                       + "    foo.setId( 'xxx' );\n"
                       + "end\n" + "\n";
-        
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(text);
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+
+        KieBase kbase = loadKnowledgeBaseFromString(text);
+        KieSession ksession = kbase.newKieSession();
         List list = new ArrayList();
         ksession.setGlobal( "list", list );        
         ksession.insert ( new Foo(null, null) );
@@ -294,8 +286,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test
     public void testNoLoop() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase("no-loop.drl");
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBase("no-loop.drl");
+        KieSession ksession = kbase.newKieSession();;
 
         final List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -312,8 +304,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test
     public void testNoLoopWithModify() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase("no-loop_with_modify.drl");
-        KieSession ksession =  createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBase("no-loop_with_modify.drl");
+        KieSession ksession =  kbase.newKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -331,8 +323,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test
     public void testLockOnActive() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase("test_LockOnActive.drl");
-        KieSession ksession =  createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBase("test_LockOnActive.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -374,8 +366,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         str += "    list.add( $str ); \n";
         str += "end \n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -409,8 +401,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         str += "        drools.halt();\n";
         str += "    }";
         str += "end \n";
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        KieSession ksession =  createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
         ksession.insert( "hello1" );
@@ -432,8 +424,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test
     public void testLockOnActiveWithModify() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase("test_LockOnActiveWithUpdate.drl");
-        KieSession ksession =  createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBase("test_LockOnActiveWithUpdate.drl");
+        KieSession ksession =  kbase.newKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -510,8 +502,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test
     public void testLockOnActiveWithModify2() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase("test_LockOnActiveWithModify.drl");
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBase("test_LockOnActiveWithModify.drl");
+        KieSession ksession = kbase.newKieSession();
 
         // populating working memory
         final int size = 3;
@@ -645,8 +637,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test
     public void testAgendaGroups() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase("test_AgendaGroups.drl");
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBase("test_AgendaGroups.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -690,8 +682,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test
     public void testActivationGroups() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase("test_ActivationGroups.drl");
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBase("test_ActivationGroups.drl");
+        KieSession ksession = kbase.newKieSession();
 
 
         final List list = new ArrayList();
@@ -741,8 +733,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
                 "    });" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.setGlobal("totalHolder", new TotalHolder());
         Father abraham = new Father("abraham", null, 100);
@@ -840,8 +832,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
                  + "end\n" + "\n"
                  + "";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         Holder inrec = new Holder( 1 );
         System.out.println( "Holds: " + inrec.getValue() );
@@ -851,7 +843,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         Assert.assertEquals( "setting 1", inrec.getOutcome() );
 
         ksession.dispose();
-        ksession = createKnowledgeSession(kbase);
+        ksession = kbase.newKieSession();
         inrec = new Holder( null );
         System.out.println( "Holds: " + inrec.getValue() );
         ksession.insert( inrec );
@@ -860,7 +852,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         Assert.assertEquals( "setting null", inrec.getOutcome() );
 
         ksession.dispose();
-        ksession = createKnowledgeSession(kbase);
+        ksession = kbase.newKieSession();
         inrec = new Holder( 0 );
         System.out.println( "Holds: " + inrec.getValue() );
         ksession.insert( inrec );
@@ -872,8 +864,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
     @Test
     public void testInsertRetractNoloop() throws Exception {
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase("test_Insert_Retract_Noloop.drl");
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBase("test_Insert_Retract_Noloop.drl");
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new Cheese( "stilton", 15 ) );
 
@@ -885,8 +877,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
     public void testUpdateNoLoop() throws Exception {
         // JBRULES-780, throws a NullPointer or infinite loop if there is an
         // issue
-        KnowledgeBase kbase = loadKnowledgeBase("test_UpdateNoloop.drl");
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBase("test_UpdateNoloop.drl");
+        KieSession ksession = kbase.newKieSession();
 
         Cheese cheese = new Cheese( "stilton", 15 );
         ksession.insert( cheese  );
@@ -899,55 +891,47 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
     @Test
     public void testUpdateActivationCreationNoLoop() throws Exception {
         // JBRULES-787, no-loop blocks all dependant tuples for update
-        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_UpdateActivationCreationNoLoop.drl" ) );
-        RuleBase ruleBase = loadRuleBase( reader );
+        KieBase kbase = loadKnowledgeBase("test_UpdateActivationCreationNoLoop.drl");
+        KieSession ksession = kbase.newKieSession();
 
-        ruleBase = SerializationHelper.serializeObject(ruleBase);
-        final InternalWorkingMemoryActions wm = (InternalWorkingMemoryActions) ruleBase.newStatefulSession();
         final List created = new ArrayList();
         final List cancelled = new ArrayList();
         final AgendaEventListener l = new DefaultAgendaEventListener() {
             @Override
-            public void activationCreated(ActivationCreatedEvent event,
-                                          WorkingMemory workingMemory) {
+            public void matchCreated(MatchCreatedEvent event) {
                 created.add( event );
             }
 
             @Override
-            public void activationCancelled(ActivationCancelledEvent event,
-                                            WorkingMemory workingMemory) {
+            public void matchCancelled(MatchCancelledEvent event) {
                 cancelled.add( event );
             }
-
         };
 
-        wm.addEventListener( l );
+        ksession.addEventListener( l );
 
         final Cheese stilton = new Cheese( "stilton", 15 );
-        final FactHandle stiltonHandle = wm.insert( stilton );
+        final FactHandle stiltonHandle = ksession.insert( stilton );
 
         final Person p1 = new Person( "p1" );
         p1.setCheese( stilton );
-        wm.insert( p1 );
+        ksession.insert( p1 );
 
         final Person p2 = new Person( "p2" );
         p2.setCheese( stilton );
-        wm.insert( p2 );
+        ksession.insert( p2 );
 
         final Person p3 = new Person( "p3" );
         p3.setCheese( stilton );
-        wm.insert( p3 );
-        
-        wm.fireAllRules();
+        ksession.insert( p3 );
+
+        ksession.fireAllRules();
 
         assertEquals( 3, created.size() );
         assertEquals( 0, cancelled.size() );
 
-        final Activation item = ((ActivationCreatedEvent) created.get( 2 ))
-                .getActivation();
-
         // simulate a modify inside a consequence
-        wm.update( stiltonHandle, stilton, Long.MAX_VALUE, Object.class, item );
+        ksession.update( stiltonHandle, stilton );
 
         // with true modify, no reactivations should be triggered
         assertEquals( 3, created.size() );
@@ -956,8 +940,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test
     public void testRuleFlowGroup() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase("ruleflowgroup.drl");
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBase("ruleflowgroup.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -975,8 +959,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
     @Test
     public void testRuleFlowGroupDeactivate() throws Exception {
         // need to make eager, for cancel to work, (mdp)
-        KnowledgeBase kbase = loadKnowledgeBase("ruleflowgroup2.drl");
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBase("ruleflowgroup2.drl");
+        KieSession ksession = kbase.newKieSession();
 
 
         final List list = new ArrayList();
@@ -995,8 +979,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testRuleFlowGroupInActiveMode() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase("ruleflowgroup.drl");
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBase("ruleflowgroup.drl");
+        final KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -1040,8 +1024,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
     @Test
     public void testDateEffective() throws Exception {
         // read in the source
-        KnowledgeBase kbase = loadKnowledgeBase("test_EffectiveDate.drl");
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBase("test_EffectiveDate.drl");
+        KieSession ksession = kbase.newKieSession();
 
 
         final List list = new ArrayList();
@@ -1071,8 +1055,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
                      + "		modify( $p ) { setAge( 36 ) }; \n"
                      + "end \n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         Person p = new Person( "darth", 36 );
         FactHandle fh = (FactHandle) ksession.insert( p );
@@ -1119,8 +1103,8 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
                 "    ruleList.add(4);\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = kbase.newKieSession();
 
         ArrayList<String> ruleList = new ArrayList<String>();
         ksession.setGlobal("ruleList", ruleList);

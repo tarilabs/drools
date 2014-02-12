@@ -7,6 +7,7 @@ import java.util.List;
 import org.drools.compiler.compiler.CompositeKnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DroolsWarning;
 import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.core.io.impl.BaseResource;
 import org.drools.core.rule.Package;
@@ -109,5 +110,9 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     public boolean hasResults(ResultSeverity... severities) {
         return pkgBuilder.hasProblems(severities);
+    }
+
+    public List<PackageDescr> getPackageDescrs(String packageName) {
+        return pkgBuilder.getPackageDescrs(packageName);
     }
 }

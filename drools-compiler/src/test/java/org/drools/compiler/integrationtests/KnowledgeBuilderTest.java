@@ -4,7 +4,6 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.*;
 
 import java.io.InputStream;
-import java.io.StringReader;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,7 +13,6 @@ import java.util.Map;
 
 import org.drools.compiler.compiler.PMMLCompiler;
 import org.drools.compiler.compiler.PMMLCompilerFactory;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.core.rule.TypeDeclaration;
@@ -409,20 +407,13 @@ public class KnowledgeBuilderTest {
                       "then\n" +
                       "end\n";
 
-        PackageBuilder pkgbuilder = new PackageBuilder();
-        pkgbuilder.addPackageFromDrl( new StringReader( rule ) );
-        assertFalse( pkgbuilder.getErrors().toString(), pkgbuilder.hasErrors() );
-
-        Package pkg = pkgbuilder.getPackage();
-
-        byte[] spkg = DroolsStreamUtils.streamOut( pkg );
-
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( spkg ), ResourceType.PKG );
+        kbuilder.add(ResourceFactory.newByteArrayResource(rule.getBytes()), ResourceType.DRL);
+
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
-        assertEquals( 1, kpkgs.size() );
+        assertEquals( 2, kpkgs.size() );
         KnowledgePackage kpkg = kpkgs.iterator().next();
         assertEquals( 1, kpkg.getRules().size() );
     }
@@ -437,16 +428,9 @@ public class KnowledgeBuilderTest {
                       "then\n" +
                       "end\n";
 
-        PackageBuilder pkgbuilder = new PackageBuilder();
-        pkgbuilder.addPackageFromDrl( new StringReader( rule ) );
-        assertFalse( pkgbuilder.getErrors().toString(), pkgbuilder.hasErrors() );
-
-        Package[] pkgs = pkgbuilder.getPackages();
-
-        byte[] spkgs = DroolsStreamUtils.streamOut( pkgs );
-
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( spkgs ), ResourceType.PKG );
+        kbuilder.add(ResourceFactory.newByteArrayResource(rule.getBytes()), ResourceType.DRL);
+
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();

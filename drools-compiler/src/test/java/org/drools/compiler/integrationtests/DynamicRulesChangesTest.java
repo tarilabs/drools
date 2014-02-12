@@ -1,8 +1,5 @@
 package org.drools.compiler.integrationtests;
 
-import static junit.framework.Assert.assertEquals;
-
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -15,11 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.drools.compiler.CommonTestMethodBase;
-import org.drools.core.RuleBase;
-import org.drools.core.StatefulSession;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.rule.Rule;
 import org.junit.Before;
 import org.junit.Ignore;
