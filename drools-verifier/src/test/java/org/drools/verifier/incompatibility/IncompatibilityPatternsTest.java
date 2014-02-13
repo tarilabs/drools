@@ -25,9 +25,11 @@ import org.drools.verifier.components.*;
 import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.Incompatibility;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,9 +40,7 @@ public class IncompatibilityPatternsTest extends IncompatibilityBase {
 
     @Test
     public void testPatternsPossibilitiesIncompatibility() throws Exception {
-        StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Patterns.drl"));
-
-        session.setAgendaFilter(new RuleNameMatchesAgendaFilter("Incompatible Patterns"));
+        KieSession session = getStatelessKieSession(this.getClass().getResourceAsStream("Patterns.drl"));
 
         Collection<Object> data = new ArrayList<Object>();
 
@@ -121,10 +121,13 @@ public class IncompatibilityPatternsTest extends IncompatibilityBase {
         data.add(o2);
         data.add(o3);
 
-        StatelessSessionResult sessionResult = session.executeWithResults(data);
+        for (Object o : data) {
+            session.insert(o);
+        }
+        session.fireAllRules(new RuleNameMatchesAgendaFilter("Incompatible Patterns"));
 
         Map<Cause, Set<Cause>> map = createIncompatibilityMap(VerifierComponentType.SUB_PATTERN,
-                                                              sessionResult.iterateObjects());
+                                                              (Iterator<Object>)session.getObjects().iterator());
 
         assertTrue((TestBaseOld.causeMapContains(map,
                                                  pp1,

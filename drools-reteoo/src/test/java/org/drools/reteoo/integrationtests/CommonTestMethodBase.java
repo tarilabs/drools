@@ -2,13 +2,9 @@ package org.drools.reteoo.integrationtests;
 
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuleBaseFactory;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -51,65 +47,6 @@ import java.util.Collection;
  */
 public class CommonTestMethodBase extends Assert {
     public static RuleEngineOption phreak = RuleEngineOption.RETEOO;
-
-    // ***********************************************
-    // METHODS TO BE REMOVED FOR 6.0.0
-
-    protected RuleBase getRuleBase() throws Exception {
-        return RuleBaseFactory.newRuleBase(RuleBase.RETEOO, null);
-    }
-
-    protected RuleBase getRuleBase(final RuleBaseConfiguration config) throws Exception {
-        return RuleBaseFactory.newRuleBase(RuleBase.RETEOO, config);
-    }
-
-    protected RuleBase getSinglethreadRuleBase() throws Exception {
-        RuleBaseConfiguration config = new RuleBaseConfiguration();
-        config.setMultithreadEvaluation(false);
-        return RuleBaseFactory.newRuleBase(RuleBase.RETEOO, config);
-    }
-
-    protected org.drools.core.rule.Package loadPackage(final String classPathResource) throws DroolsParserException, IOException {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream(classPathResource)));
-
-        if (builder.hasErrors()) {
-            fail(builder.getErrors().toString());
-        }
-
-        final org.drools.core.rule.Package pkg = builder.getPackage();
-        return pkg;
-    }
-
-    protected RuleBase loadRuleBase(final Reader reader) throws IOException,
-            DroolsParserException, Exception {
-        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
-        final PackageDescr packageDescr = parser.parse(reader);
-        if (parser.hasErrors()) {
-            fail("Error messages in parser, need to sort this our (or else collect error messages):\n"
-                 + parser.getErrors());
-        }
-        // pre build the package
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackage(packageDescr);
-
-        if (builder.hasErrors()) {
-            fail(builder.getErrors().toString());
-        }
-
-        org.drools.core.rule.Package pkg = builder.getPackage();
-        pkg = org.drools.compiler.integrationtests.SerializationHelper.serializeObject(pkg);
-
-        // add the package to a rulebase
-        RuleBase ruleBase = getSinglethreadRuleBase();
-        ruleBase.addPackage(pkg);
-        ruleBase = org.drools.compiler.integrationtests.SerializationHelper.serializeObject(ruleBase);
-        // load up the rulebase
-        return ruleBase;
-    }
-
-    // END - METHODS TO BE REMOVED FOR 6.0.0
-    // ****************************************************************************************
 
     protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
         return kbase.newStatefulKnowledgeSession();
