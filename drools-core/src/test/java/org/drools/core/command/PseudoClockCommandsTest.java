@@ -2,10 +2,17 @@ package org.drools.core.command;
 
 import static org.junit.Assert.*;
 
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import javax.xml.bind.JAXB;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
@@ -80,6 +87,20 @@ public class PseudoClockCommandsTest {
 		String outIdentifier = "outid";
 		PseudoClockAdvanceTimeCommand cmd2 = new PseudoClockAdvanceTimeCommand(1, TimeUnit.MINUTES, outIdentifier);
 		BatchExecutionCommandImpl beCmd = buildBatchCmd(cmd2);
+		
+		try {
+			JAXBContext ctx = JAXBContext.newInstance(PseudoClockAdvanceTimeCommand.class, BatchExecutionCommandImpl.class);
+			ctx.createMarshaller().marshal(beCmd, System.out);
+			System.out.println("---");
+			for ( PropertyDescriptor pd : Introspector.getBeanInfo(beCmd.getClass(), Object.class).getPropertyDescriptors() ) {
+				System.out.println(pd.getReadMethod());
+			}
+			for ( PropertyDescriptor pd : Introspector.getBeanInfo(cmd2.getClass(), Object.class).getPropertyDescriptors() ) {
+				System.out.println(pd.getReadMethod());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		ExecutionResults exec2 = kieSession.execute(beCmd);
 		
 		Object exec2Result = exec2.getValue(outIdentifier);

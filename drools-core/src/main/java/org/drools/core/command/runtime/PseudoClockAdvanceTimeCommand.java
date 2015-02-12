@@ -20,9 +20,15 @@ public class PseudoClockAdvanceTimeCommand
 	GenericCommand<Long>, IdentifiableResult{ 
 
 	private static final long serialVersionUID = -2517207502769584537L;
+	
+	@XmlAttribute(name="amount", required=true)
 	private long amount;
+	
+	@XmlAttribute(name="unit", required=true)
 	private TimeUnit unit;
-	private String outIdentifier;
+	
+	@XmlAttribute(name="out-identifier")
+    private String outIdentifier;
 	
 	public PseudoClockAdvanceTimeCommand(long amount, TimeUnit unit) {
 		super();
@@ -55,7 +61,6 @@ public class PseudoClockAdvanceTimeCommand
 		return result;
 	}
 
-    @XmlAttribute(name="out-identifier")
     public String getOutIdentifier() {
         return outIdentifier;
     }
@@ -68,7 +73,6 @@ public class PseudoClockAdvanceTimeCommand
 		return amount;
 	}
 	
-	@XmlAttribute(name="amount", required=true)
 	public void setAmount(long amount) {
 		this.amount = amount;
 	}
@@ -77,7 +81,6 @@ public class PseudoClockAdvanceTimeCommand
 		return unit;
 	}
 	
-	@XmlAttribute(name="unit", required=true)
 	public void setUnit(TimeUnit unit) {
 		this.unit = unit;
 	}

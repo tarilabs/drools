@@ -110,7 +110,8 @@ public class BatchExecutionCommandImpl implements BatchExecutionCommand, Generic
         @XmlElement(name = "get-object", type = GetObjectCommand.class),
         @XmlElement(name = "fire-all-rules", type = FireAllRulesCommand.class),
         @XmlElement(name = "complete-work-item", type = CompleteWorkItemCommand.class),
-        @XmlElement(name = "get-objects", type = GetObjectsCommand.class)
+        @XmlElement(name = "get-objects", type = GetObjectsCommand.class),
+        @XmlElement(name = "pseudoclock-advancetime", type = PseudoClockAdvanceTimeCommand.class)
     })
     protected List<GenericCommand<?>> commands;
 
