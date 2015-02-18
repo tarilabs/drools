@@ -16,8 +16,13 @@
 
 package org.drools.core.runtime.help.impl;
 
+import javax.xml.bind.annotation.XmlElement;
+
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.core.command.runtime.GetGlobalCommand;
+import org.drools.core.command.runtime.PseudoClockAdvanceTimeCommand;
+import org.drools.core.command.runtime.PseudoClockCompareAndSetCommand;
+import org.drools.core.command.runtime.SessionClockGetCurrentTimeCommand;
 import org.drools.core.command.runtime.SetGlobalCommand;
 import org.drools.core.command.runtime.process.AbortWorkItemCommand;
 import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
@@ -78,5 +83,10 @@ public class XStreamHelper {
                        FlatQueryResults.class );
         xstream.alias( "fact-handle",
                        DefaultFactHandle.class );
+        
+        System.out.println("MATTEO ***"); 
+        xstream.alias( "pseudoclock-advancetime", PseudoClockAdvanceTimeCommand.class);
+        xstream.alias( "pseudoclock-compareandset", PseudoClockCompareAndSetCommand.class);
+        xstream.alias( "sessionclock-getcurrenttime", SessionClockGetCurrentTimeCommand.class);
     }
 }

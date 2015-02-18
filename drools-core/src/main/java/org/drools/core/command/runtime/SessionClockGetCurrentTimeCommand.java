@@ -1,5 +1,7 @@
 package org.drools.core.command.runtime;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import org.drools.core.command.IdentifiableResult;
@@ -14,6 +16,7 @@ import org.kie.internal.command.Context;
  * To serialize over-the-wire e.g.: REST API / XML the session clock current time value.
  * Otherwise a simple GetSessionClockCommand would attempt to serialize the entire reference to the "realtime" or "pseudoclock" session clock. Here we just want the session clock current time value.
  */
+@XmlAccessorType(XmlAccessType.NONE)
 public class SessionClockGetCurrentTimeCommand 
 		implements
 		GenericCommand<Long>, IdentifiableResult {
@@ -22,6 +25,10 @@ public class SessionClockGetCurrentTimeCommand
 	
 	@XmlAttribute(name="out-identifier", required=true)
     private String outIdentifier;
+	
+	public SessionClockGetCurrentTimeCommand() {
+		this("sessionclock-getcurrenttime");
+	}
 	
 	public SessionClockGetCurrentTimeCommand(String outIdentifier) {
 		super();

@@ -29,6 +29,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.core.command.runtime.GetGlobalCommand;
+import org.drools.core.command.runtime.SessionClockGetCurrentTimeCommand;
 import org.drools.core.command.runtime.SetGlobalCommand;
 import org.drools.core.command.runtime.process.AbortWorkItemCommand;
 import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
@@ -92,6 +93,8 @@ public class XStreamXML {
         xstream.registerConverter( new QueryResultsConverter( xstream ) );
         xstream.registerConverter( new FactHandleConverter( xstream ) );
 
+        xstream.registerConverter( new SessionClockGetCurrentTimeCommandConverter( xstream ) );
+        
         return xstream;
     }
 
@@ -1026,4 +1029,39 @@ public class XStreamXML {
             return QueryResults.class.isAssignableFrom( clazz );
         }
     }
+    
+    public static class SessionClockGetCurrentTimeCommandConverter extends AbstractCollectionConverter
+	    implements
+	    Converter {
+	
+	    public SessionClockGetCurrentTimeCommandConverter(XStream xstream) {
+	        super( xstream.getMapper() );
+	    }
+	
+	    public void marshal(Object object,
+	                        HierarchicalStreamWriter writer,
+	                        MarshallingContext context) {
+	    	SessionClockGetCurrentTimeCommand cmd = (SessionClockGetCurrentTimeCommand) object;
+	
+	        if ( cmd.getOutIdentifier() != null ) {
+	            writer.addAttribute( "out-identifier",
+	                                 cmd.getOutIdentifier() );
+	        }
+	    }
+	
+	    public Object unmarshal(HierarchicalStreamReader reader,
+	                            UnmarshallingContext context) {
+	        String identifierOut = reader.getAttribute( "out-identifier" );
+	
+	        SessionClockGetCurrentTimeCommand cmd = new SessionClockGetCurrentTimeCommand( );
+	        if ( identifierOut != null ) {
+	            cmd.setOutIdentifier( identifierOut );
+	        }
+	        return cmd;
+	    }
+	
+	    public boolean canConvert(Class clazz) {
+	        return clazz.equals( SessionClockGetCurrentTimeCommand.class );
+	    }
+	}
 }

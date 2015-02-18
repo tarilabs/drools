@@ -111,7 +111,9 @@ public class BatchExecutionCommandImpl implements BatchExecutionCommand, Generic
         @XmlElement(name = "fire-all-rules", type = FireAllRulesCommand.class),
         @XmlElement(name = "complete-work-item", type = CompleteWorkItemCommand.class),
         @XmlElement(name = "get-objects", type = GetObjectsCommand.class),
-        @XmlElement(name = "pseudoclock-advancetime", type = PseudoClockAdvanceTimeCommand.class)
+        @XmlElement(name = "pseudoclock-advancetime", type = PseudoClockAdvanceTimeCommand.class),
+        @XmlElement(name = "pseudoclock-compareandset", type = PseudoClockCompareAndSetCommand.class),
+        @XmlElement(name = "sessionclock-getcurrenttime", type = SessionClockGetCurrentTimeCommand.class)
     })
     protected List<GenericCommand<?>> commands;
 

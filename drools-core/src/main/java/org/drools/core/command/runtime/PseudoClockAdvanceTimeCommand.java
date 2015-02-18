@@ -30,6 +30,10 @@ public class PseudoClockAdvanceTimeCommand
 	@XmlAttribute(name="out-identifier")
     private String outIdentifier;
 	
+	public PseudoClockAdvanceTimeCommand() {
+		// FIXME
+	}
+	
 	public PseudoClockAdvanceTimeCommand(long amount, TimeUnit unit) {
 		super();
 		this.amount = amount;

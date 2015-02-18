@@ -22,6 +22,7 @@ import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.core.command.runtime.PseudoClockAdvanceTimeCommand;
 import org.drools.core.command.runtime.PseudoClockCompareAndSetCommand;
+import org.drools.core.command.runtime.SessionClockGetCurrentTimeCommand;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
@@ -139,6 +140,42 @@ public class PseudoClockCommandsTest {
 		
 		assertEquals(false, exec3);
 		assertEquals(2L, pseudoClock.getCurrentTime());
+	}
+	
+	@Test
+	public void testSessionClockGetCurrentTimeCommand() {
+		SessionPseudoClock pseudoClock = kieSession.getSessionClock();
+		
+		assertEquals(0L, pseudoClock.getCurrentTime());
+		
+		// pseudoClock.advanceTime(1, TimeUnit.HOURS);
+//		SessionClockGetCurrentTimeCommand cmd1 = new SessionClockGetCurrentTimeCommand("asd");
+//		Long exec1 = kieSession.execute(cmd1);
+		
+		// TODO implement assertions.
+		
+		
+		String outIdentifier = "outid";
+		SessionClockGetCurrentTimeCommand cmd2 = new SessionClockGetCurrentTimeCommand("asd");
+		BatchExecutionCommandImpl beCmd = buildBatchCmd(cmd2);
+		
+		try {
+			JAXBContext ctx = JAXBContext.newInstance(SessionClockGetCurrentTimeCommand.class, BatchExecutionCommandImpl.class);
+			ctx.createMarshaller().marshal(beCmd, System.out);
+			System.out.println("---");
+			for ( PropertyDescriptor pd : Introspector.getBeanInfo(beCmd.getClass(), Object.class).getPropertyDescriptors() ) {
+				System.out.println(pd.getReadMethod());
+			}
+			for ( PropertyDescriptor pd : Introspector.getBeanInfo(cmd2.getClass(), Object.class).getPropertyDescriptors() ) {
+				System.out.println(pd.getReadMethod());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		ExecutionResults exec2 = kieSession.execute(beCmd);
+		
+		Object exec2Result = exec2.getValue(outIdentifier);
+		//FIXME
 	}
 
 	private static BatchExecutionCommandImpl buildBatchCmd(GenericCommand<?> cmd2) {

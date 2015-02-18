@@ -35,6 +35,10 @@ public class PseudoClockCompareAndSetCommand
 	@XmlAttribute(name="out-identifier")
     private String outIdentifier;
 	
+	public PseudoClockCompareAndSetCommand() {
+		// FIXME
+	}
+	
 	public PseudoClockCompareAndSetCommand(long expect, long update) {
 		super();
 		this.expect = expect;
