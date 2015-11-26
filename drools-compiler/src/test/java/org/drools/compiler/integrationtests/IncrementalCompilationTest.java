@@ -197,6 +197,77 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         assertEquals( 2, ksession.fireAllRules() );
     }
 
+@Test
+public void testKJarUpgradeKieScannerDocumentationBehavior() throws Exception {
+	 String drl1 = "package org.drools.compiler\n" +
+             "rule R1 when\n" +
+             "   $m : Message()\n" +
+             "then\n" +
+             "end\n";
+
+     String drl2_1 = "package org.drools.compiler\n" +
+             "rule R2_1 when\n" +
+             "   $m : Message( message == \"Hi Universe\" )\n" +
+             "then\n" +
+             "end\n";
+
+     String drl2_2 = "package org.drools.compiler\n" +
+             "rule R2_2 when\n" +
+             "   $m : Message( message == \"Hello World\" )\n" +
+             "then\n" +
+             "end\n";
+
+     KieServices ks = KieServices.Factory.get();
+
+     // Create an in-memory jar for version 1.0.0
+     ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+     KieModule km = createAndDeployJar( ks, releaseId1, drl1, drl2_1 );
+
+     // Create a session and fire rules
+     KieContainer kc = ks.newKieContainer( km.getReleaseId() );
+     KieSession ksession = kc.newKieSession();
+     
+     org.kie.api.KieBase kBaseGET = kc.getKieBase();
+     KieSession ksession_kBaseGET = kBaseGET.newKieSession();
+     
+     org.kie.api.KieBaseConfiguration kConfig = ks.newKieBaseConfiguration();
+     kConfig.setOption(EventProcessingOption.STREAM);
+     org.kie.api.KieBase kBaseCREATENEW = kc.newKieBase(kConfig);
+     KieSession ksession_kBaseCREATENEW = kBaseCREATENEW.newKieSession();
+     
+     ksession.insert( new Message( "Hello World" ) );
+     assertEquals( 1, ksession.fireAllRules() );
+     
+     ksession_kBaseGET.insert( new Message( "Hello World" ) );
+     assertEquals( 1, ksession_kBaseGET.fireAllRules() );
+     
+     ksession_kBaseCREATENEW.insert( new Message( "Hello World" ) );
+     assertEquals( 1, ksession_kBaseCREATENEW.fireAllRules() );
+     
+     // Create a new jar for version 1.1.0
+     ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+     km = createAndDeployJar( ks, releaseId2, drl1, drl2_2 );
+
+     // try to update the container to version 1.1.0
+     kc.updateToVersion( releaseId2 );
+
+     // continue working with the session
+     ksession.insert( new Message( "Hello World" ) );
+     assertEquals( 3, ksession.fireAllRules() );
+     
+     ksession_kBaseGET.insert( new Message( "Hello World" ) );
+     assertEquals( 3, ksession_kBaseGET.fireAllRules() );		// This session use a KieBase generated with .getKieBase(), meaning default KieBase declared in kmodule.xml, automatic update OK. It is just an explicit case of the above.
+     
+     ksession_kBaseCREATENEW.insert( new Message( "Hello World" ) );
+     assertEquals( 1, ksession_kBaseCREATENEW.fireAllRules() ); 		// expected: 1, NOT 3. This session use a KieBase generated with .newKieBase() from "custom" KieBaseConfiguration hence NOT automatically upgraded.
+     
+     // generate and use a new session
+     org.kie.api.KieBase kBaseCREATENEW_afterUpgrade = kc.newKieBase(kConfig);
+     KieSession ksession_kBaseCREATENEW_afterUpgrade = kBaseCREATENEW_afterUpgrade.newKieSession();
+     ksession_kBaseCREATENEW_afterUpgrade.insert( new Message( "Hello World" ) );
+     assertEquals( 2, ksession_kBaseCREATENEW_afterUpgrade.fireAllRules() ); 		// expected: 2 (two). This session was created AFTER KieScanner upgrade, even if it's from "custom" KieBaseConfiguration is simply already up to date
+}
+
     @Test
     public void testKJarUpgradeSameSession() throws Exception {
         String drl1 = "package org.drools.compiler\n" +
