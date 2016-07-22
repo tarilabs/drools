@@ -34,13 +34,19 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 
 import javax.management.*;
 import java.lang.management.ManagementFactory;
+import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MBeansMonitoringTest
         extends CommonTestMethodBase {
 
-    public static final String KBASE1 = "KBase1";
+    public static final String KSESSION1 = "KSession1";
+	public static final String KBASE1 = "KBase1";
     private KieContainer kc;
     private String mbeansprop;
+	private ReleaseId releaseId1;
 
     @Before
     public void setUp()
@@ -65,11 +71,11 @@ public class MBeansMonitoringTest
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel( KBASE1 ).setDefault( true )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
-        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel( "KSession1" ).setDefault( true )
+        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel( KSESSION1 ).setDefault( true )
                 .setType( KieSessionModel.KieSessionType.STATEFUL )
                 .setClockType( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        ReleaseId releaseId1 = ks.newReleaseId( "org.kie.test", "mbeans", "1.0.0" );
+        releaseId1 = ks.newReleaseId( "org.kie.test", "mbeans", "1.0.0" );
         createKJar( ks, kproj, releaseId1, null, drl );
 
         kc = ks.newKieContainer( releaseId1 );
@@ -78,7 +84,11 @@ public class MBeansMonitoringTest
     @After
     public void tearDown()
             throws Exception {
-        System.setProperty( MBeansOption.PROPERTY_NAME, mbeansprop );
+    	if (mbeansprop != null) {
+    		System.setProperty( MBeansOption.PROPERTY_NAME, mbeansprop );
+    	} else {
+    		System.setProperty( MBeansOption.PROPERTY_NAME, MBeansOption.DISABLED.toString() );
+    	}
     }
 
     @Test
@@ -89,14 +99,21 @@ public class MBeansMonitoringTest
                    MalformedObjectNameException,
                    MBeanException,
                    ReflectionException,
-                   NullPointerException {
+                   NullPointerException, ExecutionException {
 
         KieBase kiebase = kc.getKieBase( KBASE1 );
         MBeanServer mbserver = ManagementFactory.getPlatformMBeanServer();
-        ObjectName kbOn = new ObjectName( "org.drools.kbases:type=" + KBASE1 );
+        ObjectName kbOn = new ObjectName( "org.drools.kbases:originReleaseId="+ObjectName.quote(releaseId1.toString())+",kbaseName=" + ObjectName.quote(KBASE1) );
         mbserver.invoke( kbOn, "startInternalMBeans", new Object[0], new String[0] );
 
-        Object expOffset = mbserver.getAttribute( new ObjectName( "org.drools.kbases:type=" + KBASE1 + ",group=EntryPoints,EntryPoint=DEFAULT,ObjectType=org.drools.compiler.StockTick" ), "ExpirationOffset" );
+        Object expOffset = mbserver.getAttribute( new ObjectName( kbOn + ",group=EntryPoints,EntryPoint=DEFAULT,ObjectType=org.drools.compiler.StockTick" ), "ExpirationOffset" );
         Assert.assertEquals( 10001, ((Number) expOffset).longValue() );
+        
+        kc.newKieSession(KSESSION1);
+        kiebase.newKieSession();
+        
+        Runnable task2 = () -> { System.out.println("Press ENTER to continue: "); Scanner sin = new Scanner(System.in); sin.nextLine(); };
+        ExecutorService es = Executors.newCachedThreadPool();
+        es.submit(task2).get();
     }
 }

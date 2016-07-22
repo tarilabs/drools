@@ -766,7 +766,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     private void initManagementBeans() {
         if ( this.kBase.getConfiguration().isMBeansEnabled() ) {
-            DroolsManagementAgent.getInstance().registerKnowledgeSession( this );
+            DroolsManagementAgent.getInstance().registerKnowledgeSession( this, this.kBase.getOriginReleaseId() );
         }
     }
 

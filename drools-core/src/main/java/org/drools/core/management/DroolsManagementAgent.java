@@ -18,6 +18,7 @@ package org.drools.core.management;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.management.KieManagementAgentMBean;
 import org.kie.api.management.KieSessionMonitoringMBean;
 import org.slf4j.Logger;
@@ -98,15 +99,15 @@ public class DroolsManagementAgent
         return ++ksessions;
     }
 
-    public void registerKnowledgeBase(InternalKnowledgeBase kbase) {
-        KnowledgeBaseMonitoring mbean = new KnowledgeBaseMonitoring( kbase );
+    public void registerKnowledgeBase(InternalKnowledgeBase kbase, ReleaseId originReleaseId) {
+        KnowledgeBaseMonitoring mbean = new KnowledgeBaseMonitoring( kbase, originReleaseId );
         registerMBean( kbase,
                        mbean,
                        mbean.getName() );
     }
 
-    public void registerKnowledgeSession(InternalWorkingMemory ksession) {
-        KieSessionMonitoringImpl mbean = new KieSessionMonitoringImpl( ksession );
+    public void registerKnowledgeSession(InternalWorkingMemory ksession, ReleaseId originReleaseId) {
+        KieSessionMonitoringImpl mbean = new KieSessionMonitoringImpl( ksession, originReleaseId );
         try {
             final StandardMBean adapter = new StandardMBean( mbean, KieSessionMonitoringMBean.class );
             registerMBean( ksession,

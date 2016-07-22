@@ -57,6 +57,7 @@ import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.TripleStore;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
@@ -179,6 +180,11 @@ public class KnowledgeBaseImpl
 
     private transient AtomicInteger sessionDeactivationsCounter = new AtomicInteger();
 
+	private ReleaseId originReleaseId;
+	private ReleaseId currentReleaseId;
+
+	private boolean mbeanRegistered = false;
+
     public KnowledgeBaseImpl() { }
 
     public KnowledgeBaseImpl(final String id,
@@ -211,9 +217,6 @@ public class KnowledgeBaseImpl
         kieComponentFactory.getTripleStore().setId(id);
 
         setupRete();
-        if (config != null && config.isMBeansEnabled()) {
-            DroolsManagementAgent.getInstance().registerKnowledgeBase(this);
-        }
 
         if ( this.config.getSessionCacheOption().isEnabled() ) {
             if ( this.config.isPhreakEnabled() ) {
@@ -223,6 +226,14 @@ public class KnowledgeBaseImpl
             }
         }
     }
+
+    @Override
+	public void initMBeans() {
+		if (config != null && config.isMBeansEnabled() && !mbeanRegistered) {
+            DroolsManagementAgent.getInstance().registerKnowledgeBase(this, originReleaseId);
+            mbeanRegistered = true;
+        }
+	}
 
     public int nextWorkingMemoryCounter() {
         return this.workingMemoryCounter.getAndIncrement();
@@ -1916,4 +1927,24 @@ public class KnowledgeBaseImpl
         }
         return modified;
     }
+    
+    @Override
+	public ReleaseId getOriginReleaseId() {
+		return originReleaseId;
+	}
+
+    @Override
+	public void setOriginReleaseId(ReleaseId originReleaseId) {
+		this.originReleaseId = originReleaseId;
+	}
+
+    @Override
+	public ReleaseId getCurrentReleaseId() {
+		return currentReleaseId;
+	}
+
+    @Override
+	public void setCurrentReleaseId(ReleaseId currentReleaseId) {
+		this.currentReleaseId = currentReleaseId;
+	}
 }

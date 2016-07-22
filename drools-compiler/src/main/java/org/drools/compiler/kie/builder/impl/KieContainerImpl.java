@@ -28,6 +28,7 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.management.DroolsManagementAgent;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -40,6 +41,7 @@ import org.kie.api.builder.model.FileLoggerModel;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.MBeansOption;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
@@ -91,6 +93,7 @@ public class KieContainerImpl
 
     private final KieRepository        kr;
 
+    private ReleaseId originReleaseId;
     private ReleaseId containerReleaseId;
 
     public KieModule getMainKieModule() {
@@ -105,6 +108,7 @@ public class KieContainerImpl
 
     public KieContainerImpl(KieProject kProject, KieRepository kr, ReleaseId containerReleaseId) {
         this(kProject, kr);
+        this.originReleaseId = containerReleaseId;
         this.containerReleaseId = containerReleaseId;
     }
 
@@ -513,6 +517,9 @@ public class KieContainerImpl
             ((RuleBaseConfiguration)conf).setClassLoader(cl);
         }
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( kBaseModel.getName(), conf );
+        kBase.setOriginReleaseId(originReleaseId);
+        kBase.setCurrentReleaseId(originReleaseId);
+        kBase.initMBeans();
 
         kBase.addKnowledgePackages( pkgs );
         return kBase;
@@ -618,7 +625,7 @@ public class KieContainerImpl
         if (isJndiAvailable()) {
             wireListnersAndWIHs( kSessionModel, kSession );
         }
-        registerLoggers(kSessionModel, kSession);
+        registerLoggers(kSessionModel, kSession);  
         kSessions.put(kSessionName, kSession);
         return kSession;
     }

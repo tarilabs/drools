@@ -21,6 +21,7 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.management.KieSessionMonitoringImpl.AgendaStats.AgendaStatsData;
 import org.drools.core.management.KieSessionMonitoringImpl.ProcessStats.ProcessInstanceStatsData;
 import org.drools.core.management.KieSessionMonitoringImpl.ProcessStats.ProcessStatsData;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
@@ -56,10 +57,10 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
     public AgendaStats agendaStats;
     public ProcessStats processStats;
     
-    public KieSessionMonitoringImpl(InternalWorkingMemory ksession) {
+    public KieSessionMonitoringImpl(InternalWorkingMemory ksession, ReleaseId originReleaseId) {
         this.ksession = ksession;
         this.kbase = ksession.getKnowledgeBase();
-        this.name = DroolsManagementAgent.createObjectName(KSESSION_PREFIX + ":type="+kbase.getId()+",group=Sessions,sessionId=Session-"+ksession.getIdentifier());
+        this.name = createObjectNameFor(ksession, originReleaseId);
         this.agendaStats = new AgendaStats();
         this.processStats = new ProcessStats();
         this.ksession.addEventListener( agendaStats );
@@ -67,6 +68,12 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
             this.ksession.internalGetProcessRuntime().addEventListener( processStats );
         }
     }
+
+	public static ObjectName createObjectNameFor(InternalWorkingMemory ksession, ReleaseId originReleaseId) {
+		return DroolsManagementAgent.createObjectName(
+				KnowledgeBaseMonitoring.createObjectNameFor(ksession.getKnowledgeBase(), originReleaseId) + 
+				",group=Sessions,sessionId=Session-"+ksession.getIdentifier());
+	}
     
     public void dispose() {
         this.ksession.removeEventListener( agendaStats );

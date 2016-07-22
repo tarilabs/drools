@@ -29,6 +29,7 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.TripleStore;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.Environment;
@@ -132,4 +133,10 @@ public interface InternalKnowledgeBase extends KnowledgeBase {
 
     TypeDeclaration getTypeDeclaration( Class<?> clazz );
     Collection<TypeDeclaration> getTypeDeclarations();
+
+	public ReleaseId getOriginReleaseId();
+	public void setOriginReleaseId(ReleaseId originReleaseId);
+	public ReleaseId getCurrentReleaseId();
+	public void setCurrentReleaseId(ReleaseId currentReleaseId);
+	void initMBeans();
 }

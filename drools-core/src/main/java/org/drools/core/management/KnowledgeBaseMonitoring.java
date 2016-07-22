@@ -53,6 +53,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.management.KieBaseConfigurationMonitorMBean;
 import org.kie.api.management.ObjectTypeNodeMonitorMBean;
 import org.slf4j.Logger;
@@ -114,12 +115,16 @@ public class KnowledgeBaseMonitoring
     // ************************************************************************************************
 
     // Constructor
-    public KnowledgeBaseMonitoring(InternalKnowledgeBase kbase) {
+    public KnowledgeBaseMonitoring(InternalKnowledgeBase kbase, ReleaseId originReleaseId) {
         this.kbase = kbase;
-        this.name = DroolsManagementAgent.createObjectName(KBASE_PREFIX + ":type=" + kbase.getId());
+        this.name = createObjectNameFor(kbase, originReleaseId);
 
         initOpenMBeanInfo();
     }
+
+	public static ObjectName createObjectNameFor(InternalKnowledgeBase kbase, ReleaseId originReleaseId) {
+		return DroolsManagementAgent.createObjectName(KBASE_PREFIX + ":originReleaseId=" + ObjectName.quote(originReleaseId.toString()) + ",kbaseName=" + ObjectName.quote(kbase.getId()));
+	}
 
     /**
      *  Initialize the open mbean metadata
@@ -233,7 +238,7 @@ public class KnowledgeBaseMonitoring
                 ObjectTypeNodeMonitor otnm = new ObjectTypeNodeMonitor( otn );
                 try {
                     final StandardMBean adapter = new StandardMBean(otnm, ObjectTypeNodeMonitorMBean.class);
-                    ObjectName name = DroolsManagementAgent.createObjectName( this.name.getCanonicalName() + ",group=EntryPoints,EntryPoint=" + otnm.getNameSufix() + ",ObjectType=" + ((ClassObjectType) otn.getObjectType()).getClassName() );
+                    ObjectName name = DroolsManagementAgent.createObjectName( this.name.toString() + ",group=EntryPoints,EntryPoint=" + otnm.getNameSufix() + ",ObjectType=" + ((ClassObjectType) otn.getObjectType()).getClassName() );
                     DroolsManagementAgent.getInstance().registerMBean( kbase,
                                                                        adapter,
                                                                        name );
@@ -245,7 +250,7 @@ public class KnowledgeBaseMonitoring
         final KieBaseConfigurationMonitor kbcm = new KieBaseConfigurationMonitor( kbase.getConfiguration() );
         try {
             final StandardMBean adapter = new StandardMBean(kbcm, KieBaseConfigurationMonitorMBean.class);
-            ObjectName name = DroolsManagementAgent.createObjectName( this.name.getCanonicalName() + ",group=Configuration" );
+            ObjectName name = DroolsManagementAgent.createObjectName( this.name.toString() + ",group=Configuration" );
             DroolsManagementAgent.getInstance().registerMBean( kbase,
                                                                adapter,
                                                                name );
