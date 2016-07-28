@@ -21,7 +21,9 @@ import org.drools.compiler.kie.util.ChangeSetBuilder;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
+import org.drools.compiler.management.KieContainerMonitor;
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
@@ -46,6 +48,7 @@ import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieLoggers;
+import org.kie.api.management.ObjectTypeNodeMonitorMBean;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -72,6 +75,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.management.NotCompliantMBeanException;
+import javax.management.ObjectName;
+import javax.management.StandardMBean;
+
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.buildKnowledgePackages;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
 import static org.drools.compiler.kie.util.CDIHelper.wireListnersAndWIHs;
@@ -96,23 +103,44 @@ public class KieContainerImpl
     private ReleaseId originReleaseId;
     private ReleaseId containerReleaseId;
 
+	private String name;
+
     public KieModule getMainKieModule() {
         return kr.getKieModule(getReleaseId());
     }
 
-    public KieContainerImpl(KieProject kProject, KieRepository kr) {
+    public KieContainerImpl(String name, KieProject kProject, KieRepository kr) {
         this.kr = kr;
         this.kProject = kProject;
+        this.name = name;
         kProject.init();
     }
 
-    public KieContainerImpl(KieProject kProject, KieRepository kr, ReleaseId containerReleaseId) {
-        this(kProject, kr);
+    public KieContainerImpl(String name, KieProject kProject, KieRepository kr, ReleaseId containerReleaseId) {
+        this(name, kProject, kr);
         this.originReleaseId = containerReleaseId;
         this.containerReleaseId = containerReleaseId;
+        
+        if ( MBeansOption.isEnabled( System.getProperty( MBeansOption.PROPERTY_NAME, MBeansOption.DISABLED.toString() ) ) ) {
+        	KieContainerMonitor monitor = new KieContainerMonitor(this);
+            ObjectName on = DroolsManagementAgent.createObjectNameByContainerName(name);
+            DroolsManagementAgent.getInstance().registerMBean( this,
+            												   monitor,
+                                                               on );
+        }
     }
+    
+    @Override
+    public String getName() {
+    	return this.name;
+    }
+    
+    @Override
+    public ReleaseId getOriginReleaseId() {
+		return originReleaseId;
+	}
 
-    public ReleaseId getReleaseId() {
+	public ReleaseId getReleaseId() {
         return kProject.getGAV();
     }
 
@@ -521,6 +549,8 @@ public class KieContainerImpl
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( kBaseModel.getName(), conf );
         kBase.setOriginReleaseId(originReleaseId);
         kBase.setCurrentReleaseId(originReleaseId);
+        kBase.setContainerName(name);
+        kBase.initMBeans();
 
         kBase.addKnowledgePackages( pkgs );
         return kBase;

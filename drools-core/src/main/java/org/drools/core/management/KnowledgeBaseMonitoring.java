@@ -76,8 +76,6 @@ public class KnowledgeBaseMonitoring
     private static final String OP_STOP_INTERNAL_MBEANS  = "stopInternalMBeans";
     private static final String OP_START_INTERNAL_MBEANS = "startInternalMBeans";
 
-    private static final String KBASE_PREFIX = "org.drools.kbases";
-
     // ************************************************************************************************
     // MBean attributes
     //
@@ -117,14 +115,10 @@ public class KnowledgeBaseMonitoring
     // Constructor
     public KnowledgeBaseMonitoring(InternalKnowledgeBase kbase) {
         this.kbase = kbase;
-        this.name = createObjectNameFor(kbase);
+        this.name = DroolsManagementAgent.createObjectNameFor(kbase);
 
         initOpenMBeanInfo();
     }
-
-	public static ObjectName createObjectNameFor(InternalKnowledgeBase kbase) {
-		return DroolsManagementAgent.createObjectName(KBASE_PREFIX + ":kbaseName=" + ObjectName.quote(kbase.getId()));
-	}
 
     /**
      *  Initialize the open mbean metadata

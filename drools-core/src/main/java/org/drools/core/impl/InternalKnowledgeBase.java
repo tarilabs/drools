@@ -138,4 +138,8 @@ public interface InternalKnowledgeBase extends KnowledgeBase {
 	void setOriginReleaseId(ReleaseId originReleaseId);
 	ReleaseId getCurrentReleaseId();
 	void setCurrentReleaseId(ReleaseId currentReleaseId);
+	void initMBeans();
+
+	void setContainerName(String name);
+	String getContainerName();
 }

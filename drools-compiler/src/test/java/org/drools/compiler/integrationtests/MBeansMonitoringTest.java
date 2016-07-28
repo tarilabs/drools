@@ -16,7 +16,12 @@
 package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.kie.builder.impl.InternalKieContainer;
+import org.drools.compiler.kie.builder.impl.KieServicesImpl;
 import org.drools.core.ClockType;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.management.DroolsManagementAgent;
+import org.drools.core.management.KnowledgeBaseMonitoring;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -103,7 +108,8 @@ public class MBeansMonitoringTest
 
         KieBase kiebase = kc.getKieBase( KBASE1 );
         MBeanServer mbserver = ManagementFactory.getPlatformMBeanServer();
-        ObjectName kbOn = new ObjectName( "org.drools.kbases:kbaseName=" + ObjectName.quote(KBASE1) );
+        
+        ObjectName kbOn = DroolsManagementAgent.createObjectNameFor((InternalKnowledgeBase) kiebase);
         mbserver.invoke( kbOn, "startInternalMBeans", new Object[0], new String[0] );
 
         Object expOffset = mbserver.getAttribute( new ObjectName( kbOn + ",group=EntryPoints,EntryPoint=DEFAULT,ObjectType=org.drools.compiler.StockTick" ), "ExpirationOffset" );
@@ -111,6 +117,9 @@ public class MBeansMonitoringTest
         
         kc.newKieSession(KSESSION1);
         kiebase.newKieSession();
+        
+        KieContainer kc2 = ((KieServicesImpl) KieServices.Factory.get()).newKieContainer( "Matteo", releaseId1 );
+        kc2.newKieSession(KSESSION1);
         
         Runnable task2 = () -> { System.out.println("Press ENTER to continue: "); Scanner sin = new Scanner(System.in); sin.nextLine(); };
         ExecutorService es = Executors.newCachedThreadPool();

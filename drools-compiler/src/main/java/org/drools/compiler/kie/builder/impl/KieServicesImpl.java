@@ -133,7 +133,7 @@ public class KieServicesImpl implements InternalKieServices {
             // using class lock instead of map, because semantically is not "find a name slot" but creation of the new container yes/no...
     		synchronized ( lock ) {
                 if ( kContainers.get(createContainerWithName) == null ) {
-                    KieContainerImpl newContainer = new KieContainerImpl(new ClasspathKieProject(classLoader, listener), null);
+                    KieContainerImpl newContainer = new KieContainerImpl(createContainerWithName, new ClasspathKieProject(classLoader, listener), null);
                     kContainers.put(createContainerWithName, newContainer);
 					return newContainer;
                 } else {
@@ -181,7 +181,7 @@ public class KieServicesImpl implements InternalKieServices {
             // using class lock instead of map, because semantically is not "find a name slot" but creation of the new container yes/no...
     		synchronized ( lock ) {
                 if ( kContainers.get(createContainerWithName) == null ) {
-                    KieContainerImpl newContainer = new KieContainerImpl( kProject, getRepository(), releaseId );
+                    KieContainerImpl newContainer = new KieContainerImpl( createContainerWithName, kProject, getRepository(), releaseId );
                     kContainers.put(createContainerWithName, newContainer);
 					return newContainer;
                 } else {
