@@ -246,6 +246,8 @@ public class KieContainerImpl
             }
             rebuildAll(newReleaseId, results, newKM, modifyingUsedClass, kieBaseModel, pkgbuilder, ckbuilder);
         }
+        
+        kBase.setCurrentReleaseId(newReleaseId);
 
         for ( InternalWorkingMemory wm : kBase.getWorkingMemories() ) {
             wm.notifyWaitOnRest();
@@ -519,7 +521,6 @@ public class KieContainerImpl
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( kBaseModel.getName(), conf );
         kBase.setOriginReleaseId(originReleaseId);
         kBase.setCurrentReleaseId(originReleaseId);
-        kBase.initMBeans();
 
         kBase.addKnowledgePackages( pkgs );
         return kBase;
@@ -625,7 +626,7 @@ public class KieContainerImpl
         if (isJndiAvailable()) {
             wireListnersAndWIHs( kSessionModel, kSession );
         }
-        registerLoggers(kSessionModel, kSession);  
+        registerLoggers(kSessionModel, kSession);
         kSessions.put(kSessionName, kSession);
         return kSession;
     }

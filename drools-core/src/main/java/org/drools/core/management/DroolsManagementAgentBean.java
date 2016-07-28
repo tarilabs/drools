@@ -38,14 +38,12 @@ public class DroolsManagementAgentBean {
         instance = DroolsManagementAgent.getInstance();
         if (knowledgeBases!= null) {
             for (KnowledgeBase kbase : knowledgeBases) {
-                InternalKnowledgeBase internalKBase = (InternalKnowledgeBase) kbase;
-				instance.registerKnowledgeBase(internalKBase, internalKBase.getOriginReleaseId());
+                instance.registerKnowledgeBase((InternalKnowledgeBase) kbase);
             }
         }
         if (statefulKnowledgeSessions!=null) {
             for (StatefulKnowledgeSession ksession : statefulKnowledgeSessions) {
-                StatefulKnowledgeSessionImpl ksessionImpl = (StatefulKnowledgeSessionImpl)ksession;
-				instance.registerKnowledgeSession(ksessionImpl.getInternalWorkingMemory(), ((InternalKnowledgeBase) ksessionImpl.getKieBase()).getOriginReleaseId());
+                instance.registerKnowledgeSession(((StatefulKnowledgeSessionImpl)ksession).getInternalWorkingMemory());
             }
         }
     }

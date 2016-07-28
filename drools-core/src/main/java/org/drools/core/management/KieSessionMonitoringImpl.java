@@ -21,7 +21,6 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.management.KieSessionMonitoringImpl.AgendaStats.AgendaStatsData;
 import org.drools.core.management.KieSessionMonitoringImpl.ProcessStats.ProcessInstanceStatsData;
 import org.drools.core.management.KieSessionMonitoringImpl.ProcessStats.ProcessStatsData;
-import org.kie.api.builder.ReleaseId;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
@@ -47,8 +46,6 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
 
-    private static final String KSESSION_PREFIX = "org.drools.kbases";
-    
     private static final long NANO_TO_MILLISEC = 1000000;
     
     private InternalWorkingMemory ksession;
@@ -57,10 +54,10 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
     public AgendaStats agendaStats;
     public ProcessStats processStats;
     
-    public KieSessionMonitoringImpl(InternalWorkingMemory ksession, ReleaseId originReleaseId) {
+    public KieSessionMonitoringImpl(InternalWorkingMemory ksession) {
         this.ksession = ksession;
         this.kbase = ksession.getKnowledgeBase();
-        this.name = createObjectNameFor(ksession, originReleaseId);
+        this.name = createObjectNameFor(ksession);
         this.agendaStats = new AgendaStats();
         this.processStats = new ProcessStats();
         this.ksession.addEventListener( agendaStats );
@@ -69,9 +66,9 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
         }
     }
 
-	public static ObjectName createObjectNameFor(InternalWorkingMemory ksession, ReleaseId originReleaseId) {
+	public static ObjectName createObjectNameFor(InternalWorkingMemory ksession) {
 		return DroolsManagementAgent.createObjectName(
-				KnowledgeBaseMonitoring.createObjectNameFor(ksession.getKnowledgeBase(), originReleaseId) + 
+				KnowledgeBaseMonitoring.createObjectNameFor(ksession.getKnowledgeBase()) + 
 				",group=Sessions,sessionId=Session-"+ksession.getIdentifier());
 	}
     

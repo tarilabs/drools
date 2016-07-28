@@ -134,9 +134,8 @@ public interface InternalKnowledgeBase extends KnowledgeBase {
     TypeDeclaration getTypeDeclaration( Class<?> clazz );
     Collection<TypeDeclaration> getTypeDeclarations();
 
-	public ReleaseId getOriginReleaseId();
-	public void setOriginReleaseId(ReleaseId originReleaseId);
-	public ReleaseId getCurrentReleaseId();
-	public void setCurrentReleaseId(ReleaseId currentReleaseId);
-	void initMBeans();
+	ReleaseId getOriginReleaseId();
+	void setOriginReleaseId(ReleaseId originReleaseId);
+	ReleaseId getCurrentReleaseId();
+	void setCurrentReleaseId(ReleaseId currentReleaseId);
 }

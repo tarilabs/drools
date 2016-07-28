@@ -115,15 +115,15 @@ public class KnowledgeBaseMonitoring
     // ************************************************************************************************
 
     // Constructor
-    public KnowledgeBaseMonitoring(InternalKnowledgeBase kbase, ReleaseId originReleaseId) {
+    public KnowledgeBaseMonitoring(InternalKnowledgeBase kbase) {
         this.kbase = kbase;
-        this.name = createObjectNameFor(kbase, originReleaseId);
+        this.name = createObjectNameFor(kbase);
 
         initOpenMBeanInfo();
     }
 
-	public static ObjectName createObjectNameFor(InternalKnowledgeBase kbase, ReleaseId originReleaseId) {
-		return DroolsManagementAgent.createObjectName(KBASE_PREFIX + ":originReleaseId=" + ObjectName.quote(originReleaseId.toString()) + ",kbaseName=" + ObjectName.quote(kbase.getId()));
+	public static ObjectName createObjectNameFor(InternalKnowledgeBase kbase) {
+		return DroolsManagementAgent.createObjectName(KBASE_PREFIX + ":kbaseName=" + ObjectName.quote(kbase.getId()));
 	}
 
     /**

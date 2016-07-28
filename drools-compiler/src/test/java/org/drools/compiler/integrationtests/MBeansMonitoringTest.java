@@ -103,7 +103,7 @@ public class MBeansMonitoringTest
 
         KieBase kiebase = kc.getKieBase( KBASE1 );
         MBeanServer mbserver = ManagementFactory.getPlatformMBeanServer();
-        ObjectName kbOn = new ObjectName( "org.drools.kbases:originReleaseId="+ObjectName.quote(releaseId1.toString())+",kbaseName=" + ObjectName.quote(KBASE1) );
+        ObjectName kbOn = new ObjectName( "org.drools.kbases:kbaseName=" + ObjectName.quote(KBASE1) );
         mbserver.invoke( kbOn, "startInternalMBeans", new Object[0], new String[0] );
 
         Object expOffset = mbserver.getAttribute( new ObjectName( kbOn + ",group=EntryPoints,EntryPoint=DEFAULT,ObjectType=org.drools.compiler.StockTick" ), "ExpirationOffset" );

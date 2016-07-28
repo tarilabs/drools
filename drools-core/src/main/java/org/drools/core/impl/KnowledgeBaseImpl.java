@@ -182,9 +182,7 @@ public class KnowledgeBaseImpl
 
 	private ReleaseId originReleaseId;
 	private ReleaseId currentReleaseId;
-
-	private boolean mbeanRegistered = false;
-
+	
     public KnowledgeBaseImpl() { }
 
     public KnowledgeBaseImpl(final String id,
@@ -217,6 +215,9 @@ public class KnowledgeBaseImpl
         kieComponentFactory.getTripleStore().setId(id);
 
         setupRete();
+        if (config != null && config.isMBeansEnabled()) {
+            DroolsManagementAgent.getInstance().registerKnowledgeBase(this);
+        }
 
         if ( this.config.getSessionCacheOption().isEnabled() ) {
             if ( this.config.isPhreakEnabled() ) {
@@ -226,14 +227,6 @@ public class KnowledgeBaseImpl
             }
         }
     }
-
-    @Override
-	public void initMBeans() {
-		if (config != null && config.isMBeansEnabled() && !mbeanRegistered) {
-            DroolsManagementAgent.getInstance().registerKnowledgeBase(this, originReleaseId);
-            mbeanRegistered = true;
-        }
-	}
 
     public int nextWorkingMemoryCounter() {
         return this.workingMemoryCounter.getAndIncrement();
