@@ -81,7 +81,7 @@ public class DroolsManagementAgent
 
 	public static ObjectName createObjectNameFor(InternalKnowledgeBase kbase) {
 		return DroolsManagementAgent.createObjectName(
-					DroolsManagementAgent.createObjectNameByContainerName(kbase.getContainerName())
+					DroolsManagementAgent.createObjectNameByContainerId(kbase.getContainerId())
 					+ ",kbaseName=" + ObjectName.quote(kbase.getId())
 					);
 	}
@@ -92,8 +92,8 @@ public class DroolsManagementAgent
 				",group=Sessions,sessionId=Session-"+ksession.getIdentifier());
 	}
 	
-	public static ObjectName createObjectNameByContainerName(String containerName) {
-		return DroolsManagementAgent.createObjectName(CONTAINER_NAME_PREFIX + ":kContainer="+ObjectName.quote(containerName));
+	public static ObjectName createObjectNameByContainerId(String containerId) {
+		return DroolsManagementAgent.createObjectName(CONTAINER_NAME_PREFIX + ":kContainer="+ObjectName.quote(containerId));
 	}
 
     /* (non-Javadoc)

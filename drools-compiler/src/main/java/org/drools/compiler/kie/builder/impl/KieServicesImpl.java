@@ -85,20 +85,20 @@ public class KieServicesImpl implements InternalKieServices {
     	return getKieClasspathContainer( null, classLoader );
     }
     
-    public KieContainer getKieClasspathContainer(String name) {
-        return getKieClasspathContainer( name, findParentClassLoader() );
+    public KieContainer getKieClasspathContainer(String containerId) {
+        return getKieClasspathContainer( containerId, findParentClassLoader() );
     }
 
-    public KieContainer getKieClasspathContainer(String name, ClassLoader classLoader) {
+    public KieContainer getKieClasspathContainer(String containerId, ClassLoader classLoader) {
         if ( classpathKContainer == null ) {
             // these are heavy to create, don't want to end up with two
             synchronized ( lock ) {
                 if ( classpathKContainer == null ) {
                     classpathClassLoader = classLoader;
-                    if (name == null) {
+                    if (containerId == null) {
                     	classpathKContainerName = UUID.randomUUID().toString();
                     } else {
-                    	classpathKContainerName = name;
+                    	classpathKContainerName = containerId;
                     }
                     classpathKContainer = newKieClasspathContainer(classpathKContainerName, classLoader);
                 } else if (classLoader != classpathClassLoader) {
@@ -120,28 +120,28 @@ public class KieServicesImpl implements InternalKieServices {
     	return newKieClasspathContainer( null, classLoader );
     }
     
-    public KieContainer newKieClasspathContainer(String name) {
-        return newKieClasspathContainer( name, findParentClassLoader() );
+    public KieContainer newKieClasspathContainer(String containerId) {
+        return newKieClasspathContainer( containerId, findParentClassLoader() );
     }
 
-    public KieContainer newKieClasspathContainer(String name, ClassLoader classLoader) {
-    	String createContainerWithName = name;
-    	if (createContainerWithName == null) {
-    		createContainerWithName = UUID.randomUUID().toString();
+    public KieContainer newKieClasspathContainer(String containerId, ClassLoader classLoader) {
+    	String createContainerWithId = containerId;
+    	if (createContainerWithId == null) {
+    		createContainerWithId = UUID.randomUUID().toString();
     	}
-    	if ( kContainers.get(createContainerWithName) == null ) {
-            // using class lock instead of map, because semantically is not "find a name slot" but creation of the new container yes/no...
+    	if ( kContainers.get(createContainerWithId) == null ) {
+            // using class lock instead of map to synchronize on, because semantically is not "find a name slot" but creation of the new container yes/no...
     		synchronized ( lock ) {
-                if ( kContainers.get(createContainerWithName) == null ) {
-                    KieContainerImpl newContainer = new KieContainerImpl(createContainerWithName, new ClasspathKieProject(classLoader, listener), null);
-                    kContainers.put(createContainerWithName, newContainer);
+                if ( kContainers.get(createContainerWithId) == null ) {
+                    KieContainerImpl newContainer = new KieContainerImpl(createContainerWithId, new ClasspathKieProject(classLoader, listener), null);
+                    kContainers.put(createContainerWithId, newContainer);
 					return newContainer;
                 } else {
-                	throw new IllegalStateException("There's already another KieContainer created with the name "+createContainerWithName);
+                	throw new IllegalStateException("There's already another KieContainer created with the id "+createContainerWithId);
                 }
             }
         } else {
-            throw new IllegalStateException("There's already another KieContainer created with the name "+createContainerWithName);
+            throw new IllegalStateException("There's already another KieContainer created with the id "+createContainerWithId);
         }
     }
 
@@ -158,38 +158,38 @@ public class KieServicesImpl implements InternalKieServices {
         return newKieContainer(null, releaseId, null);
     }
     
-    public KieContainer newKieContainer(String name, ReleaseId releaseId) {
-        return newKieContainer(name, releaseId, null);
+    public KieContainer newKieContainer(String containerId, ReleaseId releaseId) {
+        return newKieContainer(containerId, releaseId, null);
     }
     
     public KieContainer newKieContainer(ReleaseId releaseId, ClassLoader classLoader) {
     	return newKieContainer(null, releaseId, classLoader);
     }
 
-    public KieContainer newKieContainer(String name, ReleaseId releaseId, ClassLoader classLoader) {
+    public KieContainer newKieContainer(String containerId, ReleaseId releaseId, ClassLoader classLoader) {
         InternalKieModule kieModule = (InternalKieModule) getRepository().getKieModule(releaseId);
         if (kieModule == null) {
             throw new RuntimeException("Cannot find KieModule: " + releaseId);
         }
         KieProject kProject = new KieModuleKieProject( kieModule, classLoader );
 
-        String createContainerWithName = name;
-    	if (createContainerWithName == null) {
-    		createContainerWithName = UUID.randomUUID().toString();
+        String createContainerWithId = containerId;
+    	if (createContainerWithId == null) {
+    		createContainerWithId = UUID.randomUUID().toString();
     	}
-    	if ( kContainers.get(createContainerWithName) == null ) {
-            // using class lock instead of map, because semantically is not "find a name slot" but creation of the new container yes/no...
+    	if ( kContainers.get(createContainerWithId) == null ) {
+    		// using class lock instead of map to synchronize on, because semantically is not "find a name slot" but creation of the new container yes/no...
     		synchronized ( lock ) {
-                if ( kContainers.get(createContainerWithName) == null ) {
-                    KieContainerImpl newContainer = new KieContainerImpl( createContainerWithName, kProject, getRepository(), releaseId );
-                    kContainers.put(createContainerWithName, newContainer);
+                if ( kContainers.get(createContainerWithId) == null ) {
+                    KieContainerImpl newContainer = new KieContainerImpl( createContainerWithId, kProject, getRepository(), releaseId );
+                    kContainers.put(createContainerWithId, newContainer);
 					return newContainer;
                 } else {
-                	throw new IllegalStateException("There's already another KieContainer created with the name "+createContainerWithName);
+                	throw new IllegalStateException("There's already another KieContainer created with the id "+createContainerWithId);
                 }
             }
         } else {
-            throw new IllegalStateException("There's already another KieContainer created with the name "+createContainerWithName);
+            throw new IllegalStateException("There's already another KieContainer created with the id "+createContainerWithId);
         }
     }
     

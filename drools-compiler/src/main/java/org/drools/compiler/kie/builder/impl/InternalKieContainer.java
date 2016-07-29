@@ -62,7 +62,7 @@ public interface InternalKieContainer extends KieContainer {
      */
     KieModule getMainKieModule();
 
-	String getName();
+	String getContainerId();
 
 	ReleaseId getOriginReleaseId();
 

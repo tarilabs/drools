@@ -11,7 +11,7 @@ public interface KieContainerMonitorMXBean {
 	
 	ReleaseId getContainerReleaseId();
 
-	String getName();
+	String getContainerId();
 	
 	ReleaseId getOriginReleaseId();
 }

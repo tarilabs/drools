@@ -16,8 +16,8 @@ public class KieContainerMonitor implements KieContainerMonitorMXBean {
 	}
 
 	@Override
-	public String getName() {
-		return kieContainer.getName();
+	public String getContainerId() {
+		return kieContainer.getContainerId();
 	}
 
 	@Override

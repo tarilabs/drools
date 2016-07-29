@@ -183,7 +183,7 @@ public class KnowledgeBaseImpl
 	private ReleaseId originReleaseId;
 	private ReleaseId currentReleaseId;
 	private boolean mbeanRegistered = false;
-	private String containerName;
+	private String containerId;
 
     public KnowledgeBaseImpl() { }
 
@@ -1949,13 +1949,13 @@ public class KnowledgeBaseImpl
 	}
 
     @Override
-	public String getContainerName() {
-		return containerName;
+	public String getContainerId() {
+		return containerId;
 	}
 
     @Override
-	public void setContainerName(String containerName) {
-		this.containerName = containerName;
+	public void setContainerId(String containerId) {
+		this.containerId = containerId;
 	}
 
 

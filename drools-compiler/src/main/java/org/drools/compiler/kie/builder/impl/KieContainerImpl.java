@@ -103,27 +103,27 @@ public class KieContainerImpl
     private ReleaseId originReleaseId;
     private ReleaseId containerReleaseId;
 
-	private String name;
+	private String containerId;
 
     public KieModule getMainKieModule() {
         return kr.getKieModule(getReleaseId());
     }
 
-    public KieContainerImpl(String name, KieProject kProject, KieRepository kr) {
+    public KieContainerImpl(String containerId, KieProject kProject, KieRepository kr) {
         this.kr = kr;
         this.kProject = kProject;
-        this.name = name;
+        this.containerId = containerId;
         kProject.init();
     }
 
-    public KieContainerImpl(String name, KieProject kProject, KieRepository kr, ReleaseId containerReleaseId) {
-        this(name, kProject, kr);
+    public KieContainerImpl(String containerId, KieProject kProject, KieRepository kr, ReleaseId containerReleaseId) {
+        this(containerId, kProject, kr);
         this.originReleaseId = containerReleaseId;
         this.containerReleaseId = containerReleaseId;
         
         if ( MBeansOption.isEnabled( System.getProperty( MBeansOption.PROPERTY_NAME, MBeansOption.DISABLED.toString() ) ) ) {
         	KieContainerMonitor monitor = new KieContainerMonitor(this);
-            ObjectName on = DroolsManagementAgent.createObjectNameByContainerName(name);
+            ObjectName on = DroolsManagementAgent.createObjectNameByContainerId(containerId);
             DroolsManagementAgent.getInstance().registerMBean( this,
             												   monitor,
                                                                on );
@@ -131,8 +131,8 @@ public class KieContainerImpl
     }
     
     @Override
-    public String getName() {
-    	return this.name;
+    public String getContainerId() {
+    	return this.containerId;
     }
     
     @Override
@@ -549,7 +549,7 @@ public class KieContainerImpl
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( kBaseModel.getName(), conf );
         kBase.setOriginReleaseId(originReleaseId);
         kBase.setCurrentReleaseId(originReleaseId);
-        kBase.setContainerName(name);
+        kBase.setContainerId(containerId);
         kBase.initMBeans();
 
         kBase.addKnowledgePackages( pkgs );
