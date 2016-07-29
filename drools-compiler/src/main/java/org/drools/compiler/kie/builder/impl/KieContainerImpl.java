@@ -100,7 +100,7 @@ public class KieContainerImpl
 
     private final KieRepository        kr;
 
-    private ReleaseId originReleaseId;
+    private ReleaseId configuredReleaseId;
     private ReleaseId containerReleaseId;
 
 	private String containerId;
@@ -118,7 +118,7 @@ public class KieContainerImpl
 
     public KieContainerImpl(String containerId, KieProject kProject, KieRepository kr, ReleaseId containerReleaseId) {
         this(containerId, kProject, kr);
-        this.originReleaseId = containerReleaseId;
+        this.configuredReleaseId = containerReleaseId;
         this.containerReleaseId = containerReleaseId;
         
         if ( MBeansOption.isEnabled( System.getProperty( MBeansOption.PROPERTY_NAME, MBeansOption.DISABLED.toString() ) ) ) {
@@ -136,8 +136,13 @@ public class KieContainerImpl
     }
     
     @Override
-    public ReleaseId getOriginReleaseId() {
-		return originReleaseId;
+    public ReleaseId getConfiguredReleaseId() {
+		return configuredReleaseId;
+	}
+    
+	@Override
+	public ReleaseId getResolvedReleaseId() {
+		return containerReleaseId != null ? containerReleaseId : getReleaseId();
 	}
 
 	public ReleaseId getReleaseId() {
@@ -152,6 +157,7 @@ public class KieContainerImpl
         return kProject.getCreationTimestamp();
     }
 
+    @Deprecated
     public ReleaseId getContainerReleaseId() {
         return containerReleaseId != null ? containerReleaseId : getReleaseId();
     }
@@ -547,8 +553,8 @@ public class KieContainerImpl
             ((RuleBaseConfiguration)conf).setClassLoader(cl);
         }
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( kBaseModel.getName(), conf );
-        kBase.setOriginReleaseId(originReleaseId);
-        kBase.setCurrentReleaseId(originReleaseId);
+        kBase.setOriginReleaseId(configuredReleaseId);
+        kBase.setCurrentReleaseId(configuredReleaseId);
         kBase.setContainerId(containerId);
         kBase.initMBeans();
 

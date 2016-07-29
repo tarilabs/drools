@@ -7,11 +7,18 @@ import org.kie.api.builder.ReleaseId;
  * 
  */
 public interface KieContainerMonitorMXBean {
-	
-	
-	ReleaseId getContainerReleaseId();
 
 	String getContainerId();
-	
-	ReleaseId getOriginReleaseId();
+	/**
+	 * The RelaseId configured while creating the Kiecontainer.
+	 * @return
+	 */
+	ReleaseId getConfiguredReleaseId();
+	String getConfiguredReleaseIdStr();
+	/**
+	 * The actual resolved ReleaseId. 
+	 * @return
+	 */
+	ReleaseId getResolvedReleaseId();
+	String getResolvedReleaseIdStr();
 }

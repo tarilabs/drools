@@ -11,17 +11,27 @@ public class KieContainerMonitor implements KieContainerMonitorMXBean {
 	}
 
 	@Override
-	public ReleaseId getContainerReleaseId() {
-		return kieContainer.getContainerReleaseId();
-	}
-
-	@Override
 	public String getContainerId() {
 		return kieContainer.getContainerId();
 	}
 
 	@Override
-	public ReleaseId getOriginReleaseId() {
-		return kieContainer.getOriginReleaseId();
+	public ReleaseId getConfiguredReleaseId() {
+		return kieContainer.getConfiguredReleaseId();
+	}
+
+	@Override
+	public ReleaseId getResolvedReleaseId() {
+		return kieContainer.getResolvedReleaseId();
+	}
+
+	@Override
+	public String getConfiguredReleaseIdStr() {
+		return getConfiguredReleaseId().toString();
+	}
+
+	@Override
+	public String getResolvedReleaseIdStr() {
+		return getResolvedReleaseId().toString();
 	}
 }

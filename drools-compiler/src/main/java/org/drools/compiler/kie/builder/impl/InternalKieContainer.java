@@ -49,6 +49,11 @@ public interface InternalKieContainer extends KieContainer {
      */
     void dispose();
 
+    /**
+     * 
+     * @deprecated use getResolvedReleaseId() instead.
+     */
+    @Deprecated
     ReleaseId getContainerReleaseId();
 
     long getCreationTimestamp();
@@ -63,7 +68,16 @@ public interface InternalKieContainer extends KieContainer {
     KieModule getMainKieModule();
 
 	String getContainerId();
-
-	ReleaseId getOriginReleaseId();
+	
+	/**
+	 * The RelaseId configured while creating the Kiecontainer.
+	 * @return
+	 */
+	ReleaseId getConfiguredReleaseId();
+	/**
+	 * The actual resolved ReleaseId. 
+	 * @return
+	 */
+	ReleaseId getResolvedReleaseId();
 
 }
