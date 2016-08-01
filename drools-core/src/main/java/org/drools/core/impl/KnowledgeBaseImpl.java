@@ -502,6 +502,8 @@ public class KnowledgeBaseImpl
         this.reteooBuilder = (ReteooBuilder) droolsStream.readObject();
         this.reteooBuilder.setRuleBase(this);
         this.rete = (Rete) droolsStream.readObject();
+        
+        this.resolvedReleaseId = (ReleaseId) droolsStream.readObject();
 
         if (!isDrools) {
             droolsStream.close();
@@ -550,6 +552,8 @@ public class KnowledgeBaseImpl
 
         droolsStream.writeObject(this.reteooBuilder);
         droolsStream.writeObject(this.rete);
+        
+        droolsStream.writeObject(this.resolvedReleaseId);
 
         if (!isDrools) {
             droolsStream.flush();
