@@ -553,8 +553,7 @@ public class KieContainerImpl
             ((RuleBaseConfiguration)conf).setClassLoader(cl);
         }
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( kBaseModel.getName(), conf );
-        kBase.setOriginReleaseId(configuredReleaseId);
-        kBase.setCurrentReleaseId(configuredReleaseId);
+        kBase.setCurrentReleaseId(containerReleaseId);
         kBase.setContainerId(containerId);
         kBase.initMBeans();
 

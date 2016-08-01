@@ -180,7 +180,6 @@ public class KnowledgeBaseImpl
 
     private transient AtomicInteger sessionDeactivationsCounter = new AtomicInteger();
 
-	private ReleaseId originReleaseId;
 	private ReleaseId currentReleaseId;
 	private boolean mbeanRegistered = false;
 	private String containerId;
@@ -1927,16 +1926,6 @@ public class KnowledgeBaseImpl
         }
         return modified;
     }
-    
-    @Override
-	public ReleaseId getOriginReleaseId() {
-		return originReleaseId;
-	}
-
-    @Override
-	public void setOriginReleaseId(ReleaseId originReleaseId) {
-		this.originReleaseId = originReleaseId;
-	}
 
     @Override
 	public ReleaseId getCurrentReleaseId() {
