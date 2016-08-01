@@ -142,7 +142,7 @@ public class KieContainerImpl
     
 	@Override
 	public ReleaseId getResolvedReleaseId() {
-		return containerReleaseId != null ? containerReleaseId : getReleaseId();
+		return getReleaseId();
 	}
 
 	public ReleaseId getReleaseId() {
@@ -157,7 +157,7 @@ public class KieContainerImpl
         return kProject.getCreationTimestamp();
     }
 
-    @Deprecated
+    @Override
     public ReleaseId getContainerReleaseId() {
         return containerReleaseId != null ? containerReleaseId : getReleaseId();
     }
@@ -281,7 +281,7 @@ public class KieContainerImpl
             rebuildAll(newReleaseId, results, newKM, modifyingUsedClass, kieBaseModel, pkgbuilder, ckbuilder);
         }
         
-        kBase.setCurrentReleaseId(newReleaseId);
+        kBase.setResolvedReleaseId(newReleaseId);
 
         for ( InternalWorkingMemory wm : kBase.getWorkingMemories() ) {
             wm.notifyWaitOnRest();
@@ -553,7 +553,7 @@ public class KieContainerImpl
             ((RuleBaseConfiguration)conf).setClassLoader(cl);
         }
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( kBaseModel.getName(), conf );
-        kBase.setCurrentReleaseId(containerReleaseId);
+        kBase.setResolvedReleaseId(containerReleaseId);
         kBase.setContainerId(containerId);
         kBase.initMBeans();
 

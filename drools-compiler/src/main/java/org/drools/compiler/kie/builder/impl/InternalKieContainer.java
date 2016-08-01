@@ -50,10 +50,12 @@ public interface InternalKieContainer extends KieContainer {
     void dispose();
 
     /**
-     * 
-     * @deprecated use getResolvedReleaseId() instead.
+     * Internal use: returns the RelaseId configured while creating the Kiecontainer, 
+     * or alternatively if the RelaseId was NOT configured while creating the Kiecontainer,
+     * returns the the ReleaseId of the KieModule wrapped by this KieContainer.
+     * @see org.drools.compiler.kie.builder.impl.KieContainerImpl#KieContainerImpl(String, KieProject, org.kie.api.builder.KieRepository, ReleaseId)
+     * @see org.kie.api.runtime.KieContainer#getReleaseId()
      */
-    @Deprecated
     ReleaseId getContainerReleaseId();
 
     long getCreationTimestamp();
@@ -74,6 +76,7 @@ public interface InternalKieContainer extends KieContainer {
 	 * @return
 	 */
 	ReleaseId getConfiguredReleaseId();
+	
 	/**
 	 * The actual resolved ReleaseId. 
 	 * @return
