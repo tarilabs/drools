@@ -3,8 +3,6 @@ package org.drools.compiler.integrationtests;
 import static org.drools.compiler.integrationtests.incrementalcompilation.IncrementalCompilationTest.createAndDeployJar;
 import static org.junit.Assert.*;
 
-import org.drools.compiler.kie.builder.impl.InternalKieContainer;
-import org.drools.compiler.kie.builder.impl.InternalKieServices;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieServicesImpl;
 import org.junit.After;
