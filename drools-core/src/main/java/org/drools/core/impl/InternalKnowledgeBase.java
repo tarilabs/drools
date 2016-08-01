@@ -134,10 +134,10 @@ public interface InternalKnowledgeBase extends KnowledgeBase {
     TypeDeclaration getTypeDeclaration( Class<?> clazz );
     Collection<TypeDeclaration> getTypeDeclarations();
 
-	ReleaseId getCurrentReleaseId();
-	void setCurrentReleaseId(ReleaseId currentReleaseId);
+	ReleaseId getResolvedReleaseId();
+	void setResolvedReleaseId(ReleaseId currentReleaseId);
+	String getContainerId();
+	void setContainerId(String containerId);
 	void initMBeans();
 
-	void setContainerId(String containerId);
-	String getContainerId();
 }
