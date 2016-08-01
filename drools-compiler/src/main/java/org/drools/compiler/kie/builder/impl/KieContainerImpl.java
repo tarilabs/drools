@@ -15,6 +15,24 @@
 
 package org.drools.compiler.kie.builder.impl;
 
+import static org.drools.compiler.kie.builder.impl.AbstractKieModule.buildKnowledgePackages;
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
+import static org.drools.compiler.kie.util.CDIHelper.wireListnersAndWIHs;
+import static org.drools.core.util.ClassUtils.convertResourceToClassName;
+import static org.drools.core.util.Drools.isJndiAvailable;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.management.ObjectName;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.kie.util.ChangeSetBuilder;
@@ -23,7 +41,6 @@ import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.drools.compiler.management.KieContainerMonitor;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
@@ -48,7 +65,6 @@ import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieLoggers;
-import org.kie.api.management.ObjectTypeNodeMonitorMBean;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -64,26 +80,6 @@ import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.definition.KnowledgePackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.management.NotCompliantMBeanException;
-import javax.management.ObjectName;
-import javax.management.StandardMBean;
-
-import static org.drools.compiler.kie.builder.impl.AbstractKieModule.buildKnowledgePackages;
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
-import static org.drools.compiler.kie.util.CDIHelper.wireListnersAndWIHs;
-import static org.drools.core.util.ClassUtils.convertResourceToClassName;
-import static org.drools.core.util.Drools.isJndiAvailable;
 
 public class KieContainerImpl
     implements
@@ -121,14 +117,16 @@ public class KieContainerImpl
         this.configuredReleaseId = containerReleaseId;
         this.containerReleaseId = containerReleaseId;
         
-        if ( MBeansOption.isEnabled( System.getProperty( MBeansOption.PROPERTY_NAME, MBeansOption.DISABLED.toString() ) ) ) {
+        initMBeans(containerId);
+    }
+
+	private void initMBeans(String containerId) {
+		if ( MBeansOption.isEnabled( System.getProperty( MBeansOption.PROPERTY_NAME, MBeansOption.DISABLED.toString() ) ) ) {
         	KieContainerMonitor monitor = new KieContainerMonitor(this);
             ObjectName on = DroolsManagementAgent.createObjectNameByContainerId(containerId);
-            DroolsManagementAgent.getInstance().registerMBean( this,
-            												   monitor,
-                                                               on );
+            DroolsManagementAgent.getInstance().registerMBean( this, monitor, on );
         }
-    }
+	}
     
     @Override
     public String getContainerId() {
@@ -741,6 +739,7 @@ public class KieContainerImpl
         }
         kSessions.clear();
         statelessKSessions.clear();
+        ((InternalKieServices) KieServices.Factory.get()).clearRefToContainerId(this.containerId);
     }
 
     public KieProject getKieProject() {

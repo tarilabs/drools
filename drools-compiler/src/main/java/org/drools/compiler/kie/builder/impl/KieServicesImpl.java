@@ -60,7 +60,7 @@ import static org.drools.core.common.ProjectClassLoader.findParentClassLoader;
 
 public class KieServicesImpl implements InternalKieServices {
     private volatile KieContainer classpathKContainer;
-    private volatile String classpathKContainerName;
+    private volatile String classpathKContainerId;
     
     private volatile ClassLoader classpathClassLoader;
 
@@ -96,11 +96,11 @@ public class KieServicesImpl implements InternalKieServices {
                 if ( classpathKContainer == null ) {
                     classpathClassLoader = classLoader;
                     if (containerId == null) {
-                    	classpathKContainerName = UUID.randomUUID().toString();
+                    	classpathKContainerId = UUID.randomUUID().toString();
                     } else {
-                    	classpathKContainerName = containerId;
+                    	classpathKContainerId = containerId;
                     }
-                    classpathKContainer = newKieClasspathContainer(classpathKContainerName, classLoader);
+                    classpathKContainer = newKieClasspathContainer(classpathKContainerId, classLoader);
                 } else if (classLoader != classpathClassLoader) {
                     throw new IllegalStateException("There's already another KieContainer created from a different ClassLoader");
                 }
@@ -109,6 +109,10 @@ public class KieServicesImpl implements InternalKieServices {
             throw new IllegalStateException("There's already another KieContainer created from a different ClassLoader");
         }
 
+        if (containerId != null && !classpathKContainerId.equals(containerId)) {
+        	throw new IllegalStateException("The default global singletong KieClasspathContainer was already created with id "+classpathKContainerId);
+        }
+        
         return classpathKContainer;
     }
 
@@ -149,12 +153,28 @@ public class KieServicesImpl implements InternalKieServices {
         // used for testing only
         synchronized ( lock ) {
             classpathKContainer = null;
-            classpathKContainerName = null;
+            classpathKContainerId = null;
             classpathClassLoader = null;
         }  
     }
     
-    public KieContainer newKieContainer(ReleaseId releaseId) {
+    /**
+     * Voids the internal map of containerId (s) used for handling reference and unique checks. This method is intended for use in unit test only.
+     */
+    public void nullAllContainerIds() {
+    	synchronized ( lock ) {
+    		kContainers.clear();
+    	}
+    }
+    
+    @Override
+	public void clearRefToContainerId(String containerId) {
+    	synchronized ( lock ) {
+    		kContainers.remove(containerId);
+    	}
+	}
+
+	public KieContainer newKieContainer(ReleaseId releaseId) {
         return newKieContainer(null, releaseId, null);
     }
     

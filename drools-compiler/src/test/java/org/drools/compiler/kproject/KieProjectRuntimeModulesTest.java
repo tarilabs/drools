@@ -34,6 +34,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.UUID;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 import static org.junit.Assert.assertEquals;
@@ -88,7 +89,8 @@ public class KieProjectRuntimeModulesTest extends AbstractKnowledgeTest {
 
         KieModuleKieProject kProject = new KieModuleKieProject(mod1);
         
-        KieContainer kContainer = new KieContainerImpl( kProject,
+        KieContainer kContainer = new KieContainerImpl( UUID.randomUUID().toString(),
+        												kProject,
                                                         null );
 
         KieBase kBase = kContainer.getKieBase( "jar1.KBase1" );

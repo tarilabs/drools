@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.UUID;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
@@ -111,7 +112,7 @@ public class KieModuleRepoTest {
         kieModuleRepoField.setAccessible(false);
 
         // kie container
-        KieContainerImpl kieContainerImpl = new KieContainerImpl(mockKieProject, kieRepository);
+        KieContainerImpl kieContainerImpl = new KieContainerImpl(UUID.randomUUID().toString(), mockKieProject, kieRepository);
         return kieContainerImpl;
     }
 

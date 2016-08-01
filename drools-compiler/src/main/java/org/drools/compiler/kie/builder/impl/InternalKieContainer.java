@@ -71,6 +71,10 @@ public interface InternalKieContainer extends KieContainer {
      */
     KieModule getMainKieModule();
 
+    /**
+     * Returns the unique ID assigned to the container.
+     * @return the unique ID assigned to the container.
+     */
 	String getContainerId();
 	
 	/**
