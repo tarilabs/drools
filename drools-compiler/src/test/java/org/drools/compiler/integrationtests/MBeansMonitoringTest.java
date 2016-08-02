@@ -164,7 +164,6 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
     	assertEquals(ks.newReleaseId("org.kie.test", "mbeans", "RELEASE" ).toExternalForm(), c2Monitor.getConfiguredReleaseId().toExternalForm());
     	assertEquals(releaseId1.toExternalForm()                                           , c2Monitor.getResolvedReleaseId().toExternalForm());
     	
-    	blockOnSystemINforENTER();
     }
     
     /**
