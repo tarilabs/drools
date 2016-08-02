@@ -146,6 +146,7 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
     	kc2.newKieSession(KSESSION1);
     	
     	MBeanServer mbserver = ManagementFactory.getPlatformMBeanServer();
+    	// with deserialization JMX on ReleaseId I can avoid this "reflection way" of accessing the mbean complex CompositeData types..
 //    	CompositeData res1 = (CompositeData) mbserver.getAttribute(DroolsManagementAgent.createObjectNameByContainerId(kc1ID), "ResolvedReleaseId");
 //    	System.out.println(res1);
 //    	System.out.println(res1.get("version"));
@@ -161,7 +162,7 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
     			DroolsManagementAgent.createObjectNameByContainerId("Matteo"),
     	        KieContainerMonitorMXBean.class);
     	assertEquals(ks.newReleaseId("org.kie.test", "mbeans", "RELEASE" ).toExternalForm(), c2Monitor.getConfiguredReleaseId().toExternalForm());
-    	assertEquals(releaseId1.toExternalForm(), c2Monitor.getResolvedReleaseId().toExternalForm());
+    	assertEquals(releaseId1.toExternalForm()                                           , c2Monitor.getResolvedReleaseId().toExternalForm());
     	
     	blockOnSystemINforENTER();
     }
