@@ -154,15 +154,15 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
     			mbserver,
     			DroolsManagementAgent.createObjectNameByContainerId(kc1ID),
     	        KieContainerMonitorMXBean.class);
-    	assertEquals(releaseId1.toExternalForm(), c1Monitor.getConfiguredReleaseId().toExternalForm());
-    	assertEquals(releaseId1.toExternalForm(), c1Monitor.getResolvedReleaseId().toExternalForm());
+    	assertEquals(releaseId1.toExternalForm(), c1Monitor.getConfiguredReleaseIdStr());
+    	assertEquals(releaseId1.toExternalForm(), c1Monitor.getResolvedReleaseIdStr());
     	
     	KieContainerMonitorMXBean c2Monitor = JMX.newMXBeanProxy(
     			mbserver,
     			DroolsManagementAgent.createObjectNameByContainerId("Matteo"),
     	        KieContainerMonitorMXBean.class);
-    	assertEquals(ks.newReleaseId("org.kie.test", "mbeans", "RELEASE" ).toExternalForm(), c2Monitor.getConfiguredReleaseId().toExternalForm());
-    	assertEquals(releaseId1.toExternalForm()                                           , c2Monitor.getResolvedReleaseId().toExternalForm());
+    	assertEquals(ks.newReleaseId("org.kie.test", "mbeans", "RELEASE" ).toExternalForm(), c2Monitor.getConfiguredReleaseIdStr());
+    	assertEquals(releaseId1.toExternalForm()                                           , c2Monitor.getResolvedReleaseIdStr());
     	
     }
     
