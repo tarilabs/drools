@@ -41,7 +41,7 @@ public class DroolsManagementAgent
     implements
     KieManagementAgentMBean {
 
-    private static final String           MBEAN_NAME = "org.drools:type=DroolsManagementAgent";
+    private static final String           MBEAN_NAME = "org.kie:type=DroolsManagementAgent";
 
 	private static final String CONTAINER_NAME_PREFIX = "org.kie";
 	
