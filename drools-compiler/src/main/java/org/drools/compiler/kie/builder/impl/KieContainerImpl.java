@@ -739,7 +739,7 @@ public class KieContainerImpl
         }
         kSessions.clear();
         statelessKSessions.clear();
-        ((InternalKieServices) KieServices.Factory.get()).clearRefToContainerId(this.containerId);
+        ((InternalKieServices) KieServices.Factory.get()).clearRefToContainerId(this.containerId, this);
     }
 
     public KieProject getKieProject() {
