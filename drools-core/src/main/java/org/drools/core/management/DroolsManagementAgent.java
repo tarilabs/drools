@@ -82,18 +82,18 @@ public class DroolsManagementAgent
 	public static ObjectName createObjectNameFor(InternalKnowledgeBase kbase) {
 		return DroolsManagementAgent.createObjectName(
 					DroolsManagementAgent.createObjectNameByContainerId(kbase.getContainerId())
-					+ ",kbaseName=" + ObjectName.quote(kbase.getId())
+					+ ",kbaseId=" + ObjectName.quote(kbase.getId())
 					);
 	}
 	
 	public static ObjectName createObjectNameFor(InternalWorkingMemory ksession) {
 		return DroolsManagementAgent.createObjectName(
 				DroolsManagementAgent.createObjectNameFor(ksession.getKnowledgeBase()) + 
-				",group=Sessions,sessionId=Session-"+ksession.getIdentifier());
+				",group=Sessions,ksessionId=Session-"+ksession.getIdentifier());
 	}
 	
 	public static ObjectName createObjectNameByContainerId(String containerId) {
-		return DroolsManagementAgent.createObjectName(CONTAINER_NAME_PREFIX + ":kContainer="+ObjectName.quote(containerId));
+		return DroolsManagementAgent.createObjectName(CONTAINER_NAME_PREFIX + ":kcontainerId="+ObjectName.quote(containerId));
 	}
 
     /* (non-Javadoc)
