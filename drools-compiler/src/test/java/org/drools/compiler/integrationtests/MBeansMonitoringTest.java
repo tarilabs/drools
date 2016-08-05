@@ -36,6 +36,8 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.MBeansOption;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.management.*;
 import javax.management.openmbean.CompositeData;
@@ -47,6 +49,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MBeansMonitoringTest extends CommonTestMethodBase {
+	public static Logger LOG = LoggerFactory.getLogger(MBeansMonitoringTest.class);
 
     public static final String KSESSION1 = "KSession1";
 	public static final String KBASE1 = "KBase1";
@@ -164,12 +167,16 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
     	assertEquals(ks.newReleaseId("org.kie.test", "mbeans", "RELEASE" ).toExternalForm(), c2Monitor.getConfiguredReleaseIdStr());
     	assertEquals(releaseId1.toExternalForm()                                           , c2Monitor.getResolvedReleaseIdStr());
     	
+    	blockOnSystemINforENTER();
     }
     
     /**
      * Utility method to add locally in test methods so to deliberately block on system.in, allowing time to use jvisualvm to inspecti the JMX manually.
      */
     public static void blockOnSystemINforENTER() throws Exception {
+    	System.err.println("***MATTEO***");
+    	System.out.println("***MATTEO***");
+    	LOG.error("***MATTEO***");
     	Runnable task2 = new Runnable() {
 			@Override
 			public void run() { System.out.println("Press ENTER to continue: "); Scanner sin = new Scanner(System.in); sin.nextLine(); }
