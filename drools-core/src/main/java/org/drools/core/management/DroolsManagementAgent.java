@@ -156,7 +156,7 @@ public class DroolsManagementAgent
                                 mbl );
                 }
                 mbl.add( name );
-                logger.info( "Registered " + name + " into the platform MBean Server");
+                logger.debug( "Registered {} into the platform MBean Server", name );
             }
         } catch ( Exception e ) {
             logger.error( "Unable to register mbean " + name + " into the platform MBean Server", e );
