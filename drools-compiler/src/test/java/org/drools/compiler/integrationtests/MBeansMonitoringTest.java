@@ -17,7 +17,6 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.kie.builder.impl.InternalKieContainer;
-import org.drools.compiler.management.KieContainerMonitor;
 import org.drools.compiler.management.KieContainerMonitorMXBean;
 import org.drools.core.ClockType;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -36,21 +35,14 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.MBeansOption;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.management.*;
-import javax.management.openmbean.CompositeData;
-import javax.management.openmbean.CompositeDataSupport;
 
 import java.lang.management.ManagementFactory;
-import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+
+import javax.management.JMX;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 
 public class MBeansMonitoringTest extends CommonTestMethodBase {
-	public static Logger LOG = LoggerFactory.getLogger(MBeansMonitoringTest.class);
-
     public static final String KSESSION1 = "KSession1";
 	public static final String KBASE1 = "KBase1";
     private String mbeansprop;
@@ -149,10 +141,7 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
     	kc2.newKieSession(KSESSION1);
     	
     	MBeanServer mbserver = ManagementFactory.getPlatformMBeanServer();
-    	// with deserialization JMX on ReleaseId I can avoid this "reflection way" of accessing the mbean complex CompositeData types..
-//    	CompositeData res1 = (CompositeData) mbserver.getAttribute(DroolsManagementAgent.createObjectNameByContainerId(kc1ID), "ResolvedReleaseId");
-//    	System.out.println(res1);
-//    	System.out.println(res1.get("version"));
+    	
     	KieContainerMonitorMXBean c1Monitor = JMX.newMXBeanProxy(
     			mbserver,
     			DroolsManagementAgent.createObjectNameByContainerId(kc1ID),
@@ -167,21 +156,5 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
     	assertEquals(ks.newReleaseId("org.kie.test", "mbeans", "RELEASE" ).toExternalForm(), c2Monitor.getConfiguredReleaseIdStr());
     	assertEquals(releaseId1.toExternalForm()                                           , c2Monitor.getResolvedReleaseIdStr());
     	
-    	blockOnSystemINforENTER();
-    }
-    
-    /**
-     * Utility method to add locally in test methods so to deliberately block on system.in, allowing time to use jvisualvm to inspecti the JMX manually.
-     */
-    public static void blockOnSystemINforENTER() throws Exception {
-    	System.err.println("***MATTEO***");
-    	System.out.println("***MATTEO***");
-    	LOG.error("***MATTEO***");
-    	Runnable task2 = new Runnable() {
-			@Override
-			public void run() { System.out.println("Press ENTER to continue: "); Scanner sin = new Scanner(System.in); sin.nextLine(); }
-		};
-    	ExecutorService es = Executors.newCachedThreadPool();
-    	es.submit(task2).get();
     }
 }
