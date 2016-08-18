@@ -2,6 +2,7 @@ package org.drools.core.management;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -16,6 +17,8 @@ import org.kie.api.management.KieSessionMonitoringMBean;
 public class KieSessionMonitoringByNameImpl implements KieSessionMonitoringMBean {
     private static final long NANO_TO_MILLISEC = 1000000;
 
+    private static final int BUFFER_THRESHOLD = 1000;
+
     private final ObjectName name;
     private final String kbaseId;
     
@@ -25,6 +28,8 @@ public class KieSessionMonitoringByNameImpl implements KieSessionMonitoringMBean
     private GlobalProcessStatsData processConsolidated = new GlobalProcessStatsData();
     private ConcurrentHashMap<String, ProcessStatsData> processStats = new ConcurrentHashMap<String, ProcessStatsData>();
     private ConcurrentHashMap<Long, ProcessInstanceStatsData> processInstanceStats = new ConcurrentHashMap<Long, ProcessInstanceStatsData>();
+    
+    private SynchronizedFastTakeAllList<StatEvent> buffer = new SynchronizedFastTakeAllList<StatEvent>();
     
     public KieSessionMonitoringByNameImpl(ObjectName name, String kbaseId) {
         super();
@@ -66,21 +71,25 @@ public class KieSessionMonitoringByNameImpl implements KieSessionMonitoringMBean
     
 
     public long getTotalMatchesFired() {
+        processBuffer();
         return this.consolidated.matchesFired.get();
     }
     
 
     public long getTotalMatchesCancelled() {
+        processBuffer();
         return this.consolidated.matchesCancelled.get();
     }
     
 
     public long getTotalMatchesCreated() {
+        processBuffer();
         return this.consolidated.matchesCreated.get();
     }
     
 
     public long getTotalFiringTime() {
+        processBuffer();
         // converting nano secs to milli secs
         return this.consolidated.firingTime.get()/NANO_TO_MILLISEC;
     }
@@ -90,6 +99,7 @@ public class KieSessionMonitoringByNameImpl implements KieSessionMonitoringMBean
     }
     
     public double getAverageFiringTime() {
+        processBuffer();
         long fires = this.consolidated.matchesFired.get();
         long time = this.consolidated.firingTime.get();
         // calculating the average and converting it from nano secs to milli secs
@@ -97,12 +107,14 @@ public class KieSessionMonitoringByNameImpl implements KieSessionMonitoringMBean
     }
     
     public String getStatsForRule( String ruleName ) {
+        processBuffer();
         AgendaStatsData data = this.ruleStats.get( ruleName );
         String result = data == null ? "matchesCreated=0 matchesCancelled=0 matchesFired=0 firingTime=0ms" : data.toString();
         return result;
     }
     
     public Map<String,String> getStatsByRule() {
+        processBuffer();
         Map<String, String> result = new HashMap<String, String>();
         for( Map.Entry<String, AgendaStatsData> entry : this.ruleStats.entrySet() ) {
             result.put( entry.getKey(), entry.getValue().toString() );
@@ -156,11 +168,20 @@ public class KieSessionMonitoringByNameImpl implements KieSessionMonitoringMBean
     }
     
     public void notify(StatEvent e) {
-        
-        // here will be ISOLATION LAYER
-        process(e);
+        buffer.add(e);
+        if (buffer.size > BUFFER_THRESHOLD) {
+            // TODO make async with an ad-hoc "short-lived" thread/executor?
+            processBuffer();
+        }
     }
     
+    private void processBuffer() {
+        for (Iterator<StatEvent> iterator = buffer.takeAll(); iterator.hasNext(); ) {
+            StatEvent e = iterator.next();
+            process(e);
+        }
+    }
+
     private void process(StatEvent e) {
         if (e == null) {
             return;
@@ -185,10 +206,7 @@ public class KieSessionMonitoringByNameImpl implements KieSessionMonitoringMBean
         }
     }
 
-    public static interface StatEvent {
-        
-    }
-    
+    public static interface StatEvent { }
     public static abstract class AgendaStatEvent implements StatEvent {
         private final String ruleName;
 
