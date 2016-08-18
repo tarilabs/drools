@@ -53,6 +53,8 @@ public class DroolsManagementAgent
     private long                          kbases;
     private long                          ksessions;
     private Map<Object, List<ObjectName>> mbeans;
+    
+    private Map<Object, Object> mbeansRefs = new HashMap<Object, Object>();
 
     private DroolsManagementAgent() {
         kbases = 0;
@@ -81,7 +83,7 @@ public class DroolsManagementAgent
 
 	public static ObjectName createObjectNameFor(InternalKnowledgeBase kbase) {
 		return DroolsManagementAgent.createObjectName(
-					DroolsManagementAgent.createObjectNameByContainerId(kbase.getContainerId())
+					DroolsManagementAgent.createObjectNameBy(kbase.getContainerId())
 					+ ",kbaseId=" + ObjectName.quote(kbase.getId())
 					);
 	}
@@ -92,8 +94,12 @@ public class DroolsManagementAgent
 				",group=Sessions,ksessionId=Session-"+ksession.getIdentifier());
 	}
 	
-	public static ObjectName createObjectNameByContainerId(String containerId) {
+	public static ObjectName createObjectNameBy(String containerId) {
 		return DroolsManagementAgent.createObjectName(CONTAINER_NAME_PREFIX + ":kcontainerId="+ObjectName.quote(containerId));
+	}
+	
+	public static ObjectName createObjectNameBy(String kcontainerId, String kbaseId, String ksessionName) {
+	    return DroolsManagementAgent.createObjectName(CONTAINER_NAME_PREFIX + ":kcontainerId="+ObjectName.quote(kcontainerId)+ ",kbaseId=" + ObjectName.quote(kbaseId) + ",ksessionName=" + ObjectName.quote(ksessionName));
 	}
 
     /* (non-Javadoc)
@@ -136,6 +142,41 @@ public class DroolsManagementAgent
             logger.error("Unable to instantiate and register KieSessionMonitoringMBean");
         }
     }
+    
+    public void registerKnowledgeSessionUnderName(String kcontainerId, String kbaseName, String ksessionName, InternalWorkingMemory ksession) {
+        CBSKey cbsKey = new CBSKey(kcontainerId, kbaseName, ksessionName);
+        
+        // find session-by-name aggregator mbean
+        KieSessionMonitoringByNameImpl mbean = null;
+        if (mbeansRefs.containsKey(cbsKey)) {
+            mbean = (KieSessionMonitoringByNameImpl) mbeansRefs.get(cbsKey);
+        } else {
+            mbean = createKieSessionMonitoringByNameImpl(cbsKey);
+        }
+        
+        // find the detailed per-session mbean
+        KieSessionMonitoringImpl detailedMBean = (KieSessionMonitoringImpl) mbeansRefs.get(ksession);
+        
+        // wire them
+        detailedMBean.addListener(mbean);
+    }
+    
+    private synchronized KieSessionMonitoringByNameImpl createKieSessionMonitoringByNameImpl(CBSKey cbsKey) {
+        if (mbeansRefs.containsKey(cbsKey)) {
+            return (KieSessionMonitoringByNameImpl) mbeansRefs.get(cbsKey);
+        } else {
+            ObjectName on = createObjectNameBy(cbsKey.getKcontainerId(), cbsKey.getKbaseId(), cbsKey.getKsessionName());
+            KieSessionMonitoringByNameImpl mbean = new KieSessionMonitoringByNameImpl(on, cbsKey.getKbaseId());
+            try {
+                final StandardMBean adapter = new StandardMBean( mbean, KieSessionMonitoringMBean.class );
+                registerMBean( cbsKey, adapter, on );
+                return mbean;
+            } catch ( Exception e ) {
+                logger.error("Unable to instantiate and register KieSessionMonitoringMBean");
+            }
+            return null;
+        }
+    }
 
     public void unregisterKnowledgeSession(InternalWorkingMemory ksession) {
         unregisterMBeansFromOwner( ksession );
@@ -156,6 +197,11 @@ public class DroolsManagementAgent
                                 mbl );
                 }
                 mbl.add( name );
+                if (mbean instanceof StandardMBean) {
+                    mbeansRefs.put(owner, ((StandardMBean) mbean).getImplementation());
+                } else {
+                    mbeansRefs.put(owner, mbean);
+                }
                 logger.debug( "Registered {} into the platform MBean Server", name );
             }
         } catch ( Exception e ) {
@@ -165,6 +211,7 @@ public class DroolsManagementAgent
 
     public void unregisterMBeansFromOwner(Object owner) {
         List<ObjectName> mbl = mbeans.remove( owner );
+        mbeansRefs.remove(owner);
         if ( mbl != null ) {
             MBeanServer mbs = getMBeanServer();
             for ( ObjectName name : mbl ) {
@@ -221,5 +268,71 @@ public class DroolsManagementAgent
         }
         return mbs;
     }
+    
+    public static class CBSKey {
+        private final String kcontainerId;
+        private final String kbaseId;
+        private final String ksessionName;
+        public CBSKey(String kcontainerId, String kbaseId, String ksessionName) {
+            super();
+            this.kcontainerId = kcontainerId;
+            this.kbaseId = kbaseId;
+            this.ksessionName = ksessionName;
+        }
+        
+        public String getKcontainerId() {
+            return kcontainerId;
+        }
+        
+        public String getKbaseId() {
+            return kbaseId;
+        }
+        
+        public String getKsessionName() {
+            return ksessionName;
+        }
 
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((kbaseId == null) ? 0 : kbaseId.hashCode());
+            result = prime * result + ((kcontainerId == null) ? 0 : kcontainerId.hashCode());
+            result = prime * result + ((ksessionName == null) ? 0 : ksessionName.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (!(obj instanceof CBSKey))
+                return false;
+            CBSKey other = (CBSKey) obj;
+            if (kbaseId == null) {
+                if (other.kbaseId != null)
+                    return false;
+            } else if (!kbaseId.equals(other.kbaseId))
+                return false;
+            if (kcontainerId == null) {
+                if (other.kcontainerId != null)
+                    return false;
+            } else if (!kcontainerId.equals(other.kcontainerId))
+                return false;
+            if (ksessionName == null) {
+                if (other.ksessionName != null)
+                    return false;
+            } else if (!ksessionName.equals(other.ksessionName))
+                return false;
+            return true;
+        }
+
+        @Override
+        public String toString() {
+            return "CBSKey [kcontainerId=" + kcontainerId + ", kbaseId=" + kbaseId + ", ksessionName=" + ksessionName + "]";
+        }
+        
+    }
 }

@@ -18,6 +18,7 @@ package org.drools.compiler.integrationtests;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.kie.builder.impl.InternalKieContainer;
 import org.drools.core.ClockType;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.management.DroolsManagementAgent;
 import org.junit.After;
@@ -33,7 +34,9 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.MBeansOption;
 import org.kie.api.management.KieContainerMonitorMXBean;
+import org.kie.api.management.KieSessionMonitoringMBean;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 
 import java.lang.management.ManagementFactory;
@@ -145,7 +148,7 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
     	
     	KieContainerMonitorMXBean c1Monitor = JMX.newMXBeanProxy(
     			mbserver,
-    			DroolsManagementAgent.createObjectNameByContainerId(kc1ID),
+    			DroolsManagementAgent.createObjectNameBy(kc1ID),
     	        KieContainerMonitorMXBean.class);
     	assertEquals(releaseId1.toExternalForm(), c1Monitor.getConfiguredReleaseIdStr());
     	assertEquals(releaseId1.toExternalForm(), c1Monitor.getResolvedReleaseIdStr());
@@ -157,7 +160,7 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
     	
     	KieContainerMonitorMXBean c2Monitor = JMX.newMXBeanProxy(
     			mbserver,
-    			DroolsManagementAgent.createObjectNameByContainerId("Matteo"),
+    			DroolsManagementAgent.createObjectNameBy("Matteo"),
     	        KieContainerMonitorMXBean.class);
     	assertEquals(verRelease.toExternalForm(), c2Monitor.getConfiguredReleaseIdStr());
     	assertEquals(releaseId1.toExternalForm(), c2Monitor.getResolvedReleaseIdStr());
@@ -166,5 +169,90 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         assertTrue(c2Monitor.getResolvedReleaseId().sameGAVof(releaseId1));
         assertEquals(verRelease.getVersion(), c2Monitor.getConfiguredReleaseId().getVersion());
         assertEquals(releaseId1.getVersion(), c2Monitor.getResolvedReleaseId().getVersion());
+    }
+    
+    @Test
+    public void testAggregated() throws Exception {
+        String drl = "package org.drools.compiler.integrationtests\n" +
+    
+                "rule IA\n" +
+                "when\n" +
+                "    eval(true) \n" +
+                "    not ( Integer() ) \n" +
+                "then\n" +
+                "    // do nothing. \n" +
+                "end\n"+
+                
+                "rule S\n" +
+                "when\n" +
+                "    $s : String()\n" +
+                "then\n" +
+                "    insert(new Integer(0));\n" +
+                "    System.out.println($s);\n" +
+                "end\n"+
+
+                "rule IB\n" +
+                "when\n" +
+                "    $i : Integer()\n" +
+                "    $s : String()\n" +
+                "then\n" +
+                "    retract($i);\n" +
+                "end\n"
+                ;
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieModuleModel kproj = ks.newKieModuleModel();
+
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel( KBASE1 ).setDefault( true )
+                .setEventProcessingMode( EventProcessingOption.STREAM );
+        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel( KSESSION1 ).setDefault( true )
+                .setType( KieSessionModel.KieSessionType.STATEFUL )
+                .setClockType( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie.test", "mbeans", "1.0.0" );
+        createKJar( ks, kproj, releaseId1, null, drl );
+        
+        String containerId = "myContainerId";
+        KieContainer kc = ks.newKieContainer( containerId, releaseId1 );
+        KieBase kiebase = kc.getKieBase( KBASE1 );
+        KieSession ksession = kc.newKieSession(KSESSION1);
+        
+        ksession.insert("Ciao");
+        
+        
+        MBeanServer mbserver = ManagementFactory.getPlatformMBeanServer();
+        
+        KieSessionMonitoringMBean aggrMonitor = JMX.newMXBeanProxy(
+                mbserver,
+                DroolsManagementAgent.createObjectNameBy(containerId, KBASE1, KSESSION1),
+                KieSessionMonitoringMBean.class);
+        KieSessionMonitoringMBean s1Monitor = JMX.newMXBeanProxy(
+                mbserver,
+                DroolsManagementAgent.createObjectNameFor((InternalWorkingMemory)ksession),
+                KieSessionMonitoringMBean.class);
+        
+        ksession.fireAllRules();
+        
+        print(s1Monitor);
+        print(aggrMonitor);
+
+        System.out.println("---");
+        
+        KieSession ksession2 = kc.newKieSession(KSESSION1);
+        ksession2.fireAllRules();
+        KieSessionMonitoringMBean s2Monitor = JMX.newMXBeanProxy(
+                mbserver,
+                DroolsManagementAgent.createObjectNameFor((InternalWorkingMemory)ksession2),
+                KieSessionMonitoringMBean.class);
+        print(s1Monitor);
+        print(s2Monitor);
+        print(aggrMonitor);
+    }
+    
+    private void print(KieSessionMonitoringMBean mb) {
+        System.out.println("total match created  : "+mb.getTotalMatchesCreated());
+        System.out.println("total match cancelled: "+mb.getTotalMatchesCancelled());
+        System.out.println("total match fired    : "+mb.getTotalMatchesFired());
     }
 }

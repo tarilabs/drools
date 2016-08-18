@@ -47,6 +47,7 @@ import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.management.DroolsManagementAgent;
 import org.kie.api.KieBase;
@@ -152,7 +153,7 @@ public class KieContainerImpl
 	private void initMBeans(String containerId) {
 		if ( MBeansOption.isEnabled( System.getProperty( MBeansOption.PROPERTY_NAME, MBeansOption.DISABLED.toString() ) ) ) {
         	KieContainerMonitor monitor = new KieContainerMonitor(this);
-            ObjectName on = DroolsManagementAgent.createObjectNameByContainerId(containerId);
+            ObjectName on = DroolsManagementAgent.createObjectNameBy(containerId);
             DroolsManagementAgent.getInstance().registerMBean( this, monitor, on );
         }
 	}
@@ -689,6 +690,12 @@ public class KieContainerImpl
             wireListnersAndWIHs( kSessionModel, kSession );
         }
         registerLoggers(kSessionModel, kSession);
+        
+        // TODO 
+        if ( ((InternalKnowledgeBase) kBase).getConfiguration().isMBeansEnabled() ) {
+           DroolsManagementAgent.getInstance().registerKnowledgeSessionUnderName(containerId, ((InternalKnowledgeBase) kBase).getId(), kSessionName, (InternalWorkingMemory) kSession);
+        }
+        
         kSessions.put(kSessionName, kSession);
         return kSession;
     }
@@ -732,6 +739,9 @@ public class KieContainerImpl
             wireListnersAndWIHs( kSessionModel, statelessKieSession );
         }
         registerLoggers(kSessionModel, statelessKieSession);
+        
+        // TODO as above needs code to register Kiesession by name monitor.
+        
         statelessKSessions.put(kSessionName, statelessKieSession);
         return statelessKieSession;
     }
@@ -768,6 +778,9 @@ public class KieContainerImpl
         }
         kSessions.clear();
         statelessKSessions.clear();
+        
+        // FIXME go to Drools agent and unregister Kiesession by name monitoring
+        
         ((InternalKieServices) KieServices.Factory.get()).clearRefToContainerId(this.containerId, this);
     }
 

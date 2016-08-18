@@ -54,6 +54,8 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
     private ObjectName name;
     public AgendaStats agendaStats;
     public ProcessStats processStats;
+
+    private KieSessionMonitoringByNameImpl listener;
     
     public KieSessionMonitoringImpl(InternalWorkingMemory ksession) {
         this.ksession = ksession;
@@ -182,6 +184,10 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
         
         private AgendaStatsData consolidated = new AgendaStatsData();
         private ConcurrentHashMap<String, AgendaStatsData> ruleStats = new ConcurrentHashMap<String, AgendaStatsData>();
+        
+        // no need for synch, because two matches cannot fire concurrently 
+        public long start;
+        private KieSessionMonitoringByNameImpl listener;
 
         public AgendaStats() {
         }
@@ -203,24 +209,36 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
             this.ruleStats.clear();
         }
         
+        public void startFireClock() {
+            this.start = System.nanoTime();
+        }
+        
+        public long stopFireClock() {
+            return System.nanoTime()-this.start ;
+        }
+        
         public void matchCancelled(MatchCancelledEvent event) {
             this.consolidated.matchesCancelled.incrementAndGet();
             AgendaStatsData data = getRuleStatsInstance( event.getMatch().getRule().getName() );
             data.matchesCancelled.incrementAndGet();
+            listener.notify(new KieSessionMonitoringByNameImpl.IncrementMatchCancelled( event.getMatch().getRule().getName() ));
         }
 
         public void matchCreated(MatchCreatedEvent event) {
             this.consolidated.matchesCreated.incrementAndGet();
             AgendaStatsData data = getRuleStatsInstance( event.getMatch().getRule().getName() );
             data.matchesCreated.incrementAndGet();
+            listener.notify(new KieSessionMonitoringByNameImpl.IncrementMatchCreated( event.getMatch().getRule().getName() ));
         }
 
         public void afterMatchFired(AfterMatchFiredEvent event) {
             AgendaStatsData data = getRuleStatsInstance( event.getMatch().getRule().getName() );
             this.consolidated.stopFireClock();
             data.stopFireClock();
+            listener.notify(new KieSessionMonitoringByNameImpl.AddToFiringTime( event.getMatch().getRule().getName(), stopFireClock() ));
             this.consolidated.matchesFired.incrementAndGet();
             data.matchesFired.incrementAndGet();
+            listener.notify(new KieSessionMonitoringByNameImpl.IncrementMatchFired( event.getMatch().getRule().getName() ));
         }
 
         public void agendaGroupPopped(org.kie.api.event.rule.AgendaGroupPoppedEvent event) { }
@@ -239,6 +257,7 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
             AgendaStatsData data = getRuleStatsInstance( event.getMatch().getRule().getName() );
             this.consolidated.startFireClock();
             data.startFireClock();
+            startFireClock();
         }
         
         private AgendaStatsData getRuleStatsInstance(String ruleName) {
@@ -289,6 +308,10 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
                 return "matchesCreated="+matchesCreated.get()+" matchesCancelled="+matchesCancelled.get()+
                        " matchesFired="+this.matchesFired.get()+" firingTime="+(firingTime.get()/NANO_TO_MILLISEC)+"ms";
             }
+        }
+
+        public void addListener(KieSessionMonitoringByNameImpl mbean) {
+            this.listener = mbean;
         }
     }
     
@@ -501,6 +524,11 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
             }
         }
 
+    }
+
+    public void addListener(KieSessionMonitoringByNameImpl mbean) {
+        this.listener = mbean;
+        this.agendaStats.addListener(mbean);
     }
     
 }
