@@ -729,7 +729,9 @@ public final class DialectUtil {
                     modificationMask = updateModificationMask(settableProperties, propertyReactive, modificationMask, modifiedProp);
                     statement.addField(modifiedProp, argsNr > 0 ? args.get(0) : null);
                 }
-            } else {
+            }
+            
+            if ( propertyReactive && propertyName == null && modifiedProps == null ) {
                 // I'm property reactive, but I was unable to infer which properties was modified, setting all bit in bitmask
                 modificationMask = AllSetBitMask.get();
             }
@@ -753,8 +755,6 @@ public final class DialectUtil {
             int index = settableProperties.indexOf(propertyName);
             if (index >= 0) {
                 modificationMask = setPropertyOnMask(modificationMask, index);
-            } else {
-                modificationMask = AllSetBitMask.get();
             }
         }
         return modificationMask;
