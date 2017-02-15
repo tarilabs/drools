@@ -43,6 +43,7 @@ import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELConsequenceBuilder;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.core.factmodel.ClassDefinition;
+import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.rule.ConsequenceMetaData;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.TypeDeclaration;
@@ -672,6 +673,10 @@ public final class DialectUtil {
                 String updateExpr = expr.replaceFirst("^\\Q" + obj + "\\E\\s*\\.", "");
                 if (!updateExpr.equals(expr)) {
                     modificationMask = parseModifiedProperties(statement, settableProperties, typeDeclaration, isPropertyReactive, modificationMask, updateExpr);
+                    if ( modificationMask == AllSetBitMask.get() ) {
+                        // opt: if we were unable to detect the property in the mask is all set, so avoid the rest of the cycle
+                        break;
+                    }
                 }
             }
         }
@@ -724,6 +729,9 @@ public final class DialectUtil {
                     modificationMask = updateModificationMask(settableProperties, propertyReactive, modificationMask, modifiedProp);
                     statement.addField(modifiedProp, argsNr > 0 ? args.get(0) : null);
                 }
+            } else {
+                // I'm property reactive, but I was unable to infer which properties was modified, setting all bit in bitmask
+                modificationMask = AllSetBitMask.get();
             }
         } else {
             String propertyName = extractFirstIdentifier(exprStr, 0);
@@ -745,6 +753,8 @@ public final class DialectUtil {
             int index = settableProperties.indexOf(propertyName);
             if (index >= 0) {
                 modificationMask = setPropertyOnMask(modificationMask, index);
+            } else {
+                modificationMask = AllSetBitMask.get();
             }
         }
         return modificationMask;
