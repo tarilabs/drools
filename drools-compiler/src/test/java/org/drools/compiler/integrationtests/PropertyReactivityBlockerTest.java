@@ -23,6 +23,7 @@ import java.util.List;
 import org.drools.compiler.Address;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
+import org.drools.core.event.DebugAgendaEventListener;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.io.impl.ByteArrayResource;
@@ -79,6 +80,44 @@ public class PropertyReactivityBlockerTest extends CommonTestMethodBase {
     }
     
     @Test()
+    public void testAbis_NotWorking() {
+        // DROOLS-644
+        String drl =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "    $p1 : Person( name == \"Mario\" ) \n" +
+                "    $p2 : Person( age > $p1.age ) \n" +
+                "then\n" +
+                "    list.add(\"t0\");\n" +
+                "end\n" +
+                "rule Z when\n" +
+                "    $p1 : Person( name == \"Mario\" ) \n" +
+                "then\n" +
+                "    modify($p1) { setAge(35); } \n" +
+                "end\n" 
+                ;
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                .build()
+                .newKieSession();
+        ksession.addEventListener(new DebugAgendaEventListener());
+        System.out.println(drl);
+        ReteDumper.dumpRete(ksession);
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        Person mario = new Person("Mario", 40);
+        Person mark = new Person("Mark", 37);
+        FactHandle fh_mario = ksession.insert(mario);
+        ksession.insert(mark);
+        int x = ksession.fireAllRules();
+        assertEquals(1, list.size());
+        assertEquals("t0", list.get(0));
+    }
+    
+    @Test()
     public void testA_Working() {
         // DROOLS-644
         String drl =
@@ -109,6 +148,44 @@ public class PropertyReactivityBlockerTest extends CommonTestMethodBase {
         mario.setAge(35);
         ksession.update(fh_mario, mario, "age");
         
+        int x = ksession.fireAllRules();
+        assertEquals(1, list.size());
+        assertEquals("t0", list.get(0));
+    }
+    
+    @Test()
+    public void testAbis_Working() {
+        // DROOLS-644
+        String drl =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "    $p1 : Person( name == \"Mario\", $a1: age) \n" +
+                "    $p2 : Person( age > $a1 ) \n" +
+                "then\n" +
+                "    list.add(\"t0\");\n" +
+                "end\n" +
+                "rule Z when\n" +
+                "    $p1 : Person( name == \"Mario\" ) \n" +
+                "then\n" +
+                "    modify($p1) { setAge(35); } \n" +
+                "end\n" 
+                ;
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                .build()
+                .newKieSession();
+        
+        System.out.println(drl);
+        ReteDumper.dumpRete(ksession);
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        Person mario = new Person("Mario", 40);
+        Person mark = new Person("Mark", 37);
+        FactHandle fh_mario = ksession.insert(mario);
+        ksession.insert(mark);
         int x = ksession.fireAllRules();
         assertEquals(1, list.size());
         assertEquals("t0", list.get(0));
