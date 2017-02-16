@@ -673,7 +673,7 @@ public final class DialectUtil {
                 String updateExpr = expr.replaceFirst("^\\Q" + obj + "\\E\\s*\\.", "");
                 if (!updateExpr.equals(expr)) {
                     modificationMask = parseModifiedProperties(statement, settableProperties, typeDeclaration, isPropertyReactive, modificationMask, updateExpr);
-                    if ( modificationMask == AllSetBitMask.get() ) {
+                    if ( modificationMask == allSetButTraitBitMask() ) {
                         // opt: if we were unable to detect the property in the mask is all set, so avoid the rest of the cycle
                         break;
                     }
@@ -732,7 +732,7 @@ public final class DialectUtil {
             
             if ( propertyReactive && propertyName == null && modifiedProps == null ) {
                 // I'm property reactive, but I was unable to infer which properties was modified, setting all bit in bitmask
-                modificationMask = AllSetBitMask.get();
+                modificationMask = allSetButTraitBitMask();
             }
         } else {
             String propertyName = extractFirstIdentifier(exprStr, 0);

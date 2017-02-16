@@ -51,7 +51,7 @@ import static org.drools.compiler.rule.builder.dialect.DialectUtil.fixBlockDescr
 import static org.drools.compiler.rule.builder.dialect.DialectUtil.setContainerBlockInputs;
 import static org.junit.Assert.*;
 
-public class JavaConsequenceBuilderTest {
+public class JavaConsequenceBuilderPRAlwaysTest {
 
     private RuleBuildContext       context;
     private RuleDescr              ruleDescr;
@@ -61,8 +61,8 @@ public class JavaConsequenceBuilderTest {
         pkg.addImport( new ImportDeclaration( "org.drools.compiler.Cheese" ) );
 
         KnowledgeBuilderConfigurationImpl conf = new KnowledgeBuilderConfigurationImpl();
-        // this test was originally intended with PropertyReactive.ALLOWED:
-        conf.setOption(PropertySpecificOption.ALLOWED);
+        // Although it should be the default, for completeness we explicit this is the test cases how RHS should be rewritten as:
+        conf.setOption(PropertySpecificOption.ALWAYS);
         KnowledgeBuilderImpl kBuilder = new KnowledgeBuilderImpl( pkg, conf );
 
         ruleDescr = new RuleDescr( "test consequence builder" );
@@ -72,7 +72,7 @@ public class JavaConsequenceBuilderTest {
             ruleDescr.addNamedConsequences( entry.getKey(), entry.getValue() );
         }
 
-        RuleImpl rule = ruleDescr.toRule();
+        RuleImpl rule = new RuleImpl( ruleDescr.getName() );
         
         PackageRegistry pkgRegistry = kBuilder.getPackageRegistry( pkg.getName() );
         DialectCompiletimeRegistry reg = kBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
@@ -126,7 +126,7 @@ public class JavaConsequenceBuilderTest {
         try {
             JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                      new BoundIdentifiers( new HashMap<String, Class<?>>(), null ) );
+                                                                                      new BoundIdentifiers( new HashMap<String, Class<?>>(), new HashMap<String, Class<?>>() ) );
 
             String fixed = fixBlockDescr(context, analysis, new HashMap<String, Declaration>());
 
@@ -164,9 +164,9 @@ public class JavaConsequenceBuilderTest {
             declrCls.put( "$cheese", Cheese.class );
             
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                      new BoundIdentifiers(declrCls, null ) );
+                                                                                      new BoundIdentifiers(declrCls, new HashMap<String, Class<?>>() ) );
             
-            BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), null );
+            BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), new HashMap() );
             bindings.getDeclrClasses().put( "$cheese", Cheese.class );
             bindings.getDeclrClasses().put( "age", int.class );
             
@@ -212,7 +212,7 @@ public class JavaConsequenceBuilderTest {
             ruleDescr.setConsequence( consequence );
             JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                      new BoundIdentifiers( new HashMap<String, Class<?>>(), null ) );
+                                                                                      new BoundIdentifiers( new HashMap<String, Class<?>>(), new HashMap<String, Class<?>>() ) );
 
             String fixed = fixBlockDescr( context, analysis, new HashMap<String,Declaration>() );
 
@@ -269,9 +269,9 @@ public class JavaConsequenceBuilderTest {
         declrCls.put( "$cheese", Cheese.class );
         
         JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                  new BoundIdentifiers(declrCls, null ) );
+                                                                                  new BoundIdentifiers(declrCls, new HashMap<String, Class<?>>() ) );
         
-        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), null );
+        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), new HashMap() );
         bindings.getDeclrClasses().put( "$cheese", Cheese.class );
         bindings.getDeclrClasses().put( "age", int.class );
         
@@ -361,9 +361,9 @@ public class JavaConsequenceBuilderTest {
         declrCls.put( "$cheese", Cheese.class );
         
         JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                  new BoundIdentifiers(declrCls, null ) );
+                                                                                  new BoundIdentifiers(declrCls, new HashMap<String, Class<?>>() ) );
         
-        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), null );
+        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), new HashMap() );
         bindings.getDeclrClasses().put( "$cheese", Cheese.class );
         bindings.getDeclrClasses().put( "age", int.class );
         
@@ -444,9 +444,9 @@ public class JavaConsequenceBuilderTest {
         declrCls.put( "$cheese", Cheese.class );
         
         JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                  new BoundIdentifiers(declrCls, null ) );
+                                                                                  new BoundIdentifiers(declrCls, new HashMap<String, Class<?>>() ) );
         
-        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), null );
+        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), new HashMap() );
         bindings.getDeclrClasses().put( "$cheese", Cheese.class );
         bindings.getDeclrClasses().put( "age", int.class );
         
@@ -513,9 +513,9 @@ public class JavaConsequenceBuilderTest {
         declrCls.put( "$cheese", Cheese.class );
         
         JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                  new BoundIdentifiers(declrCls, null ) );
+                                                                                  new BoundIdentifiers(declrCls, new HashMap<String, Class<?>>() ) );
         
-        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), null );
+        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), new HashMap() );
         bindings.getDeclrClasses().put( "$cheese", Cheese.class );
         bindings.getDeclrClasses().put( "age", int.class );
         
