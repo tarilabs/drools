@@ -74,6 +74,7 @@ public class PropertyReactivityBlockerTest extends CommonTestMethodBase {
         ksession.update(fh_mario, mario, "age");
         
         int x = ksession.fireAllRules();
+        assertEquals(1, list.size());
         assertEquals("t0", list.get(0));
     }
     
@@ -109,6 +110,7 @@ public class PropertyReactivityBlockerTest extends CommonTestMethodBase {
         ksession.update(fh_mario, mario, "age");
         
         int x = ksession.fireAllRules();
+        assertEquals(1, list.size());
         assertEquals("t0", list.get(0));
     }
 }
