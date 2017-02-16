@@ -722,8 +722,7 @@ public final class DialectUtil {
                 statement.addField(propertyName, argsNr > 0 ? args.get(0) : null);
             }
 
-            String methodWithArgsNr = methodName + "_" + argsNr;
-            List<String> modifiedProps = typeDeclaration.getTypeClassDef().getModifiedPropsByMethod(methodWithArgsNr);
+            List<String> modifiedProps = typeDeclaration.getTypeClassDef().getModifiedPropsByMethod( methodName, argsNr );
             if (modifiedProps != null) {
                 for (String modifiedProp : modifiedProps) {
                     modificationMask = updateModificationMask(settableProperties, propertyReactive, modificationMask, modifiedProp);
