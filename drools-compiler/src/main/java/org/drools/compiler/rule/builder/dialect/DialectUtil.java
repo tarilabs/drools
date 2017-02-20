@@ -669,14 +669,23 @@ public final class DialectUtil {
             ConsequenceMetaData.Statement statement = new ConsequenceMetaData.Statement(ConsequenceMetaData.Statement.Type.MODIFY, typeClass);
             context.getRule().getConsequenceMetaData().addStatement(statement);
 
-            for (String expr : splitStatements(consequence)) {
-                String updateExpr = expr.replaceFirst("^\\Q" + obj + "\\E\\s*\\.", "");
-                if (!updateExpr.equals(expr)) {
-                    modificationMask = parseModifiedProperties(statement, settableProperties, typeDeclaration, isPropertyReactive, modificationMask, updateExpr);
-                    if ( modificationMask == allSetButTraitBitMask() ) {
-                        // opt: if we were unable to detect the property in the mask is all set, so avoid the rest of the cycle
-                        break;
+            if (isPropertyReactive) {
+                boolean parsedExprOnce = false;
+                // a late optimization to include this for-loop within this if
+                for (String expr : splitStatements(consequence)) {
+                    String updateExpr = expr.replaceFirst("^\\Q" + obj + "\\E\\s*\\.", "");
+                    if (!updateExpr.equals(expr)) {
+                        parsedExprOnce = true;
+                        modificationMask = parseModifiedProperties(statement, settableProperties, typeDeclaration, isPropertyReactive, modificationMask, updateExpr);
+                        if ( modificationMask == allSetButTraitBitMask() ) {
+                            // opt: if we were unable to detect the property in the mask is all set, so avoid the rest of the cycle
+                            break;
+                        }
                     }
+                }
+                if ( !parsedExprOnce ) {
+                    // never called parseModifiedProperties(), hence never had the opportunity to "miss" the property and set mask to All-set; doing so here:
+                    modificationMask = allSetButTraitBitMask();
                 }
             }
         }
