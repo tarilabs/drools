@@ -770,7 +770,7 @@ public final class DialectUtil {
 
     private static Class<?> findModifiedClass(RuleBuildContext context, JavaBlockDescr d, Declaration declr) {
         if (declr != null) {
-            return ((ClassWireable) declr.getPattern().getObjectType()).getClassType();
+            return declr.getDeclarationClass();
         }
 
         String targetId = d.getTargetExpression().trim();

@@ -21,7 +21,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drools.compiler.Address;
+import org.drools.compiler.Cell;
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Neighbor;
 import org.drools.compiler.Person;
 import org.drools.core.event.DebugAgendaEventListener;
 import org.drools.core.factmodel.traits.Traitable;
@@ -192,5 +194,67 @@ public class PropertyReactivityBlockerTest extends CommonTestMethodBase {
         int x = ksession.fireAllRules();
         assertEquals(1, list.size());
         assertEquals("t0", list.get(0));
+    }
+    
+    @Test()
+    public void testUpdateRewrittenWithCorrectBitMaskAndCorrectClass() {
+        String drl =
+                "import " + Cell.class.getCanonicalName() + ";\n" +
+                "import " + Neighbor.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "    Neighbor( $n : neighbor ) \n" +
+                "then\n" +
+                "    modify( $n ) {\n" + 
+                "        setValue( $n.getValue() + 1 )\n" + 
+                "    }\n" +
+                "end\n" +
+                "rule C when\n" +
+                "    $c: Cell( value > 0 ) \n" +
+                "then\n" +
+                "   list.add(\"C\"); \n" +
+                "end\n" 
+                ;
+        
+        /* The RHS was wrongly rewritten as:
+          { org.kie.api.runtime.rule.FactHandle $n__Handle2__ = drools.getFactHandle($n);
+            $n.setValue( $n.getValue() + 1 ); 
+            drools.update( $n__Handle2__, org.drools.core.util.bitmask.EmptyBitMask.get(), org.drools.compiler.Neighbor.class ); }
+        instead of:
+          { org.kie.api.runtime.rule.FactHandle $n__Handle2__ = drools.getFactHandle($n);
+            $n.setValue( $n.getValue() + 1 ); 
+            drools.update( $n__Handle2__, new org.drools.core.util.bitmask.LongBitMask(16L), org.drools.compiler.Cell.class ); }
+         */
+
+        // making the default explicit:
+        KieSession ksession = new KieHelper(PropertySpecificOption.ALWAYS).addContent(drl, ResourceType.DRL)
+                .build()
+                .newKieSession();
+        
+        System.out.println(drl);
+        ReteDumper.dumpRete(ksession);
+        ksession.addEventListener(new DebugAgendaEventListener());
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        Cell c0 = new Cell(0);
+        Cell c1 = new Cell(0);
+        Neighbor n = new Neighbor(c0, c1);
+        System.out.println("c0: "+c0);
+        System.out.println("c1: "+c1);
+        System.out.println("n:" +n);
+        
+        ksession.insert(c0);
+        ksession.insert(c1);
+        ksession.insert(n);
+        int x = ksession.fireAllRules();
+        
+        System.out.println("from outside:");
+        System.out.println("c0: "+c0);
+        System.out.println("c1: "+c1);
+        System.out.println("n:" +n);
+        assertEquals(1, list.size());
+        assertEquals("C", list.get(0));
     }
 }
