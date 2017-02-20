@@ -38,6 +38,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 
@@ -97,8 +98,9 @@ public class PropertyReactivityBlockerTest extends CommonTestMethodBase {
                 "    modify($p1) { setAge(35); } \n" +
                 "end\n" 
                 ;
-
-        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+        
+        // making the default explicit:
+        KieSession ksession = new KieHelper(PropertySpecificOption.ALWAYS).addContent(drl, ResourceType.DRL)
                 .build()
                 .newKieSession();
         ksession.addEventListener(new DebugAgendaEventListener());
@@ -172,7 +174,8 @@ public class PropertyReactivityBlockerTest extends CommonTestMethodBase {
                 "end\n" 
                 ;
 
-        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+        // making the default explicit:
+        KieSession ksession = new KieHelper(PropertySpecificOption.ALWAYS).addContent(drl, ResourceType.DRL)
                 .build()
                 .newKieSession();
         
