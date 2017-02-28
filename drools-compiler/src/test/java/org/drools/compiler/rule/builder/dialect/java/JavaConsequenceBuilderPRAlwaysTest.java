@@ -24,6 +24,8 @@ import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.BindingDescr;
+import org.drools.compiler.lang.descr.CompositePackageDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.rule.builder.PatternBuilder;
 import org.drools.compiler.rule.builder.RuleBuildContext;
@@ -32,16 +34,22 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.Pattern;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.util.ClassUtils;
+import org.drools.core.util.bitmask.BitMask;
+import org.drools.core.util.bitmask.LongBitMask;
 import org.junit.Test;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +80,7 @@ public class JavaConsequenceBuilderPRAlwaysTest {
             ruleDescr.addNamedConsequences( entry.getKey(), entry.getValue() );
         }
 
-        RuleImpl rule = new RuleImpl( ruleDescr.getName() );
+        RuleImpl rule = ruleDescr.toRule();
         
         PackageRegistry pkgRegistry = kBuilder.getPackageRegistry( pkg.getName() );
         DialectCompiletimeRegistry reg = kBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
@@ -126,7 +134,7 @@ public class JavaConsequenceBuilderPRAlwaysTest {
         try {
             JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                      new BoundIdentifiers( new HashMap<String, Class<?>>(), new HashMap<String, Class<?>>() ) );
+                                                                                      new BoundIdentifiers( new HashMap<String, Class<?>>(), null ) );
 
             String fixed = fixBlockDescr(context, analysis, new HashMap<String, Declaration>());
 
@@ -164,9 +172,9 @@ public class JavaConsequenceBuilderPRAlwaysTest {
             declrCls.put( "$cheese", Cheese.class );
             
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                      new BoundIdentifiers(declrCls, new HashMap<String, Class<?>>() ) );
+                                                                                      new BoundIdentifiers(declrCls, null ) );
             
-            BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), new HashMap() );
+            BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), null );
             bindings.getDeclrClasses().put( "$cheese", Cheese.class );
             bindings.getDeclrClasses().put( "age", int.class );
             
@@ -212,7 +220,7 @@ public class JavaConsequenceBuilderPRAlwaysTest {
             ruleDescr.setConsequence( consequence );
             JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                      new BoundIdentifiers( new HashMap<String, Class<?>>(), new HashMap<String, Class<?>>() ) );
+                                                                                      new BoundIdentifiers( new HashMap<String, Class<?>>(), null ) );
 
             String fixed = fixBlockDescr( context, analysis, new HashMap<String,Declaration>() );
 
@@ -269,9 +277,9 @@ public class JavaConsequenceBuilderPRAlwaysTest {
         declrCls.put( "$cheese", Cheese.class );
         
         JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                  new BoundIdentifiers(declrCls, new HashMap<String, Class<?>>() ) );
+                                                                                  new BoundIdentifiers(declrCls, null ) );
         
-        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), new HashMap() );
+        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), null );
         bindings.getDeclrClasses().put( "$cheese", Cheese.class );
         bindings.getDeclrClasses().put( "age", int.class );
         
@@ -361,9 +369,9 @@ public class JavaConsequenceBuilderPRAlwaysTest {
         declrCls.put( "$cheese", Cheese.class );
         
         JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                  new BoundIdentifiers(declrCls, new HashMap<String, Class<?>>() ) );
+                                                                                  new BoundIdentifiers(declrCls, null ) );
         
-        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), new HashMap() );
+        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), null );
         bindings.getDeclrClasses().put( "$cheese", Cheese.class );
         bindings.getDeclrClasses().put( "age", int.class );
         
@@ -379,28 +387,33 @@ public class JavaConsequenceBuilderPRAlwaysTest {
         
         String fixed = fixBlockDescr( context, analysis, context.getDeclarationResolver().getDeclarations( context.getRule() ) );
 
+        List<String> cheeseAccessibleProperties = ClassUtils.getAccessibleProperties(Cheese.class);
+        BitMask priceOldPrice = PropertySpecificUtil.calculatePositiveMask(Arrays.asList("price", "oldPrice"), cheeseAccessibleProperties);
+        BitMask price = PropertySpecificUtil.calculatePositiveMask(Arrays.asList("price"), cheeseAccessibleProperties);
+        
         String expected = 
                 "  System.out.println(\"this is a test\");\r\n" + 
                 "  Cheese c1 = $cheese;\r\n" + 
                 " if( c1 == $cheese )     { \r\n" + 
                 "     { org.drools.compiler.Cheese __obj__ = ( c1 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); \r\n" +
-                "__obj__.setOldPrice( age ); drools.update( __obj____Handle2__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
+                "__obj__.setOldPrice( age ); drools.update( __obj____Handle2__, "+priceOldPrice.getInstancingStatement()+", org.drools.compiler.Cheese.class ); }\r\n" +
                 "      Cheese c4 = $cheese;\r\n" + 
                 "     if ( true )     { \r\n" + 
-                "         { org.drools.compiler.Cheese __obj__ = ( c4 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
+                "         { org.drools.compiler.Cheese __obj__ = ( c4 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, "+priceOldPrice.getInstancingStatement()+", org.drools.compiler.Cheese.class ); }\r\n" +
                 "      } else if (1==2) {\r\n" + 
-                "         { org.drools.compiler.Cheese __obj__ = ( c1 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
+                "         { org.drools.compiler.Cheese __obj__ = ( c1 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, "+priceOldPrice.getInstancingStatement()+", org.drools.compiler.Cheese.class ); }\r\n" +
                 "      } else {\r\n" + 
                 "          Cheese c3 = $cheese;\r\n" + 
-                "         { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
+                "         { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, "+priceOldPrice.getInstancingStatement()+", org.drools.compiler.Cheese.class ); }\r\n" +
                 "     }\r\n" + 
                 " } else {\r\n" + 
                 "      Cheese c3 = $cheese;\r\n" + 
-                "     { org.drools.compiler.Cheese __obj__ = ( c3 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
-                "      if ( c4 ==  $cheese ) { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
-                "      else { $cheese.setPrice( 12 ); drools.update( $cheese__Handle__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
+                "     { org.drools.compiler.Cheese __obj__ = ( c3 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, "+priceOldPrice.getInstancingStatement()+", org.drools.compiler.Cheese.class ); }\r\n" +
+                "      if ( c4 ==  $cheese ) { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, "+priceOldPrice.getInstancingStatement()+", org.drools.compiler.Cheese.class ); }\r\n" +
+                // the following line please notice only price is actually modified.
+                "      else { $cheese.setPrice( 12 ); drools.update( $cheese__Handle__, "+price.getInstancingStatement()+", org.drools.compiler.Cheese.class ); }\r\n" +
                 " }\r\n" + 
-                " { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
+                " { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, "+priceOldPrice.getInstancingStatement()+", org.drools.compiler.Cheese.class ); }\r\n" +
                 "  System.out.println(\"we are done\");\r\n" + 
                 " \r\n";
 
@@ -444,9 +457,9 @@ public class JavaConsequenceBuilderPRAlwaysTest {
         declrCls.put( "$cheese", Cheese.class );
         
         JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                  new BoundIdentifiers(declrCls, new HashMap<String, Class<?>>() ) );
+                                                                                  new BoundIdentifiers(declrCls, null ) );
         
-        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), new HashMap() );
+        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), null );
         bindings.getDeclrClasses().put( "$cheese", Cheese.class );
         bindings.getDeclrClasses().put( "age", int.class );
         
@@ -461,23 +474,26 @@ public class JavaConsequenceBuilderPRAlwaysTest {
                                         0);            
         
         String fixed = fixBlockDescr( context, analysis, context.getDeclarationResolver().getDeclarations( context.getRule() ) );
+        
+        List<String> cheeseAccessibleProperties = ClassUtils.getAccessibleProperties(Cheese.class);
+        BitMask priceOldPrice = PropertySpecificUtil.calculatePositiveMask(Arrays.asList("price", "oldPrice"), cheeseAccessibleProperties);
 
         String expected = 
                 " System.out.println(\"this is a test\");\r\n" + 
                 "  Cheese c1 = $cheese;\r\n" + 
                 " while ( c1 == $cheese )     { \r\n" + 
                 "     { org.drools.compiler.Cheese __obj__ = ( c1 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); \r\n" +
-                "__obj__.setOldPrice( age ); drools.update( __obj____Handle2__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
+                "__obj__.setOldPrice( age ); drools.update( __obj____Handle2__, "+priceOldPrice.getInstancingStatement()+", org.drools.compiler.Cheese.class ); }\r\n" +
                 "      Cheese c4 = $cheese;\r\n" + 
                 "     while ( true )     { \r\n" + 
-                "         { org.drools.compiler.Cheese __obj__ = ( c4 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
+                "         { org.drools.compiler.Cheese __obj__ = ( c4 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, "+priceOldPrice.getInstancingStatement()+", org.drools.compiler.Cheese.class ); }\r\n" +
                 "      } } \r\n" + 
                 "  Cheese c3 = $cheese;\r\n" + 
-                " while ( c4 ==  $cheese ) { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
-                "  { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
+                " while ( c4 ==  $cheese ) { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, "+priceOldPrice.getInstancingStatement()+", org.drools.compiler.Cheese.class ); }\r\n" +
+                "  { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, "+priceOldPrice.getInstancingStatement()+", org.drools.compiler.Cheese.class ); }\r\n" +
                 "  System.out.println(\"we are done\");\r\n" + 
                 "  while (true) { System.out.println(1);}\r\n" + 
-                " { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
+                " { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, "+priceOldPrice.getInstancingStatement()+", org.drools.compiler.Cheese.class ); }\r\n" +
                 "  System.out.println(\"we are done\");\r\n" + 
                 " \r\n" + 
                 "";
@@ -501,21 +517,23 @@ public class JavaConsequenceBuilderPRAlwaysTest {
             "         modify( $cheese ) { setPrice( 10 ), setOldPrice( age ) }\n " +
             "      }\n" +
             " } \n " +        
-            " for ( ; ; ) modify( (Cheese) $cheese ) { setPrice( 10 ), setOldPrice( age ) }\n " +
+            " for ( ; ; ) modify( $cheese ) { setPrice( 10 ), setOldPrice( age ) }\n " + // <<< TODO in the original test here was a cast to (Cheese) $cheese,  but this ad-hoc test is missing the kBuilder to properly populate the CompositePackageDescr which contains the import declaration. 
+                                                                                         //          the more correct way would be to change completely the ad-hoc build logic of this test contained in setupTest() and intercept the DialectUtils transformation on a *real* compilation process. 
             " for ( Cheese item : new ArrayList<Cheese>() ) modify( $cheese ) { setPrice( 10 ), setOldPrice( age ) }\n " +                         
             " modify( $cheese ) { setPrice( 10 ), setOldPrice( age ) }\n " +
             " System.out.println(\"we are done\");\n ";         
         setupTest( "", new HashMap<String, Object>() );
 
         ruleDescr.setConsequence( consequence );
+
         JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
         Map<String, Class<?>> declrCls = new HashMap<String, Class<?>>();
         declrCls.put( "$cheese", Cheese.class );
         
         JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
-                                                                                  new BoundIdentifiers(declrCls, new HashMap<String, Class<?>>() ) );
+                                                                                  new BoundIdentifiers(declrCls, null ) );
         
-        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), new HashMap() );
+        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), null );
         bindings.getDeclrClasses().put( "$cheese", Cheese.class );
         bindings.getDeclrClasses().put( "age", int.class );
         
@@ -531,22 +549,28 @@ public class JavaConsequenceBuilderPRAlwaysTest {
         
         String fixed = fixBlockDescr( context, analysis, context.getDeclarationResolver().getDeclarations( context.getRule() ) );
         
+        List<String> cheeseAccessibleProperties = ClassUtils.getAccessibleProperties(Cheese.class);
+        BitMask priceOldPrice = PropertySpecificUtil.calculatePositiveMask(Arrays.asList("price", "oldPrice"), cheeseAccessibleProperties);
+        
         String expected = 
                 " System.out.println(\"this is a test\");\r\n" + 
                 " int i = 0;\r\n" + 
                 " for ( Cheese c1 = $cheese; i < 10;i++ )     { \r\n" + 
                 "     { org.drools.compiler.Cheese __obj__ = ( c1 ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); \r\n" +
-                "__obj__.setOldPrice( age ); drools.update( __obj____Handle2__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
+                "__obj__.setOldPrice( age ); drools.update( __obj____Handle2__, "+priceOldPrice.getInstancingStatement()+", org.drools.compiler.Cheese.class ); }\r\n" +
                 "      Cheese c4 = $cheese;\r\n" + 
-                "     for ( Cheese item : new ArrayList<Cheese>() ) {         { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
+                "     for ( Cheese item : new ArrayList<Cheese>() ) {         { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, "+priceOldPrice.getInstancingStatement()+", org.drools.compiler.Cheese.class ); }\r\n" +
                 "       }\r\n" + 
                 " } \r\n" + 
-                "  for ( ; ; ) { org.drools.compiler.Cheese __obj__ = ( (Cheese) $cheese ); org.kie.api.runtime.rule.FactHandle __obj____Handle2__ = drools.getFactHandle(__obj__);__obj__.setPrice( 10 ); __obj__.setOldPrice( age ); drools.update( __obj____Handle2__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), java.lang.Object.class ); }\r\n" +
-                "  for ( Cheese item : new ArrayList<Cheese>() ) { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
-                "  { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, org.drools.core.util.bitmask.AllSetButLastBitMask.get(), org.drools.compiler.Cheese.class ); }\r\n" +
+                "  for ( ; ; ) { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, "+priceOldPrice.getInstancingStatement()+", org.drools.compiler.Cheese.class ); }\r\n" +
+                "  for ( Cheese item : new ArrayList<Cheese>() ) { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, "+priceOldPrice.getInstancingStatement()+", org.drools.compiler.Cheese.class ); }\r\n" +
+                "  { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__, "+priceOldPrice.getInstancingStatement()+", org.drools.compiler.Cheese.class ); }\r\n" +
                 "  System.out.println(\"we are done\");\r\n" + 
                 " \r\n" + 
                 "";
+        
+        System.out.println(expected);
+        System.out.println(fixed);
 
         assertNotNull( context.getErrors().toString(),
                        fixed );
