@@ -23,9 +23,15 @@ import org.drools.core.marshalling.impl.ProcessMarshallerFactoryService;
 import org.drools.core.runtime.process.ProcessRuntimeFactoryService;
 import org.kie.api.Service;
 import org.kie.api.builder.KieScannerFactoryService;
+import org.kie.internal.assembler.KieAssemblerService;
+import org.kie.internal.assembler.KieAssemblers;
 import org.kie.internal.builder.KnowledgeBuilderFactoryService;
+import org.kie.internal.runtime.KieRuntimeService;
+import org.kie.internal.runtime.KieRuntimes;
 import org.kie.internal.utils.ClassLoaderResolver;
 import org.kie.internal.utils.ServiceRegistryImpl;
+import org.kie.internal.weaver.KieWeaverService;
+import org.kie.internal.weaver.KieWeavers;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -54,6 +60,10 @@ public class Activator
     private ServiceTracker      processMarshallerTracker;
     private ServiceTracker      scannerTracker;
     private ServiceTracker      classResolverTracker;
+
+    private ServiceTracker kieAssemblerServiceTracker;
+    private ServiceTracker kieWeaverServiceTracker;
+    private ServiceTracker kieRuntimeServiceTracker;
 
     public void start(BundleContext bc) throws Exception {
         logger.info( "registering compiler services" );
@@ -98,6 +108,22 @@ public class Activator
                                                         ClassLoaderResolver.class.getName(),
                                                         new DroolsServiceTracker( bc, this ) );
         this.classResolverTracker.open();
+        
+        
+        
+        
+        this.kieAssemblerServiceTracker = new ServiceTracker( bc,
+                                                              KieAssemblerService.class.getName(),
+                                                              new DroolsKieAssemblerServiceTracker( bc, this ) );
+        this.kieAssemblerServiceTracker.open();
+        this.kieWeaverServiceTracker  = new ServiceTracker( bc,
+                                                            KieWeaverService.class.getName(),
+                                                            new DroolsKieWeaverServiceTracker( bc, this ) );
+        this.kieWeaverServiceTracker.open();
+        this.kieRuntimeServiceTracker = new ServiceTracker( bc,
+                                                            KieRuntimeService.class.getName(),
+                                                            new DroolsKieRuntimeServiceTracker( bc, this ) );
+        this.kieRuntimeServiceTracker.open();
 
         logger.info( "compiler services registered" );
     }
@@ -111,6 +137,121 @@ public class Activator
         this.scannerTracker.close();
         this.classResolverTracker.close();
     }
+    
+public static class DroolsKieAssemblerServiceTracker
+    implements
+    ServiceTrackerCustomizer {
+    private final BundleContext bc;
+    private final Activator     activator;
+    private final Class         serviceClass;
+
+    public DroolsKieAssemblerServiceTracker(BundleContext bc, Activator activator) {
+        this(bc, activator, null);
+    }
+
+    public DroolsKieAssemblerServiceTracker(BundleContext bc, Activator activator, Class serviceClass) {
+        this.bc = bc;
+        this.activator = activator;
+        this.serviceClass = serviceClass;
+    }
+
+    public Object addingService(ServiceReference ref) {
+        KieAssemblerService service = (KieAssemblerService) this.bc.getService( ref );
+        logger.info( "registering KieAssemblerService : " + service + " : " + service.getClass().getInterfaces()[0] );
+
+// TODO init Dictionary parameters 
+
+        ServiceRegistryImpl.getInstance().get(KieAssemblers.class).getAssemblers().put(service.getResourceType(), 
+                service);
+        return service;
+    }
+
+    public void modifiedService(ServiceReference arg0,
+                                Object arg1) {
+
+    }
+
+    public void removedService(ServiceReference ref,
+                               Object arg1) {
+     // TODO remove
+    }
+}
+public static class DroolsKieWeaverServiceTracker
+    implements
+    ServiceTrackerCustomizer {
+    private final BundleContext bc;
+    private final Activator     activator;
+    private final Class         serviceClass;
+    
+    public DroolsKieWeaverServiceTracker(BundleContext bc, Activator activator) {
+        this(bc, activator, null);
+    }
+    
+    public DroolsKieWeaverServiceTracker(BundleContext bc, Activator activator, Class serviceClass) {
+        this.bc = bc;
+        this.activator = activator;
+        this.serviceClass = serviceClass;
+    }
+    
+    public Object addingService(ServiceReference ref) {
+        KieWeaverService service = (KieWeaverService) this.bc.getService( ref );
+        logger.info( "registering KieAssemblerService : " + service + " : " + service.getClass().getInterfaces()[0] );
+    
+    //TODO init Dictionary parameters 
+    
+        ServiceRegistryImpl.getInstance().get(KieWeavers.class).getWeavers().put(service.getResourceType(), 
+                service);
+        return service;
+    }
+    
+    public void modifiedService(ServiceReference arg0,
+                                Object arg1) {
+    
+    }
+    
+    public void removedService(ServiceReference ref,
+                               Object arg1) {
+     // TODO remove
+    }
+}
+public static class DroolsKieRuntimeServiceTracker
+    implements
+    ServiceTrackerCustomizer {
+    private final BundleContext bc;
+    private final Activator     activator;
+    private final Class         serviceClass;
+    
+    public DroolsKieRuntimeServiceTracker(BundleContext bc, Activator activator) {
+        this(bc, activator, null);
+    }
+    
+    public DroolsKieRuntimeServiceTracker(BundleContext bc, Activator activator, Class serviceClass) {
+        this.bc = bc;
+        this.activator = activator;
+        this.serviceClass = serviceClass;
+    }
+    
+    public Object addingService(ServiceReference ref) {
+        KieRuntimeService service = (KieRuntimeService) this.bc.getService( ref );
+        logger.info( "registering KieAssemblerService : " + service + " : " + service.getClass().getInterfaces()[0] );
+    
+    //TODO init Dictionary parameters 
+    
+        ServiceRegistryImpl.getInstance().get(KieRuntimes.class).getRuntimes().put(service.getServiceInterface().getName(), 
+                service);
+        return service;
+    }
+    
+    public void modifiedService(ServiceReference arg0,
+                                Object arg1) {
+    
+    }
+    
+    public void removedService(ServiceReference ref,
+                               Object arg1) {
+     // TODO remove
+    }
+}
 
     public static class DroolsServiceTracker
         implements
