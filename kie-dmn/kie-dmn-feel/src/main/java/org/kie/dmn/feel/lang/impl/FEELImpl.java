@@ -16,7 +16,11 @@
 
 package org.kie.dmn.feel.lang.impl;
 
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeListener;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
@@ -46,6 +50,28 @@ public class FEELImpl
 
     public CompiledExpression compile(String expression, CompilerContext ctx) {
         FEEL_1_1Parser parser = FEELParser.parse( eventsManager, expression, ctx.getInputVariableTypes(), ctx.getInputVariables() );
+//        parser.addParseListener(new ParseTreeListener() {
+//            
+//            @Override
+//            public void visitTerminal(TerminalNode p0) {
+//                System.out.println("visitTerminal " + p0);
+//            }
+//            
+//            @Override
+//            public void visitErrorNode(ErrorNode p0) {
+//                System.out.println("visitErrorNode " + p0);
+//            }
+//            
+//            @Override
+//            public void exitEveryRule(ParserRuleContext p0) {
+//                System.out.println("exitEveryRule " + p0.toString(Arrays.asList(FEEL_1_1Parser.ruleNames)));
+//            }
+//            
+//            @Override
+//            public void enterEveryRule(ParserRuleContext p0) {
+//                System.out.println("enterEveryRule " + p0.toString(Arrays.asList(FEEL_1_1Parser.ruleNames)));
+//            }
+//        });
         ParseTree tree = parser.compilation_unit();
         ASTBuilderVisitor v = new ASTBuilderVisitor();
         BaseNode expr = v.visit( tree );

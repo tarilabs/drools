@@ -19,9 +19,13 @@ package org.kie.dmn.feel.lang.ast;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class FilterExpressionNode
@@ -108,6 +112,18 @@ public class FilterExpressionNode
                 for( Map.Entry ce : set ) {
                     if( ce.getKey() instanceof String ) {
                         ctx.setValue( (String) ce.getKey(), ce.getValue() );
+                    }
+                }
+            }
+            
+            Type tryJavaType = JavaBackedType.of(v.getClass());
+            if ( tryJavaType != BuiltInType.UNKNOWN && tryJavaType instanceof JavaBackedType ) {
+                JavaBackedType javaBackedType = (JavaBackedType) tryJavaType;
+                for ( String f : javaBackedType.getFields().keySet() ) {
+                    try {
+                        ctx.setValue(f, EvalHelper.getValue( v, f ));
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        e.printStackTrace();
                     }
                 }
             }

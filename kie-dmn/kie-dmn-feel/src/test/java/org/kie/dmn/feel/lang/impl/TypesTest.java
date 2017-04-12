@@ -13,6 +13,7 @@ import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.FEELProperty;
 import org.kie.dmn.feel.lang.FEELType;
+import org.kie.dmn.feel.lang.GenericType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +58,9 @@ public class TypesTest {
     public void test1() {
         CompilerContext ctx = feel.newCompilerContext();
         ctx.addInputVariableType( "Input Person", JavaBackedType.of(PersonPojo.class) );
-        CompiledExpression compiledExpression = feel.compile( "Input Person.Full Name", ctx );
+        CompiledExpression compiledExpression = feel.compile( "Input Person.Full Name = \"Matteo Mortari\"", ctx );
+        
+        System.out.println("COMPILATION DONE.");
         
         Map<String, Object> inputs = new HashMap<>();
         inputs.put("Input Person", new PersonPojo("Matteo Mortari", "100 E. Davie Street"));
@@ -87,12 +90,33 @@ public class TypesTest {
     @Test
     public void test3() {
         CompilerContext ctx = feel.newCompilerContext();
-        ctx.addInputVariableType( "Person List", BuiltInType.LIST );
-        CompiledExpression compiledExpression = feel.compile( "Person List[Full Name = 'Edson Tirelli']", ctx );
+        ctx.addInputVariableType( "Person List", new GenericType(BuiltInType.LIST, JavaBackedType.of(PersonPojo.class)));
+        CompiledExpression compiledExpression = feel.compile( "Person List[Full Name = \"Edson Tirelli\"]", ctx );
+        
+        System.out.println("COMPILATION DONE.");
         
         Map<String, Object> inputs = new HashMap<>();
         List<PersonPojo> pList = new ArrayList<>();
         inputs.put("Person List", pList);
+        pList.add(new PersonPojo("Edson Tirelli", "100 E. Davie Street"));
+        pList.add(new PersonPojo("Matteo Mortari", "100 E. Davie Street"));
+        
+        Object result = feel.evaluate(compiledExpression, inputs);
+        
+        System.out.println(result);
+    }
+    
+    @Test
+    public void test3b() {
+        CompilerContext ctx = feel.newCompilerContext();
+        ctx.addInputVariableType( "PersonList", BuiltInType.LIST);
+        CompiledExpression compiledExpression = feel.compile( "PersonList[fullName = \"Edson Tirelli\"]", ctx );
+        
+        System.out.println("COMPILATION DONE.");
+        
+        Map<String, Object> inputs = new HashMap<>();
+        List<PersonPojo> pList = new ArrayList<>();
+        inputs.put("PersonList", pList);
         pList.add(new PersonPojo("Edson Tirelli", "100 E. Davie Street"));
         pList.add(new PersonPojo("Matteo Mortari", "100 E. Davie Street"));
         

@@ -23,6 +23,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.CompositeType;
+import org.kie.dmn.feel.lang.GenericType;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.Scope;
@@ -102,6 +103,10 @@ public class ParserHelper {
     public void recoverScope() {
         recoverScope( currentName.peek() );
     }
+    
+    public Symbol matteo(String name) {
+        return this.currentScope.resolve(name);
+    }
 
     public void recoverScope( String name ) {
         LOG.trace("[{}] recoverScope( name: {}) with currentScope: {}", this.currentScope.getName(), name, currentScope);
@@ -116,6 +121,30 @@ public class ParserHelper {
                 CompositeType type = (CompositeType) resolved.getType();
                 for ( Map.Entry<String, Type> f : type.getFields().entrySet() ) {
                     this.currentScope.define(new VariableSymbol( f.getKey(), f.getValue() ));
+                }
+                LOG.trace(".. PUSHED, scope name {} with symbols {}", this.currentName.peek(), this.currentScope.getSymbols());
+            } else {
+                pushScope();
+            }  
+        }
+    }
+    
+    public void recoverGenericScope( String name ) {
+        LOG.trace("[{}] recoverGenericScope( name: {}) with currentScope: {}", this.currentScope.getName(), name, currentScope);
+        Scope s = this.currentScope.getChildScopes().get( name );
+        if( s != null ) {
+            currentScope = s;
+        } else { 
+            Symbol resolved = this.currentScope.resolve(name);
+            if ( resolved != null && resolved.getType() instanceof GenericType ) {
+                GenericType type = (GenericType) resolved.getType();
+                pushName(name);
+                pushScope();
+                if ( type.getGenericType() instanceof CompositeType ) {
+                    CompositeType genericCompositeType = (CompositeType) type.getGenericType();
+                    for ( Map.Entry<String, Type> f : genericCompositeType.getFields().entrySet() ) {
+                        this.currentScope.define(new VariableSymbol( f.getKey(), f.getValue() ));
+                    }    
                 }
                 LOG.trace(".. PUSHED, scope name {} with symbols {}", this.currentName.peek(), this.currentScope.getSymbols());
             } else {

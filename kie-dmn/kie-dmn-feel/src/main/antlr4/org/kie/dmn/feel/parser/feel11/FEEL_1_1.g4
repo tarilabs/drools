@@ -238,8 +238,17 @@ powerExpression
 
 filterPathExpression
     :   unaryExpression
-    |   filterPathExpression '[' {helper.enableDynamicResolution();} filter=expression {helper.disableDynamicResolution();} ']'
-    |   filterPathExpression '.' {helper.enableDynamicResolution();} qualifiedName {helper.disableDynamicResolution();}
+    |   fpe=filterPathExpression
+        '['
+        { helper.recoverGenericScope(getOriginalText( $fpe.ctx )); helper.enableDynamicResolution();}
+        filter=expression
+        { helper.dismissScope(); helper.disableDynamicResolution(); }
+        ']'
+    |   fpe=filterPathExpression
+        '.'
+        { helper.recoverGenericScope(getOriginalText( $fpe.ctx )); helper.enableDynamicResolution();}
+        qualifiedName 
+        { helper.dismissScope(); helper.disableDynamicResolution(); }
     ;
 
 unaryExpression
