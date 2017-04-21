@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+    name="definitions"
+    namespace="https://www.drools.org/kie-dmn/definitions"
+    xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+    xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+    xmlns:tns="https://www.drools.org/kie-dmn/definitions"
+    >
+    <itemDefinition id="tStringList" name="tStringList" isCollection="true">
+        <typeRef>feel:string</typeRef>
+    </itemDefinition>
+    <itemDefinition id="tNumList" name="tNumList" isCollection="true">
+        <typeRef>feel:number</typeRef>
+    </itemDefinition>
+    <itemDefinition id="tListOfLists" name="tListOfLists" isCollection="true">
+        <typeRef>tns:tStringList</typeRef>
+    </itemDefinition>
+    <inputData id="_86f5e710-a139-4cd5-8ac4-90b4671a75b8" name="list1">
+        <variable name="list1" typeRef="tns:tStringList"/>
+    </inputData>
+    <inputData id="_82d66f50-2d47-4849-b5fd-da179e0fec66" name="list2">
+        <variable name="list2" typeRef="tns:tStringList"/>
+    </inputData>
+    <inputData id="_1bbe9689-bd70-45d4-ab30-f3887cf46b28" name="string1">
+        <variable name="string1" typeRef="feel:string"/>
+    </inputData>
+    <decision id="m1" name="listOfListsDecision">
+        <variable name="listOfListsDecision" typeRef="tns:tListOfLists"/>
+        <informationRequirement>
+            <requiredInput href="#_86f5e710-a139-4cd5-8ac4-90b4671a75b8"/>
+        </informationRequirement>
+        <informationRequirement>
+            <requiredInput href="#_82d66f50-2d47-4849-b5fd-da179e0fec66"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>[list1,list2]</text>
+        </literalExpression>
+    </decision>
+    <decision id="_d12d9a82-b182-4c15-9fce-d22cdc53dbc4" name="appendListItem">
+        <variable name="appendListItem" typeRef="tns:tListOfLists"/>
+        <informationRequirement>
+            <requiredInput href="#_86f5e710-a139-4cd5-8ac4-90b4671a75b8"/>
+        </informationRequirement>
+        <informationRequirement>
+            <requiredInput href="#_82d66f50-2d47-4849-b5fd-da179e0fec66"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>append(list1,list2)</text>
+        </literalExpression>
+    </decision>
+</definitions>

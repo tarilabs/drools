@@ -45,6 +45,7 @@ import java.util.stream.Collectors;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -1099,6 +1100,30 @@ public class DMNRuntimeTest {
 
         assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( true ) );
         assertThat( dmnResult.getMessages().stream().anyMatch( m -> m.getMessageType().equals( DMNMessageType.ERROR_EVAL_NODE ) ), is( true ) );
+    }
+    
+    @Test
+    public void testiscollectiontypechecl() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "iscollectiontypecheck.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "https://www.drools.org/kie-dmn/definitions",
+                "definitions" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        
+        DMNContext context = runtime.newContext();
+        
+        List<String> list1 = Arrays.asList(new String[]{"a", "b", "c"});
+        List<String> list2 = Arrays.asList(new String[]{"x", "y", "z"});
+        context.set("list1", list1);
+        context.set("list2", list2);
+        
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        DMNContext result = dmnResult.getContext();
+        
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        assertThat( (List<?>) result.get( "listOfListsDecision" ), contains(list1, list2) );
+        assertThat( (List<?>) result.get( "appendListItem" ), contains("a","b","c", list2) );
     }
 
     private String formatMessages(List<DMNMessage> messages) {

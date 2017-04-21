@@ -321,8 +321,10 @@ public class DMNCompilerImpl
                 if( topLevel || allowedValuesStr != null || itemDef.isIsCollection() != type.isCollection() ) {
 
                     // we have to clone this type definition into a new one
+                    BaseDMNTypeImpl baseType = type;
                     type = type.clone();
-
+                    
+                    type.setBaseType(baseType);
                     type.setNamespace( dmnModel.getNamespace() );
                     type.setName( itemDef.getName() );
                     if ( allowedValuesStr != null ) {
