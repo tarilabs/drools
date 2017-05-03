@@ -80,6 +80,11 @@ public class ParserHelper {
         LOG.trace("pushScope()");
         currentScope = new ScopeImpl( currentName.peek(), currentScope );
     }
+    
+    public void pushScope(Type type) {
+        LOG.trace("pushScope()");
+        currentScope = new ScopeImpl( currentName.peek(), currentScope, type );
+    }
 
     public void popScope() {
         LOG.trace("popScope()");
@@ -109,11 +114,14 @@ public class ParserHelper {
         Scope s = this.currentScope.getChildScopes().get( name );
         if( s != null ) {
             currentScope = s;
+            if ( currentScope.getType() != null && currentScope.getType().equals(BuiltInType.UNKNOWN) ) {
+                enableDynamicResolution();
+            }
         } else { 
             Symbol resolved = this.currentScope.resolve(name);
             if ( resolved != null && resolved.getType() instanceof CompositeType ) {
                 pushName(name);
-                pushScope();
+                pushScope(resolved.getType());
                 CompositeType type = (CompositeType) resolved.getType();
                 for ( Map.Entry<String, Type> f : type.getFields().entrySet() ) {
                     this.currentScope.define(new VariableSymbol( f.getKey(), f.getValue() ));
@@ -121,6 +129,8 @@ public class ParserHelper {
                 LOG.trace(".. PUSHED, scope name {} with symbols {}", this.currentName.peek(), this.currentScope.getSymbols());
             } else if ( resolved != null && resolved.getType() instanceof BuiltInType ) {
                 BuiltInType resolvedBIType = (BuiltInType) resolved.getType();
+                pushName(name);
+                pushScope(resolvedBIType);
                 switch (resolvedBIType) {
                     // FEEL spec table 53
                     case DATE:
@@ -154,8 +164,11 @@ public class ParserHelper {
                         this.currentScope.define(new VariableSymbol( "minutes", BuiltInType.NUMBER ));
                         this.currentScope.define(new VariableSymbol( "seconds", BuiltInType.NUMBER ));
                         break;
+                    // table 53 applies only to type(e) is a date/time/duration
+                    case UNKNOWN:
+                        enableDynamicResolution();
+                        break;
                     default:
-                        // table 53 applies only to type(e) is a date/time/duration
                         break;
                 }
             } else {
@@ -166,6 +179,9 @@ public class ParserHelper {
 
     public void dismissScope() {
         LOG.trace("dismissScope()");
+        if ( currentScope.getType() != null && currentScope.getType().equals(BuiltInType.UNKNOWN) ) {
+            disableDynamicResolution();
+        }
         popScope();
     }
 

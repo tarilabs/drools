@@ -788,7 +788,7 @@ public class DMNRuntimeTest {
                 "Loan Prequalification Condensed" );
         assertThat( dmnModel, notNullValue() );
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( true ) );
-        assertThat( dmnModel.getMessages().size(), is( 6 ) );
+        assertThat( dmnModel.getMessages().size(), is( 2 ) );
         assertThat( dmnModel.getMessages().get( 0 ).getSourceId(), is( "_8b5cac9e-c8ca-4817-b05a-c70fa79a8d48" ) );
         assertThat( dmnModel.getMessages().get( 1 ).getSourceId(), is( "_ef09d90e-e1a4-4ec9-885b-482d1f4a1cee" ) );
     }
@@ -1117,6 +1117,23 @@ public class DMNRuntimeTest {
         assertThat( dmnModel.getMessages().get( 0 ).getMessage(), containsString( "Unknown variable 'Borrower.liquidAssetsAmt'" ) );
     }
 
+    @Test
+    public void testSingleDecisionWithContext() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "SingleDecisionWithContext.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel(
+                "http://www.trisotech.com/definitions/_71af58db-e1df-4b0f-aee2-48e0e8d89672",
+                "SingleDecisionWithContext" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+        
+        DMNContext emptyContext = runtime.newContext();
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, emptyContext );
+       
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.hasErrors(), is( false ) );
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "MyDecision" ), is( "Hello John Doe" ) );
+    }
+    
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
     }
