@@ -46,6 +46,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -787,7 +788,7 @@ public class DMNRuntimeTest {
                 "Loan Prequalification Condensed" );
         assertThat( dmnModel, notNullValue() );
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( true ) );
-        assertThat( dmnModel.getMessages().size(), is( 2 ) );
+        assertThat( dmnModel.getMessages().size(), is( 6 ) );
         assertThat( dmnModel.getMessages().get( 0 ).getSourceId(), is( "_8b5cac9e-c8ca-4817-b05a-c70fa79a8d48" ) );
         assertThat( dmnModel.getMessages().get( 1 ).getSourceId(), is( "_ef09d90e-e1a4-4ec9-885b-482d1f4a1cee" ) );
     }
@@ -1098,9 +1099,10 @@ public class DMNRuntimeTest {
                 "http://www.trisotech.com/definitions/_9105d4a6-6049-4ace-a9cd-88f18d29bc8f",
                 "Loan Recommendation - context" );
         assertThat( dmnModel, notNullValue() );
-        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.getMessages().size(), is( 1 ) );
-        assertThat( dmnModel.getMessages().get( 0 ).getMessageType(), is( DMNMessageType.ERR_COMPILING_FEEL ) );
-        assertThat( dmnModel.getMessages().get( 0 ).getMessage(), containsString( "Unknown variable 'NonSalaryPct'" ) );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.getMessages().size(), is( 2 ) );
+        assertEquals(1, dmnModel.getMessages().stream().filter( m -> m.getMessageType().equals(DMNMessageType.ERR_COMPILING_FEEL) )
+                                                       .filter( m -> m.getMessage().contains("Unknown variable 'NonSalaryPct'") )
+                                                       .count());
     }
 
     @Test
@@ -1112,7 +1114,7 @@ public class DMNRuntimeTest {
         assertThat( dmnModel, notNullValue() );
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.getMessages().size(), is( 1 ) );
         assertThat( dmnModel.getMessages().get( 0 ).getMessageType(), is( DMNMessageType.ERR_COMPILING_FEEL ) );
-        assertThat( dmnModel.getMessages().get( 0 ).getMessage(), containsString( "Unknown variable 'liquidAssetsAmt'" ) );
+        assertThat( dmnModel.getMessages().get( 0 ).getMessage(), containsString( "Unknown variable 'Borrower.liquidAssetsAmt'" ) );
     }
 
     private String formatMessages(List<DMNMessage> messages) {

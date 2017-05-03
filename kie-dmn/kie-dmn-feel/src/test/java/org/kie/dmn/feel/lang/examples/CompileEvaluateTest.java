@@ -23,6 +23,7 @@ import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.FEELProperty;
 import org.kie.dmn.feel.lang.FEELType;
+import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,5 +79,34 @@ public class CompileEvaluateTest {
         assertThat( ((Map<?, ?>) ((List<?>) result).get(0)).get("Full Name"), is("Edson Tirelli") );
         
         feel.removeListener( errorsCountingListener );
+    }
+    
+    @Test
+    public void test2() {
+        CompilerContext ctx = feel.newCompilerContext();
+        ctx.addInputVariableType( "MyPerson", new MapBackedType().addField( "FullName", BuiltInType.STRING ) );
+        
+        CompiledExpression compiledExpression = feel.compile( "MyPerson.fullName", ctx );
+        
+        Map<String, Object> inputs = new HashMap<>();
+        inputs.put( "MyPerson", prototype(entry("FullName", "John Doe")) );
+        
+        Object result = feel.evaluate(compiledExpression, inputs);
+        
+        System.out.println(result);
+    }
+    @Test
+    public void test2OK() {
+        CompilerContext ctx = feel.newCompilerContext();
+        ctx.addInputVariableType( "MyPerson", new MapBackedType().addField( "FullName", BuiltInType.STRING ) );
+        
+        CompiledExpression compiledExpression = feel.compile( "MyPerson.FullName", ctx );
+        
+        Map<String, Object> inputs = new HashMap<>();
+        inputs.put( "MyPerson", prototype(entry("FullName", "John Doe")) );
+        
+        Object result = feel.evaluate(compiledExpression, inputs);
+        
+        System.out.println(result);
     }
 }

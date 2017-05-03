@@ -26,6 +26,7 @@ import org.kie.dmn.feel.lang.CompositeType;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.Scope;
+import org.kie.dmn.feel.lang.SimpleType;
 import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
@@ -118,6 +119,45 @@ public class ParserHelper {
                     this.currentScope.define(new VariableSymbol( f.getKey(), f.getValue() ));
                 }
                 LOG.trace(".. PUSHED, scope name {} with symbols {}", this.currentName.peek(), this.currentScope.getSymbols());
+            } else if ( resolved != null && resolved.getType() instanceof BuiltInType ) {
+                BuiltInType resolvedBIType = (BuiltInType) resolved.getType();
+                switch (resolvedBIType) {
+                    // FEEL spec table 53
+                    case DATE:
+                        this.currentScope.define(new VariableSymbol( "year", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "month", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "day", BuiltInType.NUMBER ));
+                        break;
+                    case TIME:
+                        this.currentScope.define(new VariableSymbol( "hour", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "minute", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "second", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "time offset", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "timezone", BuiltInType.NUMBER ));
+                        break;
+                    case DATE_TIME:
+                        this.currentScope.define(new VariableSymbol( "year", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "month", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "day", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "hour", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "minute", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "second", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "time offset", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "timezone", BuiltInType.NUMBER ));
+                        break;
+                    case DURATION:
+                        // TODO might need to distinguish between `years and months duration` and `days and time duration`
+                        this.currentScope.define(new VariableSymbol( "years", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "months", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "days", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "hours", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "minutes", BuiltInType.NUMBER ));
+                        this.currentScope.define(new VariableSymbol( "seconds", BuiltInType.NUMBER ));
+                        break;
+                    default:
+                        // table 53 applies only to type(e) is a date/time/duration
+                        break;
+                }
             } else {
                 pushScope();
             }  
