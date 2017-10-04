@@ -30,6 +30,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.function.BinaryOperator;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
@@ -195,7 +196,7 @@ public class InfixOpNode
         }
     }
 
-    private Object add(Object left, Object right, EvaluationContext ctx) {
+    public static Object add(Object left, Object right, EvaluationContext ctx) {
         if ( left == null || right == null ) {
             return null;
         } else if ( left instanceof String && right instanceof String ) {
@@ -241,7 +242,7 @@ public class InfixOpNode
         }
     }
 
-    private Object sub(Object left, Object right, EvaluationContext ctx) {
+    public static Object sub(Object left, Object right, EvaluationContext ctx) {
         if ( left == null || right == null ) {
             return null;
         } else if ( left instanceof Temporal && right instanceof Temporal ) {
@@ -282,7 +283,7 @@ public class InfixOpNode
         }
     }
 
-    private Object mult(Object left, Object right, EvaluationContext ctx) {
+    public static Object mult(Object left, Object right, EvaluationContext ctx) {
         if ( left == null || right == null ) {
             return null;
         } else if ( left instanceof Duration && right instanceof Number ) {
@@ -302,7 +303,7 @@ public class InfixOpNode
         }
     }
 
-    private Object div(Object left, Object right, EvaluationContext ctx) {
+    public static Object div(Object left, Object right, EvaluationContext ctx) {
         if ( left == null || right == null ) {
             return null;
         } else if ( left instanceof Duration && right instanceof Number ) {
@@ -322,7 +323,7 @@ public class InfixOpNode
         }
     }
 
-    private Object math(Object left, Object right, EvaluationContext ctx, BinaryOperator<BigDecimal> op) {
+    public static Object math(Object left, Object right, EvaluationContext ctx, BinaryOperator<BigDecimal> op) {
         BigDecimal l = EvalHelper.getBigDecimalOrNull( left );
         BigDecimal r = EvalHelper.getBigDecimalOrNull( right );
         if ( l == null || r == null ) {
@@ -339,7 +340,7 @@ public class InfixOpNode
     /**
      * Implements the ternary logic AND operation
      */
-    private Object and(Object left, Object right, EvaluationContext ctx) {
+    public static Object and(Object left, Object right, EvaluationContext ctx) {
         Boolean l = EvalHelper.getBooleanOrNull( left );
         Boolean r = EvalHelper.getBooleanOrNull( right );
         // have to check for all nulls first to avoid NPE
@@ -354,7 +355,7 @@ public class InfixOpNode
     /**
      * Implements the ternary logic OR operation
      */
-    private Object or(Object left, Object right, EvaluationContext ctx) {
+    public static Object or(Object left, Object right, EvaluationContext ctx) {
         Boolean l = EvalHelper.getBooleanOrNull( left );
         Boolean r = EvalHelper.getBooleanOrNull( right );
         // have to check for all nulls first to avoid NPE
