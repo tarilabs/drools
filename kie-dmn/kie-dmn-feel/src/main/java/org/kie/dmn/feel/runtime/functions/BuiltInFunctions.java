@@ -109,7 +109,22 @@ public class BuiltInFunctions {
                                                                          new SignavioAvgFunction(),
                                                                          new SignavioMedianFunction(),
                                                                          new SignavioModeFunction(),
-
+                                                                         new SignavioEndsWithFunction(),
+                                                                         new SignavioStartsWithFunction(),
+                                                                         new SignavioTextOccurrencesFunction(),
+                                                                         new SignavioTextFunction(),
+                                                                         new SignavioLeftFunction(),
+                                                                         new SignavioRightFunction(),
+                                                                         new SignavioMidFunction(),
+                                                                         // TODO uncomment: new SignavioNumberFunction(),
+                                                                         new SignavioUpperFunction(),
+                                                                         new SignavioLowerFunction(),
+                                                                         new SignavioTrimFunction(),
+                                                                         new SignavioLenFunction(),
+                                                                         new SignavioIsSpacesFunction(),
+                                                                         new SignavioIsNumericFunction(),
+                                                                         new SignavioIsAlphanumericFunction(),
+                                                                         new SignavioIsAlphaFunction(),
             };
 
     public static FEELFunction[] getFunctions() {
