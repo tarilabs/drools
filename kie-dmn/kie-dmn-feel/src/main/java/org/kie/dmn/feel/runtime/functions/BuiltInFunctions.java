@@ -106,6 +106,9 @@ public class BuiltInFunctions {
                                                                          new SignavioAreElementsOfFunction(),
                                                                          // TODO uncomment: new SignavioRemoveFunction(),
                                                                          new SignavioRemoveAllFunction(),
+                                                                         new SignavioAvgFunction(),
+                                                                         new SignavioMedianFunction(),
+                                                                         new SignavioModeFunction(),
 
             };
 

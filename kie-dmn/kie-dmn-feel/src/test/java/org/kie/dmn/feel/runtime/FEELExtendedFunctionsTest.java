@@ -189,6 +189,16 @@ public class FEELExtendedFunctionsTest
                                                 //{"remove([\"item1\", \"item2\"], \"item1\")", Arrays.asList("item2"), null},
                                                 {"removeAll([\"item1\", \"item2\", \"item3\"], [\"item1\", \"item2\"])", Arrays.asList("item3"), null},
                                                 {"removeAll([\"item1\", \"item2\", \"item3\"], [\"item1\", \"item0\"])", Arrays.asList("item2", "item3"), null},
+                                                {"avg([3,5])", new BigDecimal("4"), null},
+                                                {"avg([3,4,5])", new BigDecimal("4"), null},
+                                                {"avg([4,5])", new BigDecimal("4.5"), null},
+                                                {"max([5, 4, 10])", new BigDecimal("10"), null},
+                                                {"min([5, 4, 10])", new BigDecimal("4"), null},
+                                                {"median([2, 5, 10, 12, 34, 35])", new BigDecimal("11"), null},
+                                                {"median([2, 5, 11, 12, 34, 35])", new BigDecimal("11.5"), null},
+                                                {"median([5, 10, 12, 34, 35])", new BigDecimal("12"), null},
+                                                {"mode([1, 2, 4, 4, 5, 6])", new BigDecimal("4"), null},
+                                                {"mode([1, 1, 2, 4, 4, 5, 6])", Arrays.asList(new BigDecimal("1"), new BigDecimal("4")), null},
 
         };
         return Arrays.asList( cases );
