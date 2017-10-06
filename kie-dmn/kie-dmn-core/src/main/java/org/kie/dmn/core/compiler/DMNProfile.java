@@ -16,14 +16,21 @@
 
 package org.kie.dmn.core.compiler;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.kie.dmn.api.marshalling.v1_1.DMNExtensionRegister;
+import org.kie.dmn.feel.runtime.FEELFunction;
 
 public interface DMNProfile {
 
     List<DMNExtensionRegister> getExtensionRegisters();
 
     List<DRGElementCompiler> getDRGElementCompilers();
+
+    default Collection<FEELFunction> getFEELFunctions() {
+        return Collections.emptyList();
+    }
     
 }
