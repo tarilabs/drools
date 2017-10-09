@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -30,6 +31,7 @@ import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.DashNode;
@@ -39,6 +41,7 @@ import org.kie.dmn.feel.lang.ast.UnaryTestNode;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
+import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
 
 /**
@@ -50,6 +53,23 @@ public class FEELImpl
     private static final Map<String,Object> EMPTY_INPUT = Collections.emptyMap();
 
     private Set<FEELEventListener> instanceEventListeners = new HashSet<>();
+
+    private List<FEELProfile> profiles;
+    private Optional<ExecutionFrameImpl> customFrame = Optional.empty();
+
+    public FEELImpl() {}
+
+    public FEELImpl(List<FEELProfile> profiles) {
+        this();
+        this.profiles = profiles;
+        ExecutionFrameImpl frame = new ExecutionFrameImpl(null);
+        for (FEELProfile p : profiles) {
+            for (FEELFunction f : p.getFEELFunctions()) {
+                frame.setValue(f.getName(), f);
+            }
+        }
+        customFrame = Optional.of(frame);
+    }
 
     @Override
     public CompilerContext newCompilerContext() {
@@ -111,12 +131,27 @@ public class FEELImpl
 
     @Override
     public Object evaluate(CompiledExpression expr, Map<String, Object> inputVariables) {
-        return ((CompiledExpressionImpl) expr).evaluate( getEventsManager(Collections.emptySet()), inputVariables );
+        return ((CompiledExpressionImpl) expr).evaluate(newEvaluationContext(Collections.EMPTY_SET, inputVariables));
     }
     
     @Override
     public Object evaluate(CompiledExpression expr, EvaluationContext ctx) {
-        return ((CompiledExpressionImpl) expr).evaluate( getEventsManager(ctx.getListeners()), ctx.getAllValues() );
+        return ((CompiledExpressionImpl) expr).evaluate(newEvaluationContext(ctx.getListeners(), ctx.getAllValues()));
+    }
+
+    private EvaluationContext newEvaluationContext(Collection<FEELEventListener> listeners, Map<String, Object> inputVariables) {
+        FEELEventListenersManager eventsManager = getEventsManager(listeners);
+        EvaluationContextImpl ctx = new EvaluationContextImpl( eventsManager );
+        if (customFrame.isPresent()) {
+            ExecutionFrameImpl globalFrame = (ExecutionFrameImpl) ctx.pop();
+            ExecutionFrameImpl interveawedFrame = customFrame.get();
+            interveawedFrame.setParentFrame(ctx.peek());
+            globalFrame.setParentFrame(interveawedFrame);
+            ctx.push(interveawedFrame);
+            ctx.push(globalFrame);
+        }
+        ctx.setValues(inputVariables);
+        return ctx;
     }
 
     @Override

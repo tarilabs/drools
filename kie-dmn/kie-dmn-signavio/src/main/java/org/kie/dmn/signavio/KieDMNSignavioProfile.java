@@ -17,7 +17,6 @@
 package org.kie.dmn.signavio;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -96,7 +95,7 @@ public class KieDMNSignavioProfile implements DMNProfile {
     }
 
     @Override
-    public Collection<FEELFunction> getFEELFunctions() {
+    public List<FEELFunction> getFEELFunctions() {
         return Arrays.asList(SIGNAVIO_FUNCTIONS);
     }
 
