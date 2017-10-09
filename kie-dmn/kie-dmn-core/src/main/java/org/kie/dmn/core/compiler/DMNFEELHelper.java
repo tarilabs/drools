@@ -100,9 +100,7 @@ public class DMNFEELHelper {
         for ( Map.Entry<String, DMNType> entry : ctx.getVariables().entrySet() ) {
             feelctx.addInputVariableType( entry.getKey(), ((BaseDMNTypeImpl) entry.getValue()).getFeelType() );
         }
-        for (FEELFunction f : this.feelFunctions) {
-            feelctx.addFEELFunctions(f);
-        }
+        feelctx.addFEELFunctions(this.feelFunctions);
         CompiledExpression ce = feel.compile( expression, feelctx );
         processEvents( model, element, errorMsg, msgParams );
         return ce;

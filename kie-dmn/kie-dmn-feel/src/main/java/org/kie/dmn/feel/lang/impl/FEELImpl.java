@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
@@ -54,14 +56,17 @@ public class FEELImpl
 
     private Set<FEELEventListener> instanceEventListeners = new HashSet<>();
 
-    private List<FEELProfile> profiles;
-    private Optional<ExecutionFrameImpl> customFrame = Optional.empty();
+    private final List<FEELProfile> profiles;
+    // pre-cached results from the above profiles...
+    private final Optional<ExecutionFrameImpl> customFrame;
+    private final Collection<FEELFunction> customFunctions;
 
-    public FEELImpl() {}
+    public FEELImpl() {
+        this(Collections.emptyList());
+    }
 
     public FEELImpl(List<FEELProfile> profiles) {
-        this();
-        this.profiles = profiles;
+        this.profiles = Collections.unmodifiableList(profiles);
         ExecutionFrameImpl frame = new ExecutionFrameImpl(null);
         for (FEELProfile p : profiles) {
             for (FEELFunction f : p.getFEELFunctions()) {
@@ -69,6 +74,7 @@ public class FEELImpl
             }
         }
         customFrame = Optional.of(frame);
+        customFunctions = Collections.unmodifiableList(profiles.stream().flatMap(p -> p.getFEELFunctions().stream()).collect(Collectors.toList()));
     }
 
     @Override
@@ -82,7 +88,7 @@ public class FEELImpl
     
     @Override
     public CompiledExpression compile(String expression, CompilerContext ctx) {
-        FEEL_1_1Parser parser = FEELParser.parse(getEventsManager(ctx.getListeners()), expression, ctx);
+        FEEL_1_1Parser parser = FEELParser.parse(getEventsManager(ctx.getListeners()), expression, ctx.getInputVariableTypes(), ctx.getInputVariables(), mergeFunctions(ctx));
         ParseTree tree = parser.compilation_unit();
         ASTBuilderVisitor v = new ASTBuilderVisitor( ctx.getInputVariableTypes() );
         BaseNode expr = v.visit( tree );
@@ -91,12 +97,22 @@ public class FEELImpl
     }
 
     public CompiledExpression compileExpressionList(String expression, CompilerContext ctx) {
-        FEEL_1_1Parser parser = FEELParser.parse(getEventsManager(ctx.getListeners()), expression, ctx);
+        FEEL_1_1Parser parser = FEELParser.parse(getEventsManager(ctx.getListeners()), expression, ctx.getInputVariableTypes(), ctx.getInputVariables(), mergeFunctions(ctx));
         ParseTree tree = parser.expressionList();
-        ASTBuilderVisitor v = new ASTBuilderVisitor( ctx.getInputVariableTypes() );
-        BaseNode expr = v.visit( tree );
-        CompiledExpression ce = new CompiledExpressionImpl( expr );
+        ASTBuilderVisitor v = new ASTBuilderVisitor(ctx.getInputVariableTypes());
+        BaseNode expr = v.visit(tree);
+        CompiledExpression ce = new CompiledExpressionImpl(expr);
         return ce;
+    }
+
+    private Collection<FEELFunction> mergeFunctions(CompilerContext ctx) {
+        if (ctx.getFEELFunctions().isEmpty()) {
+            return customFunctions;
+        } else {
+            Collection<FEELFunction> result = new LinkedHashSet<>(customFunctions);
+            result.addAll(ctx.getFEELFunctions());
+            return result;
+        }
     }
 
     @Override
@@ -111,6 +127,7 @@ public class FEELImpl
         if ( inputVariables != null ) {
             inputVariables.entrySet().stream().forEach( e -> compilerCtx.addInputVariable( e.getKey(), e.getValue() ) );
         }
+        compilerCtx.addFEELFunctions(customFunctions);
         CompiledExpression expr = compile( expression, compilerCtx );
         return evaluate( expr, ctx );
     }
@@ -121,6 +138,7 @@ public class FEELImpl
         if ( inputVariables != null ) {
             inputVariables.entrySet().stream().forEach( e -> ctx.addInputVariable( e.getKey(), e.getValue() ) );
         }
+        ctx.addFEELFunctions(customFunctions);
         CompiledExpression expr = compile( expression, ctx );
         if ( inputVariables == null ) {
             return evaluate( expr, EMPTY_INPUT );

@@ -26,7 +26,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-import java.util.Collections;
+import java.util.Arrays;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,20 +34,13 @@ import org.junit.runners.Parameterized;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
-import org.kie.dmn.feel.lang.CompiledExpression;
-import org.kie.dmn.feel.lang.CompilerContext;
-import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
-import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
-import org.kie.dmn.feel.lang.impl.FEELImpl;
-import org.kie.dmn.feel.runtime.FEELFunction;
-import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.signavio.KieDMNSignavioProfile;
 import org.mockito.ArgumentCaptor;
 
 @RunWith(Parameterized.class)
 public abstract class ExtendedFunctionsBaseFEELTest {
 
-    private final FEEL feel = FEEL.newInstance();
+    private final FEEL feel = FEEL.newInstance(Arrays.asList(new KieDMNSignavioProfile()));
 
     @Parameterized.Parameter(0)
     public String expression;
@@ -65,21 +58,7 @@ public abstract class ExtendedFunctionsBaseFEELTest {
         feel.addListener( evt -> {
             System.out.println(evt);
         } );
-
-        CompilerContext compilerCtx = feel.newCompilerContext();
-        for (FEELFunction f : KieDMNSignavioProfile.SIGNAVIO_FUNCTIONS) {
-            compilerCtx.addFEELFunctions(f);
-        }
-        CompiledExpression compiledExpr = feel.compile(expression, compilerCtx);
-
-        FEELEventListenersManager eventsManager = ((FEELImpl) feel).getEventsManager(Collections.emptyList());
-        EvaluationContextImpl evalCtx = new EvaluationContextImpl(eventsManager);
-        for (FEELFunction f : KieDMNSignavioProfile.SIGNAVIO_FUNCTIONS) {
-            evalCtx.peek().setValue(EvalHelper.normalizeVariableName(f.getName()), f);
-        }
-        Object feelEvaluationResult = feel.evaluate(compiledExpr, evalCtx);
-
-        assertResult(expression, feelEvaluationResult, result);
+        assertResult(expression, result);
 
         if( severity != null ) {
             ArgumentCaptor<FEELEvent> captor = ArgumentCaptor.forClass( FEELEvent.class );
@@ -90,13 +69,13 @@ public abstract class ExtendedFunctionsBaseFEELTest {
         }
     }
 
-    protected void assertResult(String expression, Object actual, Object expected) {
-        if (expected == null) {
-            assertThat("Evaluating: '" + expression + "'", actual, is(nullValue()));
-        } else if (expected instanceof Class<?>) {
-            assertThat("Evaluating: '" + expression + "'", actual, is(instanceOf((Class<?>) expected)));
+    protected void assertResult(String expression, Object result) {
+        if (result == null) {
+            assertThat("Evaluating: '" + expression + "'", feel.evaluate(expression), is(nullValue()));
+        } else if (result instanceof Class<?>) {
+            assertThat("Evaluating: '" + expression + "'", feel.evaluate(expression), is(instanceOf((Class<?>) result)));
         } else {
-            assertThat("Evaluating: '" + expression + "'", actual, is(expected));
+            assertThat("Evaluating: '" + expression + "'", feel.evaluate(expression), is(result));
         }
     }
 }
