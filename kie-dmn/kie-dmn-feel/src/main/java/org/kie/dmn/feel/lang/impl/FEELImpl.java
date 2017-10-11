@@ -19,13 +19,13 @@ package org.kie.dmn.feel.lang.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
@@ -68,13 +68,15 @@ public class FEELImpl
     public FEELImpl(List<FEELProfile> profiles) {
         this.profiles = Collections.unmodifiableList(profiles);
         ExecutionFrameImpl frame = new ExecutionFrameImpl(null);
+        Map<String, FEELFunction> functions = new HashMap<>();
         for (FEELProfile p : profiles) {
             for (FEELFunction f : p.getFEELFunctions()) {
                 frame.setValue(f.getName(), f);
+                functions.put(f.getName(), f);
             }
         }
         customFrame = Optional.of(frame);
-        customFunctions = Collections.unmodifiableList(profiles.stream().flatMap(p -> p.getFEELFunctions().stream()).collect(Collectors.toList()));
+        customFunctions = Collections.unmodifiableCollection(functions.values());
     }
 
     @Override
