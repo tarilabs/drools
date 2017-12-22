@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/definitions/_04f1c6d4-070f-4b6d-82eb-c0c07d6e1e0d" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="5.2.9" id="_04f1c6d4-070f-4b6d-82eb-c0c07d6e1e0d" name="POC20171103" namespace="http://www.trisotech.com/definitions/_04f1c6d4-070f-4b6d-82eb-c0c07d6e1e0d" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:inputData id="_e1b9a216-f9b2-4498-8999-c7a43905ea1a" name="now">
+    <semantic:variable id="_80c0b38d-1f09-497c-96c1-b67d0a5b8653" name="now" typeRef="feel:dateTime"/>
+  </semantic:inputData>
+  <semantic:decision id="_ac6022b7-37e8-4b45-b280-9fd65c7dbbd9" name="sunlight">
+    <semantic:variable id="_a2f305ab-e355-47b3-b641-10df382d9385" name="sunlight" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_e1b9a216-f9b2-4498-8999-c7a43905ea1a"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" id="_ae274c04-92a2-4639-8584-ac7c87a245f8" outputLabel="sunlight">
+      <semantic:input id="_8859bb3a-9895-4480-bcc4-e452ab354a9e">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>now.hour</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_41071e36-d5a8-42b1-95dd-0520261a2944">
+        <semantic:outputValues triso:constraintsType="enumeration">
+          <semantic:text>"night time","sunlight"</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:rule id="_a5ae0a55-afdf-476f-aafc-a8812e6912ed">
+        <semantic:inputEntry id="_6aa47f16-1b4e-404e-99ea-4599a4a4d55e">
+          <semantic:text>&lt;8</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_3c36e568-a0bb-46f6-89ea-721893c0d882">
+          <semantic:text>"night time"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_8917eba1-62e5-42b3-8f5d-32627809ba39">
+        <semantic:inputEntry id="_f807caae-d7bd-4be8-b322-c1f3f4ba7c6b">
+          <semantic:text>[8..18)</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_1f1da666-9419-4609-8c22-e3a421964917">
+          <semantic:text>"sunlight"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_3ab03d1e-9936-4d2f-9ffa-7edbdac555fc">
+        <semantic:inputEntry id="_94736e12-9391-4750-844c-36a17f2c1f67">
+          <semantic:text>&gt;= 18</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_438a5c39-a08d-4789-a233-6bef2dc47ca6">
+          <semantic:text>"night time"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:inputData id="_a020576e-9219-4fda-b3d4-13b09bd2b31a" name="is Present">
+    <semantic:variable id="_67e2e311-3fd9-4386-bbd4-687c5dab634d" name="is Present" typeRef="feel:boolean"/>
+  </semantic:inputData>
+  <semantic:decision id="_3f515405-426e-4de0-9008-07e8410fa53f" name="Suggested Blinds">
+    <semantic:variable id="_5cc8cab0-0400-4f21-8d1d-fdb30dc9dd34" name="Suggested Blinds" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_a020576e-9219-4fda-b3d4-13b09bd2b31a"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_ac6022b7-37e8-4b45-b280-9fd65c7dbbd9"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" id="_3affa09c-84b0-48c0-8248-26e9138fc43d" outputLabel="Suggested Blinds">
+      <semantic:input id="_9c973ff6-d320-496e-97d8-feb152758886">
+        <semantic:inputExpression typeRef="feel:boolean">
+          <semantic:text>is Present</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:input id="_f086adce-a1e8-4ee1-8fdd-2bc57f8b67f2">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>sunlight</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues triso:constraintsType="enumeration">
+          <semantic:text>"night time","sunlight"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:output id="_9f0e97c2-b1b1-4d73-a08d-57c44ba4eb82"/>
+      <semantic:rule id="_562badca-4328-40d7-bfe7-a7262760d0dd">
+        <semantic:inputEntry id="_5ee3f2c9-cae6-4636-a32f-fe54b05f7fb0">
+          <semantic:text>false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_fe970c64-b99a-4717-b5f6-20ccb9ea7731">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_a65d2351-440f-4c99-9df4-fecf002db794">
+          <semantic:text>"CLOSED"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_64712cfd-ee92-4196-8cbc-3fc3826b8e33">
+        <semantic:inputEntry id="_655045da-f86e-4316-b354-b96c255d19ac">
+          <semantic:text>true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_b09a55cd-68e6-40ed-87b7-a41945c6fdff">
+          <semantic:text>"sunlight"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_609f3a34-03e0-4a61-bdd3-6e2e13775340">
+          <semantic:text>"OPEN"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_7c13ffba-b83a-4b6d-9711-b5a4fcc815b4">
+        <semantic:inputEntry id="_f45dd337-8d29-4def-ada1-8d399b24e5ee">
+          <semantic:text>true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_d9666afa-a931-4e47-96ac-ddebdb7a20a2">
+          <semantic:text>"night time"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_7563ae77-c9d0-4e59-a228-2ff1d7fed44d">
+          <semantic:text>"CLOSED"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:decision id="_3a66f28e-5982-4efe-8033-bfa867671d29" name="Suggested light">
+    <semantic:variable id="_aacce585-04a6-4737-a04a-27779e726577" name="Suggested light" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_a020576e-9219-4fda-b3d4-13b09bd2b31a"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_ac6022b7-37e8-4b45-b280-9fd65c7dbbd9"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" id="_5cb99128-bd49-4530-977f-029f92305292" outputLabel="Suggested light">
+      <semantic:input id="_82c12659-df73-4ca4-834c-043604b94d10">
+        <semantic:inputExpression typeRef="feel:boolean">
+          <semantic:text>is Present</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:input id="_0cab0da5-1f56-46df-a08e-b3292d50985f">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>sunlight</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues triso:constraintsType="enumeration">
+          <semantic:text>"night time","sunlight"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:output id="_fe375909-30ce-40ee-baae-1a623c6f3346"/>
+      <semantic:rule id="_1d21286a-e39a-4ddb-9a38-dbe0b036eb05">
+        <semantic:inputEntry id="_a0c609d2-4566-4db5-a0d2-ba09d8407e17">
+          <semantic:text>false</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_4ea2805e-8d7e-4716-b468-774171e1855e">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_f4af5ae9-baf0-433e-871a-0ea8e8273366">
+          <semantic:text>"OFF"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_0eaf414f-54f9-41c6-9800-b7ab0ed0ee6f">
+        <semantic:inputEntry id="_6952a551-f588-4699-b358-23a50c6f9832">
+          <semantic:text>true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_da6a638d-0821-4958-9ed9-4cc705e88a97">
+          <semantic:text>"sunlight"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_b7fd33d1-2589-4d81-92be-84c522495489">
+          <semantic:text>"OFF"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_8475a6a9-0bee-4ba7-8503-6a387ca75c82">
+        <semantic:inputEntry id="_38d0ebef-e988-46b7-bf8f-ac4ed53f13ff">
+          <semantic:text>true</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_88b2b209-15bc-4857-9b6a-4d4c52f7b676">
+          <semantic:text>"night time"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_29d6d3f4-02ca-4bb3-a58f-956c2eef3fdf">
+          <semantic:text>"ON"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+</semantic:definitions>

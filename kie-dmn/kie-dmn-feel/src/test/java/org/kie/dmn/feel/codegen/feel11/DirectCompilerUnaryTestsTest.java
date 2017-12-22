@@ -56,6 +56,7 @@ public class DirectCompilerUnaryTestsTest {
     
     @Test
     public void test_positiveUnaryTestIneq() {
+        assertThat(parseCompileEvaluate(">0, <0", 1), is(Arrays.asList(true, false)));
         assertThat(parseCompileEvaluate("<47", 1), is(Arrays.asList(true)));
         assertThat(parseCompileEvaluate("<47, <100", 1), is(Arrays.asList(true, true)));
         assertThat(parseCompileEvaluate("<47, <100, <-47", 1), is(Arrays.asList(true, true, false)));

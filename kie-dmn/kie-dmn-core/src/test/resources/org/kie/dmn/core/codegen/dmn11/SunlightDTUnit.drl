@@ -1,0 +1,43 @@
+/*
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.drools.dmnem.poc20171103;
+unit SunlightDTUnit;
+
+import java.time.LocalDateTime;
+
+rule "R1"
+when
+	java.math.BigDecimal(intValue() < 8) from DTInput1
+then
+	System.out.println("sunlight ROW 1");
+	sunlightOutput1.insert( "night time" );
+end
+
+rule "SunlightDTUnit_2"
+when
+	Integer(this >= 8 || this < 18) from sunlightInput1
+then
+	System.out.println("sunlight ROW 2");
+	sunlightOutput1.insert( "sunlight" );
+end
+
+rule "SunlightDTUnit_3"
+when
+	Integer(this >= 18) from sunlightInput1
+then
+	System.out.println("sunlight ROW 3");
+	sunlightOutput1.insert( "night time" );
+end
