@@ -16,12 +16,6 @@
 
 package org.drools.modelcompiler;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -43,28 +37,16 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 public class CompilerTest extends BaseModelTest {
 
     public CompilerTest( RUN_TYPE testRunType ) {
         super( testRunType );
-    }
-
-    @Test
-    public void testMatteo() {
-        String str = "rule \"R1\"\n" +
-                     "when\n" +
-                     "    java.lang.Integer(this < 8) \n" +
-                     "then\n" +
-                     "    insert(\"sunlight ROW 1\");\n" +
-                     //"    sunlightOutput1.insert( \"night time\" );\n" +
-                     "end";
-
-        KieSession ksession = getKieSession(str);
-
-        ksession.insert(1);
-        ksession.fireAllRules();
-
-
     }
 
     @Test(timeout = 5000)

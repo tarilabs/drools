@@ -41,6 +41,8 @@ import org.kie.dmn.feel.runtime.UnaryTest;
 
 public class PositiveNegativeDTModel implements Model {
 
+    private static final String DT_INPUT1 = "__drools__i1";
+
     public PositiveNegativeDTModel() {
     }
 
@@ -60,7 +62,7 @@ public class PositiveNegativeDTModel implements Model {
     public static Rule getR0() {
         Variable<PositiveNegativeDTUnit> unit = declarationOf(type(PositiveNegativeDTUnit.class));
         Variable<BigDecimal> my_number = declarationOf(type(BigDecimal.class));
-        Source<BigDecimal> DTInput1 = sourceOf("DTInput1", type(BigDecimal.class));
+        Source<BigDecimal> DTInput1 = sourceOf(DT_INPUT1, type(BigDecimal.class));
 
         Rule rule = rule("mypackage", "R0").unit(PositiveNegativeDTUnit.class)
                                            .view()
@@ -70,10 +72,24 @@ public class PositiveNegativeDTModel implements Model {
         return rule;
     }
 
+    public static Rule getR0b() {
+        Variable<PositiveNegativeDTUnit> unit = declarationOf(type(PositiveNegativeDTUnit.class));
+        Variable<BigDecimal> my_number = declarationOf(type(BigDecimal.class));
+        Source<BigDecimal> DTInput1 = sourceOf(DT_INPUT1, type(BigDecimal.class));
+
+        Rule rule = rule("mypackage", "R0b").unit(PositiveNegativeDTUnit.class)
+                                            .view(
+                                                  from(DTInput1).filter(my_number, (x) -> true))
+                                            .then(on(unit).execute((u) -> {
+                                                System.out.println("rule are triggering2");
+                                            }));
+        return rule;
+    }
+
     public static Rule getR1() {
         Variable<PositiveNegativeDTUnit> unit = declarationOf(type(PositiveNegativeDTUnit.class));
         Variable<BigDecimal> my_number = declarationOf(type(BigDecimal.class));
-        Source<BigDecimal> DTInput1 = sourceOf("DTInput1", type(BigDecimal.class));
+        Source<BigDecimal> DTInput1 = sourceOf(DT_INPUT1, type(BigDecimal.class));
 
         Rule rule = rule("mypackage", "R1").unit(PositiveNegativeDTUnit.class)
                                            .view(
@@ -82,7 +98,7 @@ public class PositiveNegativeDTModel implements Model {
                                                      return UT__620.apply(u.getFEELEvaluationContext(), x);
                                                  }))
                                            .then(on(unit).execute((u) -> {
-                                               u.getDTOutput1().insert("positive");
+                                               u.get__drools__o1().insert("positive");
                                            }));
         return rule;
     }
@@ -90,13 +106,13 @@ public class PositiveNegativeDTModel implements Model {
     public static Rule getR2() {
         Variable<PositiveNegativeDTUnit> unit = declarationOf(type(PositiveNegativeDTUnit.class));
         Variable<BigDecimal> my_number = declarationOf(type(BigDecimal.class));
-        Source<BigDecimal> DTInput1 = sourceOf("DTInput1", type(BigDecimal.class));
+        Source<BigDecimal> DTInput1 = sourceOf(DT_INPUT1, type(BigDecimal.class));
 
         Rule rule = rule("mypackage", "R2").unit(PositiveNegativeDTUnit.class)
                                            .view(
                                                  from(DTInput1).filter(my_number, unit, (x, u) -> UT__600.apply(u.getFEELEvaluationContext(), x)))
                                            .then(on(unit).execute((u) -> {
-                                               u.getDTOutput1().insert("negative");
+                                               u.get__drools__o1().insert("negative");
                                            }));
         return rule;
     }
@@ -113,7 +129,7 @@ public class PositiveNegativeDTModel implements Model {
 
     @Override
     public List<Rule> getRules() {
-        return Arrays.asList(getR0(), getR1(), getR2());
+        return Arrays.asList(getR0(), getR0b(), getR1(), getR2());
     }
 
     @Override

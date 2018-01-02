@@ -25,8 +25,8 @@ public class PositiveNegativeDTUnit extends DMNUnit {
 
     private BigDecimal a_number;
 
-    private DataSource<BigDecimal> DTInput1 = DataSource.create();
-    private DataSource<String> DTOutput1 = DataSource.create();
+    private DataSource<BigDecimal> __drools__i1 = DataSource.create();
+    private DataSource<String> __drools__o1 = DataSource.create();
 
     private String positive_or_negative;
 
@@ -35,12 +35,12 @@ public class PositiveNegativeDTUnit extends DMNUnit {
         this.a_number = (BigDecimal) context.get("a number");
     }
 
-    public DataSource<BigDecimal> getDTInput1() {
-        return DTInput1;
+    public DataSource<BigDecimal> get__drools__i1() {
+        return __drools__i1;
     }
 
-    public DataSource<String> getDTOutput1() {
-        return DTOutput1;
+    public DataSource<String> get__drools__o1() {
+        return __drools__o1;
     }
 
     public String getPositive_or_negative() {
@@ -50,13 +50,13 @@ public class PositiveNegativeDTUnit extends DMNUnit {
     @Override
     public void onStart() {
         // input1: (simple assignment)
-        DTInput1.insert(a_number);
+        __drools__i1.insert(a_number);
     }
 
     @Override
     public void onEnd() {
         // output1: (simple assignment)
-        positive_or_negative = DTOutput1.iterator().next();
+        positive_or_negative = __drools__o1.iterator().next();
     }
 
     @Override
