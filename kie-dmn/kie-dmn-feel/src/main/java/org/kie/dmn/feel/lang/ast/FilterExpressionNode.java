@@ -18,13 +18,17 @@ package org.kie.dmn.feel.lang.ast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
 public class FilterExpressionNode
@@ -103,6 +107,8 @@ public class FilterExpressionNode
         try {
             ctx.enterFrame();
             // handle it as a predicate
+            // Have the "item" variable set first, so to respect the DMN spec: The expression in square brackets can reference a list
+            // element using the name item, unless the list element is a context that contains the key "item".
             ctx.setValue( "item", v );
             // if it is a Map, need to add all string keys as variables in the context
             if( v instanceof Map ) {
@@ -111,6 +117,18 @@ public class FilterExpressionNode
                     if( ce.getKey() instanceof String ) {
                         ctx.setValue( (String) ce.getKey(), ce.getValue() );
                     }
+                }
+            } else if (JavaBackedType.of(v.getClass()) != BuiltInType.UNKNOWN) {
+                JavaBackedType of = (JavaBackedType) JavaBackedType.of(v.getClass());
+                Collection<String> fields = of.getFields().keySet();
+                for (String f : fields) {
+                    Object fValue = null;
+                    try {
+                        fValue = EvalHelper.getValue(v, f);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    ctx.setValue(f, fValue);
                 }
             }
 
