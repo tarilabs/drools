@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/dmn/definitions/_abbdfe05-9532-438d-b6cb-349d9cf42b78" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.4.2" id="_abbdfe05-9532-438d-b6cb-349d9cf42b78" name="DROOLS2411" namespace="http://www.trisotech.com/dmn/definitions/_abbdfe05-9532-438d-b6cb-349d9cf42b78" triso:logoChoice="Default">
+  <semantic:extensionElements>
+    <triso:dmnInputs>[{"name":"my input","id":"_4c49ea0e-96ec-48ae-a03b-20fb3b827535","type":"complex","children":[{"name":"name","id":"_4c49ea0e-96ec-48ae-a03b-20fb3b827535_b774d9b5-a78a-4c7b-893e-e15ea6ee073a","type":"string"},{"name":"numbers","id":"_4c49ea0e-96ec-48ae-a03b-20fb3b827535_dc54c20a-c77f-4fc4-a09e-8029cda7cb14","isCollection":true,"type":"number"}]}]</triso:dmnInputs>
+    <drools:decisionServices xmlns:drools="http://www.drools.org/kie/dmn/1.1"/>
+  </semantic:extensionElements>
+  <semantic:itemDefinition label="tStruct" name="tStruct">
+    <semantic:itemComponent id="_b774d9b5-a78a-4c7b-893e-e15ea6ee073a" name="name">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_dc54c20a-c77f-4fc4-a09e-8029cda7cb14" isCollection="true" name="numbers">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:inputData id="_4c49ea0e-96ec-48ae-a03b-20fb3b827535" name="my input">
+    <semantic:variable id="_772b73b7-274b-46da-881b-e7e9c6c7ad4a" name="my input" typeRef="tStruct"/>
+  </semantic:inputData>
+  <semantic:decision id="_b3dc656c-fe5f-4db9-ae75-59fa2f2660b1" name="hardcoded Decision A">
+    <semantic:variable id="_4f40a008-2f89-4104-8490-306f88e4d32c" name="hardcoded Decision A"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_4c49ea0e-96ec-48ae-a03b-20fb3b827535"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_44436754-9a7c-48bf-a8bb-f214bc92fa37">
+      <semantic:text>for m in my input.numbers return ceiling(m)</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:decision id="_76d48b43-777f-4d98-880c-93674c0c565e" name="hardcoded Decision B">
+    <semantic:variable id="_15dd22ab-f7dc-46ef-93fd-1bc6f0c32de6" name="hardcoded Decision B"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_4c49ea0e-96ec-48ae-a03b-20fb3b827535"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_4117015f-19ef-4062-b83e-de1fa4ae38ad">
+      <semantic:text>for m in my input[name="asd"].numbers return ceiling(m)</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:decision id="_e4281d60-7bcb-4d6d-9012-fe26f78422a7" name="hardcoded Decision C">
+    <semantic:variable id="_c6cb708f-f3c1-4f7a-91be-f0c357c83c6a" name="hardcoded Decision C"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_4c49ea0e-96ec-48ae-a03b-20fb3b827535"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression id="_6a6c7118-e0a9-4391-bd28-77fbb47003a8">
+      <semantic:text>for m in my input[item.name="asd"].numbers return ceiling(m)</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+</semantic:definitions>

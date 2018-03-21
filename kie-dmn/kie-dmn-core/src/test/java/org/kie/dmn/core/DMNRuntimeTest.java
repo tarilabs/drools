@@ -1832,5 +1832,27 @@ public class DMNRuntimeTest {
         assertThat(result.get("Decide Vowel a"), is("a"));
         assertThat(result.get("Decide BAD"), nullValue());
     }
+
+    @Test
+    public void testForUsingFilters() {
+        // DROOLS-2411
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("DROOLS-2411-20180321.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_abbdfe05-9532-438d-b6cb-349d9cf42b78", "DROOLS2411");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context = DMNFactory.newContext();
+        context.set("my input", prototype(entry("name", "asd"),
+                                          entry("numbers", Arrays.asList(new BigDecimal(0.5d), new BigDecimal(1.5d), new BigDecimal(2.5d)))));
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        System.out.println(dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("hardcoded Decision A"), is(Arrays.asList(new BigDecimal(1), new BigDecimal(2), new BigDecimal(3))));
+        assertThat(result.get("hardcoded Decision B"), is(Arrays.asList(new BigDecimal(1), new BigDecimal(2), new BigDecimal(3))));
+        assertThat(result.get("hardcoded Decision C"), is(Arrays.asList(new BigDecimal(1), new BigDecimal(2), new BigDecimal(3))));
+    }
 }
 
