@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/dmn/definitions/_8bff4456-af07-4b88-a12a-9caa49291786" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.6.201804131546" id="_8bff4456-af07-4b88-a12a-9caa49291786" name="Import Complex" namespace="http://www.trisotech.com/dmn/definitions/_8bff4456-af07-4b88-a12a-9caa49291786" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:itemDefinition label="FN" name="FN">
+    <semantic:itemComponent id="_63541458-fa4f-4139-8502-6cd8fb2045ba" name="First">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_6e8d8372-f4fd-49d2-ae85-d7577fb9eb71" name="Last">
+      <semantic:typeRef>feel:string</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:businessKnowledgeModel id="_5d1bd94e-38b6-4465-a064-90509f234da4" name="Complex Type">
+    <semantic:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="F" id="_473a2010-8b25-4549-83d6-a215eb1987a0">
+      <semantic:formalParameter id="_f80c2ef0-ab7e-40c9-a04b-7f8c7c5d3217" name="first" typeRef="feel:string"/>
+      <semantic:formalParameter id="_b16968ce-e972-4621-a23c-9fa2a93eaacc" name="last" typeRef="feel:string"/>
+      <semantic:literalExpression id="_6df23a02-b7f2-4e10-b3b4-b7c5a9706730">
+        <semantic:text>first + " " + last</semantic:text>
+      </semantic:literalExpression>
+    </semantic:encapsulatedLogic>
+    <semantic:variable id="_4c9901d8-d6e2-498d-8e57-d28b0aef9325" name="Complex Type" typeRef="FN"/>
+  </semantic:businessKnowledgeModel>
+</semantic:definitions>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/dmn/definitions/_a2c9eb9c-b448-4d2f-9bf6-491b39e4e87e" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:include1="http://www.trisotech.com/dmn/definitions/_8bff4456-af07-4b88-a12a-9caa49291786" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.0.6.201804131546" id="_a2c9eb9c-b448-4d2f-9bf6-491b39e4e87e" name="Model Complex" namespace="http://www.trisotech.com/dmn/definitions/_a2c9eb9c-b448-4d2f-9bf6-491b39e4e87e" triso:logoChoice="Default">
+  <semantic:extensionElements/>
+  <semantic:import xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:modelName="Import Complex" drools:name="Import Complex" importType="http://www.omg.org/spec/DMN1-2Alpha/20160929/MODEL" namespace="http://www.trisotech.com/dmn/definitions/_8bff4456-af07-4b88-a12a-9caa49291786" triso:fileId="eyJmIjp7InNrdSI6ImViNWNlYTdhLWE5ZjItNDc0OC05NjlkLTAwZDExNWQ3ZjViZiIsIm5hbWUiOiJJbXBvcnQgQ29tcGxleCJ9fQ==" triso:fileName="Hello World Import/Import Complex"/>
+  <semantic:decision id="_33270a93-43dc-4f73-bc64-da12a0bb0d0c" name="Say">
+    <semantic:variable id="_3a4015c7-f34b-44e0-8aba-32b72d09f4f8" name="Say" typeRef="Import Complex.FN"/>
+    <semantic:knowledgeRequirement>
+      <semantic:requiredKnowledge href="http://www.trisotech.com/dmn/definitions/_8bff4456-af07-4b88-a12a-9caa49291786#_5d1bd94e-38b6-4465-a064-90509f234da4"/>
+    </semantic:knowledgeRequirement>
+    <semantic:literalExpression id="_99064c11-6799-4077-b03e-c6dbf54a07cf">
+      <semantic:text>Import Complex.Complex Type("Simon", "Ringuette")</semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+</semantic:definitions>
