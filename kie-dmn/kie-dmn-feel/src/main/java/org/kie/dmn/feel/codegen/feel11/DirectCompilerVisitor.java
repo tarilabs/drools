@@ -75,7 +75,6 @@ import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.IterationContextsContext;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.KeyNameContext;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.NameRefContext;
 import org.kie.dmn.feel.parser.feel11.ParserHelper;
-import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 import org.kie.dmn.feel.util.EvalHelper;
@@ -91,6 +90,9 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     private static final Expression EMPTY_LIST = JavaParser.parseExpression("java.util.Collections.emptyList()");
     private static final Expression EMPTY_MAP = JavaParser.parseExpression("java.util.Collections.emptyMap()");
     private static final Expression ANONYMOUS_STRING_LITERAL = new StringLiteralExpr("<anonymous>");
+    private static final Expression BOUNDARY_CLOSED = JavaParser.parseExpression(org.kie.dmn.feel.runtime.Range.RangeBoundary.class.getCanonicalName() + ".CLOSED");
+    private static final Expression BOUNDARY_OPEN = JavaParser.parseExpression(org.kie.dmn.feel.runtime.Range.RangeBoundary.class.getCanonicalName() + ".OPEN");
+
     // TODO as this is now compiled it might not be needed for this compilation strategy, just need the layer 0 of input Types, but to be checked.
     private ScopeHelper scopeHelper;
     private boolean replaceEqualForUnaryTest = false;
@@ -479,34 +481,38 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     public DirectCompilerResult visitInterval(FEEL_1_1Parser.IntervalContext ctx) {
         DirectCompilerResult start = visit(ctx.start);
         DirectCompilerResult end = visit(ctx.end);
-        RangeNode.IntervalBoundary low = ctx.low.getText().equals("[") ? RangeNode.IntervalBoundary.CLOSED : RangeNode.IntervalBoundary.OPEN;
-        RangeNode.IntervalBoundary up = ctx.up.getText().equals("]") ? RangeNode.IntervalBoundary.CLOSED : RangeNode.IntervalBoundary.OPEN;
 
-        Expression BOUNDARY_CLOSED = JavaParser.parseExpression(org.kie.dmn.feel.runtime.Range.RangeBoundary.class.getCanonicalName() + ".CLOSED");
-        Expression BOUNDARY_OPEN = JavaParser.parseExpression(org.kie.dmn.feel.runtime.Range.RangeBoundary.class.getCanonicalName() + ".OPEN");
+        Expression lowBoundary = boundaryOf(
+                RangeNode.IntervalBoundary.lowBoundaryOf(
+                        ctx.low.getText()));
+        Expression highBoundary =
+                new CastExpr(
+                    JavaParser.parseType(Comparable.class.getCanonicalName()),
+                    start.getExpression());
+        Expression lowEndPoint =
+                new CastExpr(
+                    JavaParser.parseType(Comparable.class.getCanonicalName()),
+                    end.getExpression());
+        Expression highEndPoint = boundaryOf(
+                RangeNode.IntervalBoundary.highBoundaryOf(
+                        ctx.up.getText()));
 
-        String originalText = ParserHelper.getOriginalText(ctx);
+        ObjectCreationExpr initializer =
+                new ObjectCreationExpr()
+                .setType(JavaParser.parseClassOrInterfaceType(RangeImpl.class.getCanonicalName()))
+                        .addArgument(lowBoundary)
+                        .addArgument(highBoundary)
+                        .addArgument(lowEndPoint)
+                        .addArgument(highEndPoint);
 
-        ObjectCreationExpr initializer = new ObjectCreationExpr();
-        initializer.setType(JavaParser.parseClassOrInterfaceType(RangeImpl.class.getCanonicalName()));
-        initializer.addArgument(low == IntervalBoundary.CLOSED ? BOUNDARY_CLOSED : BOUNDARY_OPEN);
-        initializer.addArgument(start.getExpression());
-        initializer.addArgument(end.getExpression());
-        initializer.addArgument(up == IntervalBoundary.CLOSED ? BOUNDARY_CLOSED : BOUNDARY_OPEN);
-        String constantName = "RANGE_" + CodegenStringUtil.escapeIdentifier(originalText);
-        VariableDeclarator vd = new VariableDeclarator(JavaParser.parseClassOrInterfaceType(Range.class.getCanonicalName()), constantName);
-        vd.setInitializer(initializer);
-        FieldDeclaration fd = new FieldDeclaration();
-        fd.setModifier(Modifier.PUBLIC, true);
-        fd.setModifier(Modifier.STATIC, true);
-        fd.setModifier(Modifier.FINAL, true);
-        fd.addVariable(vd);
+        return DirectCompilerResult.of(
+                initializer,
+                BuiltInType.RANGE,
+                DirectCompilerResult.mergeFDs(start, end));
+    }
 
-        fd.setJavadocComment(" FEEL range: " + originalText + " ");
-
-        DirectCompilerResult directCompilerResult = DirectCompilerResult.of(new NameExpr(constantName), BuiltInType.RANGE, DirectCompilerResult.mergeFDs(start, end));
-        directCompilerResult.addFieldDesclaration(fd);
-        return directCompilerResult;
+    private Expression boundaryOf(IntervalBoundary low) {
+        return low == IntervalBoundary.CLOSED ? BOUNDARY_CLOSED : BOUNDARY_OPEN;
     }
 
     @Override

@@ -33,6 +33,13 @@ public class RangeNode
 
     public static enum IntervalBoundary {
         OPEN, CLOSED;
+        public static IntervalBoundary lowBoundaryOf(String input) {
+            return "[".equals(input) ? CLOSED : OPEN;
+        }
+        public static IntervalBoundary highBoundaryOf(String input) {
+            return "]".equals(input) ? CLOSED : OPEN;
+        }
+
     }
 
     private IntervalBoundary lowerBound;
