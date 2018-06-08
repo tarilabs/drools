@@ -22,6 +22,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -75,6 +76,7 @@ import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.IterationContextsContext;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.KeyNameContext;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.NameRefContext;
 import org.kie.dmn.feel.parser.feel11.ParserHelper;
+import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 import org.kie.dmn.feel.util.EvalHelper;
@@ -92,6 +94,9 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
     private static final Expression ANONYMOUS_STRING_LITERAL = new StringLiteralExpr("<anonymous>");
     private static final Expression BOUNDARY_CLOSED = JavaParser.parseExpression(org.kie.dmn.feel.runtime.Range.RangeBoundary.class.getCanonicalName() + ".CLOSED");
     private static final Expression BOUNDARY_OPEN = JavaParser.parseExpression(org.kie.dmn.feel.runtime.Range.RangeBoundary.class.getCanonicalName() + ".OPEN");
+
+    private static final org.drools.javaparser.ast.type.Type TYPE_COMPARABLE =
+            JavaParser.parseType(Comparable.class.getCanonicalName());
 
     // TODO as this is now compiled it might not be needed for this compilation strategy, just need the layer 0 of input Types, but to be checked.
     private ScopeHelper scopeHelper;
@@ -482,37 +487,76 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         DirectCompilerResult start = visit(ctx.start);
         DirectCompilerResult end = visit(ctx.end);
 
-        Expression lowBoundary = boundaryOf(
-                RangeNode.IntervalBoundary.lowBoundaryOf(
+        Expression lowBoundary = expressionBoundaryOf(
+                RangeNode.IntervalBoundary.fromString(
                         ctx.low.getText()));
-        Expression highBoundary =
-                new CastExpr(
-                    JavaParser.parseType(Comparable.class.getCanonicalName()),
-                    start.getExpression());
         Expression lowEndPoint =
-                new CastExpr(
-                    JavaParser.parseType(Comparable.class.getCanonicalName()),
-                    end.getExpression());
-        Expression highEndPoint = boundaryOf(
-                RangeNode.IntervalBoundary.highBoundaryOf(
+                new CastExpr(TYPE_COMPARABLE,
+                             new EnclosedExpr(start.getExpression()));
+        Expression highEndPoint =
+                new CastExpr(TYPE_COMPARABLE,
+                             new EnclosedExpr(end.getExpression()));
+        Expression highBoundary = expressionBoundaryOf(
+                RangeNode.IntervalBoundary.fromString(
                         ctx.up.getText()));
 
         ObjectCreationExpr initializer =
                 new ObjectCreationExpr()
                 .setType(JavaParser.parseClassOrInterfaceType(RangeImpl.class.getCanonicalName()))
                         .addArgument(lowBoundary)
-                        .addArgument(highBoundary)
                         .addArgument(lowEndPoint)
-                        .addArgument(highEndPoint);
+                        .addArgument(highEndPoint)
+                        .addArgument(highBoundary);
 
-        return DirectCompilerResult.of(
-                initializer,
-                BuiltInType.RANGE,
-                DirectCompilerResult.mergeFDs(start, end));
+
+        // if this is a range of type i..j with i,j numbers:
+        // then we make it a constant; otherwise we fallback
+        // to the general case of creating the Range object at runtime
+        if (isNumericConstant(start) && isNumericConstant(end)) {
+            FieldDeclaration rangeField =
+                    fieldDeclarationOf(
+                            "RANGE",
+                            ParserHelper.getOriginalText(ctx),
+                            initializer);
+            Set<FieldDeclaration> fieldDeclarations =
+                    DirectCompilerResult.mergeFDs(start, end);
+            fieldDeclarations.add(rangeField);
+
+            return DirectCompilerResult.of(
+                    new NameExpr(
+                            rangeField.getVariable(0)
+                                    .getName().asString()),
+                    BuiltInType.RANGE,
+                    fieldDeclarations);
+        } else {
+            return DirectCompilerResult.of(
+                    initializer,
+                    BuiltInType.RANGE,
+                    DirectCompilerResult.mergeFDs(start, end));
+        }
+
     }
 
-    private Expression boundaryOf(IntervalBoundary low) {
+    private FieldDeclaration fieldDeclarationOf(String prefix, String originalText, ObjectCreationExpr initializer) {
+        String constantName = prefix + "_" + CodegenStringUtil.escapeIdentifier(originalText);
+        return new FieldDeclaration(
+                EnumSet.of(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL),
+                new VariableDeclarator(
+                        JavaParser.parseClassOrInterfaceType(Range.class.getCanonicalName()),
+                        constantName,
+                        initializer))
+                .setJavadocComment(" FEEL range: " + originalText + " ");
+    }
+
+    private Expression expressionBoundaryOf(IntervalBoundary low) {
         return low == IntervalBoundary.CLOSED ? BOUNDARY_CLOSED : BOUNDARY_OPEN;
+    }
+
+    private boolean isNumericConstant(DirectCompilerResult r) {
+        // FIXME: this is a bit arbitrary, maybe we should turn this into a flag in `r`
+        return r.getExpression().isNameExpr() &&
+                r.resultType.equals(BuiltInType.NUMBER) &&
+                r.getFieldDeclarations().size() > 0;
     }
 
     @Override
