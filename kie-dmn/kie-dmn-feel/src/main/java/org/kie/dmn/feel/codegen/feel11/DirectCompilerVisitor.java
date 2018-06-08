@@ -496,19 +496,18 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
                 RangeNode.IntervalBoundary.fromString(
                         ctx.up.getText()));
 
-        ObjectCreationExpr initializer =
-                new ObjectCreationExpr()
-                .setType(JavaParser.parseClassOrInterfaceType(RangeImpl.class.getCanonicalName()))
-                        .addArgument(lowBoundary)
-                        .addArgument(lowEndPoint)
-                        .addArgument(highEndPoint)
-                        .addArgument(highBoundary);
-
-
         // if this is a range of type i..j with i,j numbers:
         // then we make it a constant; otherwise we fallback
         // to the general case of creating the Range object at runtime
         if (isNumericConstant(start) && isNumericConstant(end)) {
+            ObjectCreationExpr initializer =
+                    new ObjectCreationExpr()
+                            .setType(JavaParser.parseClassOrInterfaceType(RangeImpl.class.getCanonicalName()))
+                            .addArgument(lowBoundary)
+                            .addArgument(new CastExpr(TYPE_COMPARABLE, lowEndPoint))
+                            .addArgument(new CastExpr(TYPE_COMPARABLE, highEndPoint))
+                            .addArgument(highBoundary);
+
             FieldDeclaration rangeField =
                     fieldDeclarationOf(
                             "RANGE",
@@ -525,6 +524,16 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
                     BuiltInType.RANGE,
                     fieldDeclarations);
         } else {
+            MethodCallExpr initializer =
+                    new MethodCallExpr(
+                            new NameExpr(RangeImpl.class.getCanonicalName()),
+                            "of", new NodeList<>(
+                            new NameExpr("feelExprCtx"),
+                            lowBoundary,
+                            lowEndPoint,
+                            highEndPoint,
+                            highBoundary));
+
             return DirectCompilerResult.of(
                     initializer,
                     BuiltInType.RANGE,
@@ -533,7 +542,7 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
 
     }
 
-    private FieldDeclaration fieldDeclarationOf(String prefix, String originalText, ObjectCreationExpr initializer) {
+    private FieldDeclaration fieldDeclarationOf(String prefix, String originalText, Expression initializer) {
         String constantName = prefix + "_" + CodegenStringUtil.escapeIdentifier(originalText);
         return new FieldDeclaration(
                 EnumSet.of(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL),

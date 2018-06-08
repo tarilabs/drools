@@ -18,8 +18,12 @@ package org.kie.dmn.feel.runtime.impl;
 
 import java.time.Period;
 
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.runtime.Range;
+import org.kie.dmn.feel.runtime.events.ASTEventBase;
+import org.kie.dmn.feel.util.Msg;
 
 public class RangeImpl
         implements Range {
@@ -29,24 +33,28 @@ public class RangeImpl
     private Comparable    lowEndPoint;
     private Comparable    highEndPoint;
 
-    public RangeImpl() {
+    public static RangeImpl of(EvaluationContext ctx, RangeBoundary lowBoundary, Object lowEndPoint, Object highEndPoint, RangeBoundary highBoundary) {
+        Comparable left = asComparable(lowEndPoint);
+        Comparable right = asComparable(highEndPoint);
+        if (left == null || right == null || !compatible(left, right)) {
+            ctx.notifyEvt( () -> new ASTEventBase(FEELEvent.Severity.ERROR, Msg.createMessage(Msg.INCOMPATIBLE_TYPE_FOR_RANGE, left.getClass().getSimpleName() ), null));
+            return null;
+        }
+        return new RangeImpl(
+                lowBoundary,
+                left,
+                right,
+                highBoundary);
     }
 
-    public RangeImpl(RangeBoundary lowBoundary, Comparable lowEndPoint, Comparable highEndPoint, RangeBoundary highBoundary) {
-        this.lowBoundary = lowBoundary;
-        this.highBoundary = highBoundary;
-        this.lowEndPoint = lowEndPoint;
-        this.highEndPoint = highEndPoint;
+    private static boolean compatible(Comparable left, Comparable right) {
+        Class<?> leftClass = left.getClass();
+        Class<?> rightClass = right.getClass();
+        return leftClass.isAssignableFrom(rightClass)
+                || rightClass.isAssignableFrom(leftClass);
     }
 
-    public RangeImpl(RangeBoundary lowBoundary, Object lowEndPoint, Object highEndPoint, RangeBoundary highBoundary) {
-        this.lowBoundary = lowBoundary;
-        this.highBoundary = highBoundary;
-        this.lowEndPoint = asComparable(lowEndPoint);
-        this.highEndPoint = asComparable(highEndPoint);
-    }
-
-    private Comparable asComparable(Object s) {
+    private static Comparable asComparable(Object s) {
         if (s instanceof Comparable) {
             return (Comparable) s;
         } else if (s instanceof Period) {
@@ -56,6 +64,16 @@ public class RangeImpl
             // FIXME report error
             return null;
         }
+    }
+
+    public RangeImpl() {
+    }
+
+    public RangeImpl(RangeBoundary lowBoundary, Comparable lowEndPoint, Comparable highEndPoint, RangeBoundary highBoundary) {
+        this.lowBoundary = lowBoundary;
+        this.highBoundary = highBoundary;
+        this.lowEndPoint = lowEndPoint;
+        this.highEndPoint = highEndPoint;
     }
 
     @Override
