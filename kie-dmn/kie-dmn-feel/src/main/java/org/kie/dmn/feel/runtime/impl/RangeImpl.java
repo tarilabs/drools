@@ -16,6 +16,9 @@
 
 package org.kie.dmn.feel.runtime.impl;
 
+import java.time.Period;
+
+import org.kie.dmn.feel.lang.ast.RangeNode;
 import org.kie.dmn.feel.runtime.Range;
 
 public class RangeImpl
@@ -34,6 +37,25 @@ public class RangeImpl
         this.highBoundary = highBoundary;
         this.lowEndPoint = lowEndPoint;
         this.highEndPoint = highEndPoint;
+    }
+
+    public RangeImpl(RangeBoundary lowBoundary, Object lowEndPoint, Object highEndPoint, RangeBoundary highBoundary) {
+        this.lowBoundary = lowBoundary;
+        this.highBoundary = highBoundary;
+        this.lowEndPoint = asComparable(lowEndPoint);
+        this.highEndPoint = asComparable(highEndPoint);
+    }
+
+    private Comparable asComparable(Object s) {
+        if (s instanceof Comparable) {
+            return (Comparable) s;
+        } else if (s instanceof Period) {
+            // period has special semantics
+            return new RangeNode.ComparablePeriod((Period) s);
+        } else {
+            // FIXME report error
+            return null;
+        }
     }
 
     @Override

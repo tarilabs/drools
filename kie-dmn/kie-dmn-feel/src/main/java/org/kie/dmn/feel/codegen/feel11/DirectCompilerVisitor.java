@@ -490,12 +490,8 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         Expression lowBoundary = expressionBoundaryOf(
                 RangeNode.IntervalBoundary.fromString(
                         ctx.low.getText()));
-        Expression lowEndPoint =
-                new CastExpr(TYPE_COMPARABLE,
-                             new EnclosedExpr(start.getExpression()));
-        Expression highEndPoint =
-                new CastExpr(TYPE_COMPARABLE,
-                             new EnclosedExpr(end.getExpression()));
+        Expression lowEndPoint = start.getExpression();
+        Expression highEndPoint = end.getExpression();
         Expression highBoundary = expressionBoundaryOf(
                 RangeNode.IntervalBoundary.fromString(
                         ctx.up.getText()));
