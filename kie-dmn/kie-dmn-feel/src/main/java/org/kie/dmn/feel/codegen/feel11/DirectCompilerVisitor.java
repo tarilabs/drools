@@ -526,8 +526,8 @@ public class DirectCompilerVisitor extends FEEL_1_1BaseVisitor<DirectCompilerRes
         } else {
             MethodCallExpr initializer =
                     new MethodCallExpr(
-                            new NameExpr(RangeImpl.class.getCanonicalName()),
-                            "of", new NodeList<>(
+                            null,
+                            "range", new NodeList<>(
                             new NameExpr("feelExprCtx"),
                             lowBoundary,
                             lowEndPoint,
