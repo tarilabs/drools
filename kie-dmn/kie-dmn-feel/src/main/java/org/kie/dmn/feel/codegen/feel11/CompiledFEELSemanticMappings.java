@@ -183,6 +183,8 @@ public class CompiledFEELSemanticMappings {
                     actual = ((Number) value).floatValue();
                 } else if( paramType == double.class || paramType == Double.class ) {
                     actual = ((Number) value).doubleValue();
+                } else if (paramType == Object[].class) {
+                    actual = new Object[]{ value };
                 } else {
                     throw new IllegalArgumentException( "Unable to coerce parameter "+value+". Expected "+paramType+" but found "+value.getClass() );
                 }
