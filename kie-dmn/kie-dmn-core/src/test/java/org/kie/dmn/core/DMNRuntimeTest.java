@@ -1922,6 +1922,15 @@ public class DMNRuntimeTest {
     }
 
     @Test
+    public void testFor2() {
+        // DROOLS-2317
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("say_for_hello.dmn", this.getClass());
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/dmn/definitions/_b6f2a9ca-a246-4f27-896a-e8ef04ea439c", "say for hello");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+    }
+
+    @Test
     public void testProductFunction() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "product.dmn", this.getClass() );
         DMNModel model = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_40fdbc2c-a631-4ba4-8435-17571b5d1942", "Drawing 1" );

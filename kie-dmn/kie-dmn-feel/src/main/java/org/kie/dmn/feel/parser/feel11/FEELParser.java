@@ -36,9 +36,9 @@ import org.antlr.v4.runtime.Recognizer;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Scope;
-import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
+import org.kie.dmn.feel.lang.types.ScopeImpl;
 import org.kie.dmn.feel.parser.feel11.profiles.KieExtendedFEELProfile;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
@@ -81,16 +81,7 @@ public class FEELParser {
             return true;
         }
         if ( REUSABLE_KEYWORDS.contains(namePart) ) {
-            Scope cursor = scope;
-            while ( !Scope.BUILT_IN.equals( cursor.getName() ) ) {
-                for ( Map.Entry<String, Symbol> e : cursor.getSymbols().entrySet() ) {
-                    if ( e.getKey().contains( namePart ) ) {
-                        return e.getValue().getType() != null;
-                    }
-                }
-                cursor = cursor.getParentScope();
-            }
-            return false;
+            return ((ScopeImpl) scope).tokenTreeContains(namePart);
         }
         return isVariableNameValid(namePart);
     }

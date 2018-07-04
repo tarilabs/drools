@@ -16,19 +16,21 @@
 
 package org.kie.dmn.feel.lang.types;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.Token;
-import org.kie.dmn.feel.parser.feel11.FEEL_1_1Lexer;
 import org.kie.dmn.feel.lang.Scope;
 import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.parser.feel11.FEEL_1_1Lexer;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.TokenTree;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
-import java.util.Map.Entry;
 
 public class ScopeImpl
         implements Scope {
@@ -126,6 +128,14 @@ public class ScopeImpl
     @Override
     public Map<String, Symbol> getSymbols() {
         return symbols;
+    }
+
+    public boolean tokenTreeContains(String name) {
+        if (tokenTree != null) {
+            return tokenTree.currentNodeContains(name) ||
+                   ((parentScope != null) ? ((ScopeImpl) parentScope).tokenTreeContains(name) : false);
+        }
+        return false;
     }
 
     public void start( String token ) {

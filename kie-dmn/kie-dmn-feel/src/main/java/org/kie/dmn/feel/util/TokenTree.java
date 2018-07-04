@@ -66,6 +66,28 @@ public class TokenTree {
         return null;
     }
 
+    public boolean currentNodeContains(String t) {
+        if (currentNode == null) {
+            return false;
+        }
+        return findInTree(currentNode, t);
+    }
+
+    private boolean findInTree(Node n, String t) {
+        if (n == null) {
+            return false;
+        }
+        if (n.token.equals(t)) {
+            return true;
+        }
+        for( Node c : n.children ) {
+            if (findInTree(c, t)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static class Node {
         public String      token;
         public Node       parent;

@@ -232,10 +232,12 @@ public class ParserHelper {
     }
 
     public void startVariable(Token t) {
+        LOG.trace("startVariable({})", t.getText());
         this.currentScope.start( t.getText() );
     }
 
     public boolean followUp(Token t, boolean isPredict) {
+        LOG.trace("followUp({}, {})", t.getText(), isPredict);
         boolean follow = ( isDynamicResolution() && FEELParser.isVariableNamePartValid( t.getText(), currentScope ) ) || this.currentScope.followUp( t.getText(), isPredict );
         return follow;
     }
