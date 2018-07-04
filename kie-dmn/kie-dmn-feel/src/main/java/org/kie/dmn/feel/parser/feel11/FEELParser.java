@@ -38,7 +38,6 @@ import org.kie.dmn.feel.lang.FEELProfile;
 import org.kie.dmn.feel.lang.Scope;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
-import org.kie.dmn.feel.lang.types.ScopeImpl;
 import org.kie.dmn.feel.parser.feel11.profiles.KieExtendedFEELProfile;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
@@ -81,7 +80,7 @@ public class FEELParser {
             return true;
         }
         if ( REUSABLE_KEYWORDS.contains(namePart) ) {
-            return ((ScopeImpl) scope).tokenTreeContains(namePart);
+            return scope.followUp(namePart, true);
         }
         return isVariableNameValid(namePart);
     }
