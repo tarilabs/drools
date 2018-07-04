@@ -10,24 +10,24 @@
       <dmn11:requiredKnowledge href="#_cf9c2f2a-38bc-4547-b200-55fdf6ef31c42"/>
     </dmn11:knowledgeRequirement>
     <dmn11:literalExpression id="_3f78ff5a-1c79-476d-ba25-68f2772d1dca">
-      <dmn11:text>for i in [1,2,3] return say for hello()</dmn11:text>
+      <dmn11:text>for i in [1,2,3] return prefix say for hello()</dmn11:text>
     </dmn11:literalExpression>
   </dmn11:decision>
-  <dmn11:businessKnowledgeModel id="_cf9c2f2a-38bc-4547-b200-55fdf6ef31c4" name="say for hello">
+  <dmn11:businessKnowledgeModel id="_cf9c2f2a-38bc-4547-b200-55fdf6ef31c4" name="prefix say for hello">
     <dmn11:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="F" id="_b81f60af-d50e-4c26-b173-62a7da8521ce">
       <dmn11:literalExpression id="_32b31f9f-bb50-47d2-b4f3-1177aa4dee98">
         <dmn11:text>"Hello"</dmn11:text>
       </dmn11:literalExpression>
     </dmn11:encapsulatedLogic>
-    <dmn11:variable id="_68ad6b3c-e323-4ba5-80f7-fe0b1c174ed3" name="say for hello" typeRef="feel:string"/>
+    <dmn11:variable id="_68ad6b3c-e323-4ba5-80f7-fe0b1c174ed3" name="prefix say for hello" typeRef="feel:string"/>
   </dmn11:businessKnowledgeModel>
-  <dmn11:businessKnowledgeModel id="_cf9c2f2a-38bc-4547-b200-55fdf6ef31c42" name="aaa for hello">
+  <dmn11:businessKnowledgeModel id="_cf9c2f2a-38bc-4547-b200-55fdf6ef31c42" name="prefix aaa for hello">
     <dmn11:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="F" id="_b81f60af-d50e-4c26-b173-62a7da8521ce2">
       <dmn11:literalExpression id="_32b31f9f-bb50-47d2-b4f3-1177aa4dee98">
         <dmn11:text>"Hello"</dmn11:text>
       </dmn11:literalExpression>
     </dmn11:encapsulatedLogic>
-    <dmn11:variable id="_68ad6b3c-e323-4ba5-80f7-fe0b1c174ed32" name="aaa for hello" typeRef="feel:string"/>
+    <dmn11:variable id="_68ad6b3c-e323-4ba5-80f7-fe0b1c174ed32" name="prefix aaa for hello" typeRef="feel:string"/>
   </dmn11:businessKnowledgeModel>
   
 </dmn11:definitions>
