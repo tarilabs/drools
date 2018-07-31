@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<dmn11:definitions xmlns="http://www.trisotech.com/dmn/definitions/_9e536575-5cdc-417d-bc30-6967c0dc7188" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.3.201807261145" id="_9e536575-5cdc-417d-bc30-6967c0dc7188" name="Source Stuff" namespace="http://www.trisotech.com/dmn/definitions/_9e536575-5cdc-417d-bc30-6967c0dc7188" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements>
+    <drools:decisionServices xmlns:drools="http://www.drools.org/kie/dmn/1.1">
+      <dmn11:decisionService id="_e19a0e7e-e8dc-4a1e-b1c8-a6a3c2e95c32" name="ADD DS">
+        <dmn11:outputDecision href="#_8573bffb-82c6-42c4-8e15-b96ae59f3bed"/>
+        <dmn11:inputData href="#_ab3a8a1a-4023-4c8e-8c1c-5d192966289a"/>
+        <dmn11:inputData href="#_3c7628b8-d7f8-49c5-96e5-6472fcf8127d"/>
+      </dmn11:decisionService>
+    </drools:decisionServices>
+  </dmn11:extensionElements>
+  <dmn11:decision id="_8573bffb-82c6-42c4-8e15-b96ae59f3bed" name="Sum Decision">
+    <dmn11:variable id="_52b7882a-fef2-489e-a715-1a59bff31790" name="Sum Decision"/>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#_ab3a8a1a-4023-4c8e-8c1c-5d192966289a"/>
+    </dmn11:informationRequirement>
+    <dmn11:informationRequirement>
+      <dmn11:requiredInput href="#_3c7628b8-d7f8-49c5-96e5-6472fcf8127d"/>
+    </dmn11:informationRequirement>
+    <dmn11:knowledgeRequirement>
+      <dmn11:requiredKnowledge href="#_5b239cd8-58f8-4802-b3bb-ec172a1c0700"/>
+    </dmn11:knowledgeRequirement>
+    <dmn11:literalExpression id="_ffebe2ab-f809-4a92-b3ff-d4a23833434f">
+      <dmn11:text>ADD(Input A,Input B)</dmn11:text>
+    </dmn11:literalExpression>
+  </dmn11:decision>
+  <dmn11:inputData id="_ab3a8a1a-4023-4c8e-8c1c-5d192966289a" name="Input A">
+    <dmn11:variable id="_4463fcd6-1661-4e17-a17e-7d052c8f9d88" name="Input A" typeRef="feel:number"/>
+  </dmn11:inputData>
+  <dmn11:businessKnowledgeModel id="_5b239cd8-58f8-4802-b3bb-ec172a1c0700" name="ADD">
+    <dmn11:encapsulatedLogic xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:kind="F" id="_21b02588-b99e-46c5-909d-db5dfc8df372">
+      <dmn11:formalParameter id="_81097b66-015a-4f3f-b3f4-8a360f600c91" name="Nb1" typeRef="feel:number"/>
+      <dmn11:formalParameter id="_261670ee-b82e-4a2a-870a-a04da52d8c69" name="Nb2" typeRef="feel:number"/>
+      <dmn11:literalExpression id="_7592ec13-f1d8-4257-820a-ad70687ffc2d">
+        <dmn11:text>Nb1 + Nb2</dmn11:text>
+      </dmn11:literalExpression>
+    </dmn11:encapsulatedLogic>
+    <dmn11:variable id="_b865b489-3799-4431-82c6-4d59a2fbb820" name="ADD"/>
+  </dmn11:businessKnowledgeModel>
+  <dmn11:inputData id="_3c7628b8-d7f8-49c5-96e5-6472fcf8127d" name="Input B">
+    <dmn11:variable id="_f94e5239-8e56-469d-9cce-18dd026b4c17" name="Input B" typeRef="feel:number"/>
+  </dmn11:inputData>
+</dmn11:definitions>

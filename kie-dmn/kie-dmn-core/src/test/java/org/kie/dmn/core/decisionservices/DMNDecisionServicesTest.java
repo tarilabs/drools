@@ -38,6 +38,8 @@ import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
 public class DMNDecisionServicesTest {
 
@@ -509,5 +511,47 @@ public class DMNDecisionServicesTest {
         DMNContext result = dmnResult.getContext();
         assertThat(result.getAll(), not(hasEntry(is("L2 Invoking the L1 import"), anything()))); // Decision Service will encapsulate this decision
         assertThat(result.get("Final L2 Decision"), is("The result of invoking the L1 DS was: Hello, L2 Bob DS the result of invoking the imported DS is: Hello, L2 Bob DS; you are allowed"));
+    }
+
+    @Test
+    public void testSimon20180721_InvokeDS() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Source Stuff.dmn", this.getClass(),
+                                                                                 "Invoke DS.dmn");
+
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_0c41c834-6d39-4918-9007-c3aa7c326a71", "Invoke DS");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext emptyContext = DMNFactory.newContext();
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        LOG.debug("{}", dmnResult);
+        dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Add"), is(BigDecimal.valueOf(3)));
+    }
+
+    @Test
+    public void testSimon20180721_InvokeDecision() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("Source Stuff.dmn", this.getClass(),
+                                                                                 "Invoke Decision.dmn");
+
+        DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_7c170e56-0245-40d3-9a65-f6995ab558c3", "Invoke Decision");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        DMNContext context = DMNFactory.newContext();
+        context.set("Source Stuff", mapOf(entry("Input A", 99),
+                                          entry("Input B", 1)));
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        dmnResult.getDecisionResults().forEach(x -> LOG.debug("{}", x));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Passthru"), is(BigDecimal.valueOf(100)));
     }
 }

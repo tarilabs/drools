@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<dmn11:definitions xmlns="http://www.trisotech.com/definitions/_0c41c834-6d39-4918-9007-c3aa7c326a71" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:include1="http://www.trisotech.com/dmn/definitions/_9e536575-5cdc-417d-bc30-6967c0dc7188" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="DMN Modeler" exporterVersion="6.1.3.201807261145" id="_0c41c834-6d39-4918-9007-c3aa7c326a71" name="Invoke DS" namespace="http://www.trisotech.com/definitions/_0c41c834-6d39-4918-9007-c3aa7c326a71" triso:logoChoice="Default" xmlns:dmn11="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <dmn11:extensionElements/>
+  <dmn11:import xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:modelName="Source Stuff" drools:name="Source Stuff" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" namespace="http://www.trisotech.com/dmn/definitions/_9e536575-5cdc-417d-bc30-6967c0dc7188" triso:fileId="eyJmIjp7InNrdSI6IjAyNjkwMWE4LWJiNDMtNGM5NC1hMjVjLTc3ODY1ZTA1ODkxOCIsIm5hbWUiOiJTb3VyY2UgU3R1ZmYifX0=" triso:fileName="Decision Invocation/Source Stuff"/>
+  <dmn11:decision id="_fe2e11d0-d167-4ed6-97c6-f4a8e8907956" name="Add">
+    <dmn11:variable id="_143dd789-f105-4548-bc48-8750e6cb9bc3" name="Add"/>
+    <dmn11:knowledgeRequirement>
+      <dmn11:requiredKnowledge href="http://www.trisotech.com/dmn/definitions/_9e536575-5cdc-417d-bc30-6967c0dc7188#_e19a0e7e-e8dc-4a1e-b1c8-a6a3c2e95c32"/>
+    </dmn11:knowledgeRequirement>
+    <dmn11:invocation id="_e6e25348-5139-41a5-8360-23173875c98f">
+      <dmn11:literalExpression id="literal__e6e25348-5139-41a5-8360-23173875c98f">
+        <dmn11:text>Source Stuff.ADD DS</dmn11:text>
+      </dmn11:literalExpression>
+      <dmn11:binding>
+        <dmn11:parameter id="_3f1b3ebf-5fb7-4596-942c-399536798ff1" name="Input A"/>
+        <dmn11:literalExpression id="_2d688dbb-87ac-459b-9e16-15eadac5c8c1">
+          <dmn11:text>1</dmn11:text>
+        </dmn11:literalExpression>
+      </dmn11:binding>
+      <dmn11:binding>
+        <dmn11:parameter id="_403a7840-7f15-4cb3-ba5b-befc59ea66a5" name="Input B"/>
+        <dmn11:literalExpression id="_a68670fe-cc9a-4d95-bbe1-1276385ee343">
+          <dmn11:text>2</dmn11:text>
+        </dmn11:literalExpression>
+      </dmn11:binding>
+    </dmn11:invocation>
+  </dmn11:decision>
+</dmn11:definitions>

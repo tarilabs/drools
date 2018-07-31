@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:trisofeed="http://trisotech.com/feed" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:include1="http://www.trisotech.com/dmn/definitions/_9e536575-5cdc-417d-bc30-6967c0dc7188" xmlns="http://www.trisotech.com/definitions/_7c170e56-0245-40d3-9a65-f6995ab558c3" id="_7c170e56-0245-40d3-9a65-f6995ab558c3" namespace="http://www.trisotech.com/definitions/_7c170e56-0245-40d3-9a65-f6995ab558c3"          exporter="DMN Modeler" exporterVersion="6.1.3.201807261145" name="Invoke Decision" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:import namespace="http://www.trisotech.com/dmn/definitions/_9e536575-5cdc-417d-bc30-6967c0dc7188" name="Source Stuff" triso:fileId="eyJmIjp7InNrdSI6IjAyNjkwMWE4LWJiNDMtNGM5NC1hMjVjLTc3ODY1ZTA1ODkxOCIsIm5hbWUiOiJTb3VyY2UgU3R1ZmYifX0=" triso:fileName="Decision Invocation/Source Stuff" importType="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:drools="http://www.drools.org/kie/dmn/1.1" drools:modelName="Source Stuff"/>
+    <semantic:decision id="_fe2e11d0-d167-4ed6-97c6-f4a8e8907956" name="Passthru">
+        <semantic:variable name="Passthru" id="_143dd789-f105-4548-bc48-8750e6cb9bc3"/>
+        <semantic:informationRequirement id="_a80ee9b1-8d61-4225-894c-115ec24d8e0c">
+            <semantic:requiredDecision href="http://www.trisotech.com/dmn/definitions/_9e536575-5cdc-417d-bc30-6967c0dc7188#_8573bffb-82c6-42c4-8e15-b96ae59f3bed"/>
+        </semantic:informationRequirement>
+        <semantic:literalExpression id="_bb9b4a16-9ac6-4d01-ada5-fce68e28b35b">
+            <semantic:text>Source Stuff.Sum Decision</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+</semantic:definitions>
