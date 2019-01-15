@@ -69,6 +69,8 @@ public class SubstringFunctionTest {
     public void invokeLengthOutOfListBounds() {
         FunctionTestUtil.assertResult(substringFunction.invoke("test", 2, 3), "est");
         FunctionTestUtil.assertResult(substringFunction.invoke("test", -3, 3), "est");
+
+        FunctionTestUtil.assertResult(substringFunction.invoke("foobar", -2, 5), "ar");
     }
 
     @Test
@@ -89,5 +91,8 @@ public class SubstringFunctionTest {
 
         FunctionTestUtil.assertResult(substringFunction.invoke("test", -2, 1), "s");
         FunctionTestUtil.assertResult(substringFunction.invoke("test", -3, 2), "es");
+
+        FunctionTestUtil.assertResult(substringFunction.invoke("foobar", -2, 1), "a");
+        FunctionTestUtil.assertResult(substringFunction.invoke("foobar", -2, 2), "ar");
     }
 }

@@ -44,12 +44,15 @@ public class SubstringFunction
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "parameter 'start position' inconsistent with parameter 'string' length" ) );
         }
 
-        if ( start.intValue() > 0 ) {
-            final int end = length != null ? Math.min( string.length(), start.intValue() + length.intValue() - 1 ) : string.length();
-            return FEELFnResult.ofResult( string.substring( start.intValue() - 1, end ) );
+        if (start.intValue() > 0) {
+            final int end = length != null ? Math.min(string.length(), string.offsetByCodePoints(0, start.intValue() + length.intValue() - 1)) : string.length();
+            return FEELFnResult.ofResult(string.substring(string.offsetByCodePoints(0, start.intValue() - 1), end));
         } else if ( start.intValue() < 0 ) {
-            final int end = length != null ? Math.min( string.length(), string.length() + start.intValue() + length.intValue() ) : string.length();
-            return FEELFnResult.ofResult( string.substring( string.length() + start.intValue(), end ) );
+            final int codePointCount = Character.codePointCount(string, 0, string.length());
+            final int startCodePoints = codePointCount + start.intValue(); // calculated from the start of the string.
+            final int startIdx = string.offsetByCodePoints(0, startCodePoints);
+            final int end = length != null ? string.offsetByCodePoints(startIdx, Math.min(codePointCount - startCodePoints, length.intValue())) : string.length();
+            return FEELFnResult.ofResult(string.substring(startIdx, end));
         } else {
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "start position", "cannot be zero" ) );
         }

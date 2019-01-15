@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
@@ -43,5 +44,14 @@ public class StringLengthFunctionTest {
     @Test
     public void invoke() {
         FunctionTestUtil.assertResult(stringLengthFunction.invoke("testString"), BigDecimal.TEN);
+    }
+
+    @Test
+    public void invokeUnicode() {
+        FunctionTestUtil.assertResult(stringLengthFunction.invoke("\u00e0"), BigDecimal.ONE);
+
+        FunctionTestUtil.assertResult(stringLengthFunction.invoke("\uD83D\uDCA9"), BigDecimal.ONE);
+        FunctionTestUtil.assertResult(stringLengthFunction.invoke("\ud83d\udca9"), BigDecimal.ONE);
+        FunctionTestUtil.assertResult(stringLengthFunction.invoke("🐎😀"), new BigDecimal(2));
     }
 }

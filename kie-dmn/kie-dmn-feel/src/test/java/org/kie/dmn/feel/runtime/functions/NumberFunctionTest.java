@@ -87,6 +87,7 @@ public class NumberFunctionTest {
         FunctionTestUtil.assertResult(numberFunction.invoke("9 876.124", " ", "."), BigDecimal.valueOf(9876.124));
         FunctionTestUtil.assertResult(numberFunction.invoke("9 876 000.124", " ", "."), BigDecimal.valueOf(9876000.124));
         FunctionTestUtil.assertResult(numberFunction.invoke("9.876.000,124", ".", ","), BigDecimal.valueOf(9876000.124));
+        FunctionTestUtil.assertResult(numberFunction.invoke("1,000,000.01", ",", "."), BigDecimal.valueOf(1000000.01));
     }
 
     @Test
