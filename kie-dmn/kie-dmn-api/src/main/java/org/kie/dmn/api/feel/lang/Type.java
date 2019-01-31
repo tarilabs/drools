@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.lang;
+package org.kie.dmn.api.feel.lang;
 
 /**
  * A type definition interface

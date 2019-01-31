@@ -1,7 +1,7 @@
 package org.kie.dmn.feel.lang.impl;
 
+import org.kie.dmn.api.feel.lang.Type;
 import org.kie.dmn.feel.lang.CompositeType;
-import org.kie.dmn.feel.lang.Type;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

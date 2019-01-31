@@ -25,6 +25,7 @@ import java.util.function.Function;
 
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.DMNTypeRegistry;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
@@ -55,11 +56,13 @@ public class DMNDTExpressionEvaluator
     private final DMNNode           node;
     private       DTInvokerFunction dt;
     private       FEELImpl          feel;
+    private DMNTypeRegistry typeRegistry;
 
-    public DMNDTExpressionEvaluator(DMNNode node, FEEL feel, DTInvokerFunction dt) {
+    public DMNDTExpressionEvaluator(DMNNode node, FEEL feel, DTInvokerFunction dt, DMNTypeRegistry typeRegistry) {
         this.node = node;
         this.dt = dt;
         this.feel = (FEELImpl) feel;
+        this.typeRegistry = typeRegistry;
     }
 
     @Override
@@ -75,6 +78,7 @@ public class DMNDTExpressionEvaluator
             Object[] params = new Object[paramNames.size()];
             EvaluationContextImpl ctx = feel.newEvaluationContext(Arrays.asList(events::add), Collections.emptyMap());
             ctx.setPerformRuntimeTypeCheck(((DMNRuntimeImpl) dmrem.getRuntime()).performRuntimeTypeCheck(result.getModel()));
+            ctx.setTypeRegistry(typeRegistry);
 
             ctx.enterFrame();
             // need to set the values for in context variables...

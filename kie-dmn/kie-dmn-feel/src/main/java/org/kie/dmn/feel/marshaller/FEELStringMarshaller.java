@@ -18,7 +18,7 @@ package org.kie.dmn.feel.marshaller;
 
 import java.util.function.Function;
 
-import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.api.feel.lang.Type;
 import org.kie.dmn.feel.runtime.functions.BuiltInFunctions;
 import org.kie.dmn.feel.runtime.functions.DateAndTimeFunction;
 import org.kie.dmn.feel.runtime.functions.DateFunction;

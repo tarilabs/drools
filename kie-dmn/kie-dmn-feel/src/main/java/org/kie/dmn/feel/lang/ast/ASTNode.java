@@ -16,8 +16,8 @@
 
 package org.kie.dmn.feel.lang.ast;
 
+import org.kie.dmn.api.feel.lang.Type;
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 
 import java.util.List;

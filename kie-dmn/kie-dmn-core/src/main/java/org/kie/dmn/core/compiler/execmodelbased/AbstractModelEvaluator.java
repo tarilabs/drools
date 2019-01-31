@@ -29,6 +29,7 @@ import org.kie.api.KieServices;
 import org.kie.api.runtime.rule.RuleUnitExecutor;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.DMNTypeRegistry;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
@@ -56,6 +57,7 @@ public abstract class AbstractModelEvaluator implements DMNExpressionEvaluator {
     protected final KieBase kieBase;
 
     private DMNFEELHelper feel;
+    private DMNTypeRegistry typeRegistry;
     private DTableModel dTableModel;
     private DMNBaseNode node;
 
@@ -124,11 +126,13 @@ public abstract class AbstractModelEvaluator implements DMNExpressionEvaluator {
         EvaluationContextImpl ctx = feel.newEvaluationContext( Collections.singletonList( events::add ), Collections.emptyMap());
         ctx.setPerformRuntimeTypeCheck(((DMNRuntimeImpl ) eventManager.getRuntime()).performRuntimeTypeCheck(( (DMNResultImpl) dmnResult).getModel()));
         ctx.setValues( dmnResult.getContext().getAll() );
+        ctx.setTypeRegistry(typeRegistry);
         return ctx;
     }
 
     public AbstractModelEvaluator initParameters( DMNFEELHelper feel, DMNCompilerContext ctx, DTableModel dTableModel, DMNBaseNode node) {
         this.feel = feel;
+        this.typeRegistry = ctx.getDmnTypeRegistry();
         this.dTableModel = dTableModel.compileAll( ctx );
         this.node = node;
         return this;

@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.drools.javaparser.ast.CompilationUnit;
+import org.kie.dmn.api.feel.lang.Type;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.codegen.feel11.CompiledFEELExpression;
@@ -36,7 +37,6 @@ import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProfile;
-import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.parser.feel11.profiles.DoCompileFEELProfile;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
@@ -161,7 +161,9 @@ public class FEELImpl
     @Override
     public Object evaluate(CompiledExpression expr, EvaluationContext ctx) {
         CompiledFEELExpression e = (CompiledFEELExpression) expr;
-        return e.apply(newEvaluationContext(ctx.getListeners(), ctx.getAllValues()));
+        EvaluationContextImpl evalCtx = newEvaluationContext(ctx.getListeners(), ctx.getAllValues());
+        evalCtx.setTypeRegistry(((EvaluationContextImpl) ctx).getTypeRegistry());
+        return e.apply(evalCtx);
     }
 
     /**

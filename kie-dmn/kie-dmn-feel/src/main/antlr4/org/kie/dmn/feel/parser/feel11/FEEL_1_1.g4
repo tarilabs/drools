@@ -114,7 +114,7 @@ quantifiedExpression
 
 // #54
 type
-    : ( FUNCTION | qualifiedName )
+    : ( FUNCTION | {helper.enableDynamicResolution();} qualifiedName {helper.disableDynamicResolution();})
     ;
 
 // #56

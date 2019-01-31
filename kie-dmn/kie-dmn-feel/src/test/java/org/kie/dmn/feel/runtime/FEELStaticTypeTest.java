@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.runners.Parameterized;
-import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.api.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;

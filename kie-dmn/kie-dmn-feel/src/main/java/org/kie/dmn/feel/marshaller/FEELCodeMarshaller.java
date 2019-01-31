@@ -18,8 +18,8 @@ package org.kie.dmn.feel.marshaller;
 
 import java.util.function.Function;
 
+import org.kie.dmn.api.feel.lang.Type;
 import org.kie.dmn.feel.FEEL;
-import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.runtime.functions.extended.CodeFunction;
 import org.kie.dmn.feel.runtime.functions.extended.KieExtendedDMNFunctions;
 

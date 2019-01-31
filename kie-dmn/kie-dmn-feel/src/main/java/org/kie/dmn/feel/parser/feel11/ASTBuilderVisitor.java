@@ -29,8 +29,8 @@ import java.util.stream.Stream;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
+import org.kie.dmn.api.feel.lang.Type;
 import org.kie.dmn.feel.lang.CompositeType;
-import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.ASTBuilderFactory;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.BetweenNode;

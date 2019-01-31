@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.kie.dmn.api.core.DMNType;
-import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.api.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.util.EvalHelper;
 

@@ -33,8 +33,8 @@ import java.util.function.BinaryOperator;
 
 import ch.obermuhlner.math.big.BigDecimalMath;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.api.feel.lang.Type;
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.util.EvalHelper;
 

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.api.feel.lang.Type;
 
 public class ASTBuilderFactory {
 

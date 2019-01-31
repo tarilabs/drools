@@ -16,6 +16,8 @@
 
 package org.kie.dmn.feel.lang;
 
+import org.kie.dmn.api.feel.lang.Type;
+
 public interface Symbol {
 
     String getId();

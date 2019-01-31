@@ -24,7 +24,7 @@ import java.util.Set;
 
 import org.drools.javaparser.ast.body.FieldDeclaration;
 import org.drools.javaparser.ast.expr.Expression;
-import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.api.feel.lang.Type;
 
 public class DirectCompilerResult {
 

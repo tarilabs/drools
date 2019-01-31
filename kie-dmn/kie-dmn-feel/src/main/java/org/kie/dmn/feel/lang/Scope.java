@@ -18,6 +18,8 @@ package org.kie.dmn.feel.lang;
 
 import java.util.Map;
 
+import org.kie.dmn.api.feel.lang.Type;
+
 public interface Scope {
 
     String BUILT_IN = "<built-in>";

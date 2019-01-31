@@ -27,6 +27,7 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNType;
+import org.kie.dmn.api.core.DMNTypeRegistry;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
@@ -59,12 +60,13 @@ public class DMNInvocationEvaluator
     private final List<ActualParameter> parameters = new ArrayList<>();
     private final BiFunction<DMNContext, String, FEELFunction> functionLocator;
     private final FEEL feel;
+    private final DMNTypeRegistry typeRegistry;
 
     /**
      * @param functionLocator function to be used to resolve the FEELFunction to be invoked.
      * @param feel in case functionLocator is not able to resolve the desired function, it will be used for checking the resolution against the configured/built-in FEEL functions.
      */
-    public DMNInvocationEvaluator(String nodeName, DMNElement node, String functionName, Invocation invocation, BiFunction<DMNContext, String, FEELFunction> functionLocator, FEEL feel) {
+    public DMNInvocationEvaluator(String nodeName, DMNElement node, String functionName, Invocation invocation, BiFunction<DMNContext, String, FEELFunction> functionLocator, FEEL feel, DMNTypeRegistry typeRegistry) {
         this.nodeName = nodeName;
         this.node = node;
         this.functionName = functionName;
@@ -75,6 +77,7 @@ public class DMNInvocationEvaluator
             this.functionLocator = functionLocator;
         }
         this.feel = feel;
+        this.typeRegistry = typeRegistry;
     }
 
     public void addParameter(String name, DMNType type, DMNExpressionEvaluator evaluator) {
@@ -108,7 +111,9 @@ public class DMNInvocationEvaluator
                 // check if it is a configured/built-in function
                 Object r = null;
                 if (feel != null) {
-                    r = ((FEELImpl) feel).newEvaluationContext(Collections.emptyList(), Collections.emptyMap()).getValue(functionName);
+                    EvaluationContextImpl evalCtx = ((FEELImpl) feel).newEvaluationContext(Collections.emptyList(), Collections.emptyMap());
+                    evalCtx.setTypeRegistry(typeRegistry);
+                    r = evalCtx.getValue(functionName);
                 } else {
                     r = RootExecutionFrame.INSTANCE.getValue( functionName );
                 }

@@ -18,7 +18,7 @@ package org.kie.dmn.feel.runtime.decisiontables;
 
 import java.util.List;
 
-import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.api.feel.lang.Type;
 import org.kie.dmn.feel.runtime.UnaryTest;
 
 public interface DecisionTable {

@@ -42,6 +42,7 @@ import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNTypeRegistry;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.api.core.ast.DecisionNode;
@@ -56,7 +57,6 @@ import org.kie.dmn.core.assembler.DMNAssemblerService;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
-import org.kie.dmn.core.compiler.DMNTypeRegistry;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV11;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV12;
 import org.kie.dmn.core.util.DefaultDMNMessagesManager;
@@ -107,9 +107,9 @@ public class DMNModelImpl
 
     private void wireTypeRegistry(Definitions definitions) {
         if (definitions instanceof TDefinitions) {
-            types = new DMNTypeRegistryV11();
+            types = new DMNTypeRegistryV11(definitions.getNamespace());
         } else {
-            types = new DMNTypeRegistryV12();
+            types = new DMNTypeRegistryV12(definitions.getNamespace());
         }
     }
     

@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
-import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.api.feel.lang.Type;
 import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.ast.BetweenNode;
 import org.kie.dmn.feel.lang.ast.BooleanNode;

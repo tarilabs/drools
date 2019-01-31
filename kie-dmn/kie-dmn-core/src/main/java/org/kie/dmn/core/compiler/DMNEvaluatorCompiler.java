@@ -180,7 +180,7 @@ public class DMNEvaluatorCompiler {
             return null;
         }
         String functionName = ((LiteralExpression) invocation.getExpression()).getText();
-        DMNInvocationEvaluator invEval = new DMNInvocationEvaluator(node.getName(), node.getSource(), functionName, invocation, null, ctx.getFeelHelper().newFEELInstance());
+        DMNInvocationEvaluator invEval = new DMNInvocationEvaluator(node.getName(), node.getSource(), functionName, invocation, null, ctx.getFeelHelper().newFEELInstance(), ctx.getDmnTypeRegistry());
         for ( Binding binding : invocation.getBinding() ) {
             if( binding.getParameter() == null ) {
                 // error, missing binding parameter
@@ -343,7 +343,7 @@ public class DMNEvaluatorCompiler {
                                                                           functionName,
                                                                           node.getIdentifierString() );
                     DMNInvocationEvaluator invoker = new DMNInvocationEvaluator(node.getName(), node.getSource(), functionName, null,
-                                                                                (fctx, fname) -> feelFunction, null); // feel can be null as anyway is hardcoded to `feelFunction`
+                                                                                (fctx, fname) -> feelFunction, null, null); // feel can be null as anyway is hardcoded to `feelFunction`
 
                     for( InformationItem p : funcDef.getFormalParameter() ) {
                         invoker.addParameter( p.getName(), func.getParameterType( p.getName() ), (em, dr) -> new EvaluatorResultImpl( dr.getContext().get( p.getName() ), EvaluatorResult.ResultType.SUCCESS ) );
@@ -385,7 +385,7 @@ public class DMNEvaluatorCompiler {
                         }
 
                         DMNInvocationEvaluator invoker = new DMNInvocationEvaluator(node.getName(), node.getSource(), functionName, null,
-                                                                                    (fctx, fname) -> feelFunction, null); // feel can be null as anyway is hardcoded to `feelFunction`
+                                                                                    (fctx, fname) -> feelFunction, null, null); // feel can be null as anyway is hardcoded to `feelFunction`
 
                         DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator( node.getName(), funcDef );
                         for ( InformationItem p : funcDef.getFormalParameter() ) {
@@ -618,7 +618,7 @@ public class DMNEvaluatorCompiler {
         DecisionTableImpl dti = new DecisionTableImpl(dtName, parameterNames, inputs, outputs, rules, hp, feelInstance);
         dti.setCompiledParameterNames(compiledParameterNames);
         DTInvokerFunction dtf = new DTInvokerFunction( dti );
-        DMNDTExpressionEvaluator dtee = new DMNDTExpressionEvaluator(node, feelInstance, dtf);
+        DMNDTExpressionEvaluator dtee = new DMNDTExpressionEvaluator(node, feelInstance, dtf, ctx.getDmnTypeRegistry());
         return dtee;
     }
 
@@ -768,7 +768,7 @@ public class DMNEvaluatorCompiler {
                                                                                         exprText,
                                                                                         exprName,
                                                                                         node.getIdentifierString() );
-                    evaluator = new DMNLiteralExpressionEvaluator( compiledExpression );
+                    evaluator = new DMNLiteralExpressionEvaluator(compiledExpression, ctx.getFeelHelper().newFEELInstance(), ctx.getDmnTypeRegistry());
                 } catch ( Throwable e ) {
                     MsgUtil.reportMessage( logger,
                                            DMNMessage.Severity.ERROR,

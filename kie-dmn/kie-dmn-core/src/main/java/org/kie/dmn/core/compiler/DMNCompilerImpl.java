@@ -47,6 +47,7 @@ import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.api.core.ast.DecisionServiceNode;
 import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.api.core.ast.ItemDefNode;
+import org.kie.dmn.api.feel.lang.Type;
 import org.kie.dmn.api.marshalling.DMNExtensionRegister;
 import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
@@ -63,7 +64,6 @@ import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.FEELProfile;
-import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.AliasFEELType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.profiles.FEELv12Profile;
@@ -178,7 +178,7 @@ public class DMNCompilerImpl implements DMNCompiler {
             helperFEELProfiles.addAll(cc.getFeelProfiles());
         }
         DMNFEELHelper feel = new DMNFEELHelper(cc.getRootClassLoader(), helperFEELProfiles);
-        DMNCompilerContext ctx = new DMNCompilerContext(feel);
+        DMNCompilerContext ctx = new DMNCompilerContext(feel, model.getTypeRegistry());
 
         if (!dmndefs.getImport().isEmpty()) {
             for (Import i : dmndefs.getImport()) {

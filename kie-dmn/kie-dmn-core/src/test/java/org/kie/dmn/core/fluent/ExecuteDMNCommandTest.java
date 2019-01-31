@@ -25,6 +25,7 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
+import org.kie.dmn.model.v1_2.TDefinitions;
 import org.kie.internal.command.RegistryContext;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -42,7 +43,7 @@ public class ExecuteDMNCommandTest {
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("No DMN active model defined");
 
-        registryContext.register(DMNModel.class, new DMNModelImpl(null));
+        registryContext.register(DMNModel.class, new DMNModelImpl(new TDefinitions()));
 
         assertThatThrownBy(() -> executeDMNCommand.execute(registryContext))
                 .isInstanceOf(IllegalStateException.class)

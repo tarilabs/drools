@@ -16,7 +16,7 @@
 
 package org.kie.dmn.feel.marshaller;
 
-import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.api.feel.lang.Type;
 
 /**
  * A generic marshaller interface for FEEL values

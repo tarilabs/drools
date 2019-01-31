@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNType;
-import org.kie.dmn.core.compiler.DMNTypeRegistry;
+import org.kie.dmn.api.core.DMNTypeRegistry;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV11;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
@@ -38,7 +38,7 @@ import static org.kie.dmn.core.util.DynamicTypeUtils.prototype;
 
 public class DMNTypeTest {
 
-    private static final DMNTypeRegistry typeRegistry = new DMNTypeRegistryV11();
+    private static final DMNTypeRegistry typeRegistry = new DMNTypeRegistryV11("myNS");
     private static final DMNType FEEL_STRING = typeRegistry.resolveType(KieDMNModelInstrumentedBase.URI_FEEL, "string");
     private static final DMNType FEEL_NUMBER = typeRegistry.resolveType(KieDMNModelInstrumentedBase.URI_FEEL, "number");
 

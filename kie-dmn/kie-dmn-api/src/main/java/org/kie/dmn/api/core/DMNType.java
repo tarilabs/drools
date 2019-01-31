@@ -19,8 +19,9 @@ package org.kie.dmn.api.core;
 import java.util.List;
 import java.util.Map;
 
-public interface DMNType
-        extends Cloneable {
+import org.kie.dmn.api.feel.lang.Type;
+
+public interface DMNType extends Cloneable, Type {
 
     String getNamespace();
 

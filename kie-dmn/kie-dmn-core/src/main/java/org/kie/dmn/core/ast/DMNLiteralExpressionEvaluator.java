@@ -16,19 +16,20 @@
 
 package org.kie.dmn.core.ast;
 
-import java.util.List;
+import java.util.Collections;
 
 import org.kie.dmn.api.core.DMNResult;
+import org.kie.dmn.api.core.DMNTypeRegistry;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
-import org.kie.dmn.core.compiler.DMNProfile;
-import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.codegen.feel11.ProcessedExpression;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.impl.CompiledExpressionImpl;
+import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.feel.lang.impl.FEELImpl;
 
 /**
  * An evaluator for DMN Literal Expressions
@@ -37,8 +38,12 @@ public class DMNLiteralExpressionEvaluator
         implements DMNExpressionEvaluator {
     private CompiledExpression expression;
     private boolean isFunctionDef;
+    private final FEEL feel;
+    private DMNTypeRegistry typeRegistry;
 
-    public DMNLiteralExpressionEvaluator(CompiledExpression expression) {
+    public DMNLiteralExpressionEvaluator(CompiledExpression expression, FEEL feel, DMNTypeRegistry typeRegistry) {
+        this.feel = feel;
+        this.typeRegistry = typeRegistry;
         this.expression = expression;
         if (expression instanceof CompiledExpressionImpl) {
             this.isFunctionDef = ((CompiledExpressionImpl) expression).isFunctionDef();
@@ -61,9 +66,9 @@ public class DMNLiteralExpressionEvaluator
     @Override
     public EvaluatorResult evaluate(DMNRuntimeEventManager dmrem, DMNResult result) {
         // in case an exception is thrown, the parent node will report it
-        List<DMNProfile> profiles = ((DMNRuntimeImpl) dmrem.getRuntime()).getProfiles();
-        @SuppressWarnings({"unchecked", "rawtypes"})
-        Object val = FEEL.newInstance(dmrem.getRuntime().getRootClassLoader(), (List) profiles).evaluate(expression, result.getContext().getAll());
+        EvaluationContextImpl evalCtx = ((FEELImpl) feel).newEvaluationContext(Collections.emptySet(), result.getContext().getAll());
+        evalCtx.setTypeRegistry(typeRegistry);
+        Object val = feel.evaluate(expression, evalCtx);
         return new EvaluatorResultImpl( val, ResultType.SUCCESS );
     }
 }

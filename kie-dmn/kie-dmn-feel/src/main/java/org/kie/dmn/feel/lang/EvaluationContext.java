@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.feel.lang.Type;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 
@@ -50,11 +51,11 @@ public interface EvaluationContext {
 
     void notifyEvt(Supplier<FEELEvent> event);
 
-
     Collection<FEELEventListener> getListeners();
 
     void setRootObject(Object v);
 
     Object getRootObject();
 
+    Type getType(String name);
 }

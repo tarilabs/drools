@@ -15,10 +15,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.kie.dmn.api.feel.lang.Type;
 import org.kie.dmn.feel.lang.CompositeType;
 import org.kie.dmn.feel.lang.FEELProperty;
 import org.kie.dmn.feel.lang.FEELType;
-import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.parser.feel11.ParserHelper;
 import org.kie.dmn.feel.util.EvalHelper;

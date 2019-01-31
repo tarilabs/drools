@@ -23,8 +23,8 @@ import java.util.Map;
 
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.DMNUnaryTest;
+import org.kie.dmn.api.feel.lang.Type;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
-import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.EvalHelper;
 
@@ -137,7 +137,10 @@ public abstract class BaseDMNTypeImpl
             return false; // See FEEL specifications Table 49.
         }
         // try first to recurse in case of Collection..
-        if ( isCollection() && o instanceof Collection ) {
+        if (isCollection()) {
+            if (!(o instanceof Collection)) {
+                return false;
+            }
             Collection<Object> elements = (Collection) o;
             for ( Object e : elements ) {
                 if ( !internalIsInstanceOf(e) || !valueMatchesInUnaryTests(e) ) {
@@ -168,7 +171,10 @@ public abstract class BaseDMNTypeImpl
             return true; // a null-value can be assigned to any type.
         } 
         // try first to recurse in case of Collection..
-        if ( isCollection() && value instanceof Collection ) {
+        if (isCollection()) {
+            if (!(value instanceof Collection)) {
+                return false;
+            }
             Collection<Object> elements = (Collection) value;
             for ( Object e : elements ) {
                 if ( !internalIsAssignableValue(e) || !valueMatchesInUnaryTests(e) ) {

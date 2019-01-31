@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.feel.lang.Type;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -113,5 +114,10 @@ public class SilentWrappingEvaluationContextImpl implements EvaluationContext {
     @Override
     public ClassLoader getRootClassLoader() {
         return wrapped.getRootClassLoader();
+    }
+
+    @Override
+    public Type getType(String name) {
+        return wrapped.getType(name);
     }
 }

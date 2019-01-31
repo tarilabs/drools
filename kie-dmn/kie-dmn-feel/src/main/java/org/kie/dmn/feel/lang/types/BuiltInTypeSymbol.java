@@ -16,8 +16,8 @@
 
 package org.kie.dmn.feel.lang.types;
 
+import org.kie.dmn.api.feel.lang.Type;
 import org.kie.dmn.feel.lang.Scope;
-import org.kie.dmn.feel.lang.Type;
 
 public class BuiltInTypeSymbol
         extends BaseSymbol

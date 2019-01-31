@@ -25,9 +25,12 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.api.core.DMNTypeRegistry;
+import org.kie.dmn.api.feel.lang.Type;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.util.EvalHelper;
 
 public class EvaluationContextImpl implements EvaluationContext {
@@ -37,6 +40,7 @@ public class EvaluationContextImpl implements EvaluationContext {
     private DMNRuntime dmnRuntime;
     private boolean performRuntimeTypeCheck = false;
     private ClassLoader rootClassLoader;
+    private DMNTypeRegistry typeRegistry;
 
     private EvaluationContextImpl(ClassLoader cl, FEELEventListenersManager eventsManager, Deque<ExecutionFrame> stack) {
         this.eventsManager = eventsManager;
@@ -66,7 +70,9 @@ public class EvaluationContextImpl implements EvaluationContext {
 
     @Override
     public EvaluationContext current() {
-        return new EvaluationContextImpl(rootClassLoader, eventsManager, new ArrayDeque<>(stack));
+        EvaluationContextImpl e = new EvaluationContextImpl(rootClassLoader, eventsManager, new ArrayDeque<>(stack));
+        e.setTypeRegistry(this.typeRegistry);
+        return e;
     }
 
     public void push(ExecutionFrame obj) {
@@ -202,6 +208,26 @@ public class EvaluationContextImpl implements EvaluationContext {
     @Override
     public Object getRootObject() {
         return peek().getRootObject();
+    }
+
+    public void setTypeRegistry(DMNTypeRegistry typeRegistry) {
+        this.typeRegistry = typeRegistry;
+    }
+
+    public DMNTypeRegistry getTypeRegistry() {
+        return typeRegistry;
+    }
+
+    @Override
+    public Type getType(String name) {
+        Type result = null;
+        if (this.typeRegistry != null) {
+            result = this.typeRegistry.resolveType(name);
+        }
+        if (result == null) {
+            result = BuiltInType.determineTypeFromName(name);
+        }
+        return result;
     }
 
 }
