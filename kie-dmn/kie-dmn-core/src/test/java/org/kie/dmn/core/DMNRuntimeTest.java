@@ -2422,5 +2422,18 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat(dmnResult.getDecisionResultByName("using get value").getEvaluationStatus(), is(DecisionEvaluationStatus.SUCCEEDED));
         assertThat(dmnResult.getDecisionResultByName("using get value").getResult(), is("value2"));
     }
+
+    @Test
+    public void testinputdatatypecheck() {
+        // DROOLS-
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("inputdatatypecheck.dmn", this.getClass());
+        final DMNModel dmnModel = getAndAssertModelNoErrors(runtime, "http://www.trisotech.com/definitions/_7ab67159-21c7-4985-91fc-f0d0174898db", "Drawing 1");
+
+        final DMNContext wrongContext = DMNFactory.newContext();
+        wrongContext.set("my input", 999);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, wrongContext);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
+    }
 }
 
