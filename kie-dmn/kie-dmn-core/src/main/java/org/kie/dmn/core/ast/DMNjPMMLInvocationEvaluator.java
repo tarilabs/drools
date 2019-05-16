@@ -16,18 +16,24 @@
 
 package org.kie.dmn.core.ast;
 
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.kie.api.pmml.PMML4Field;
-import org.kie.api.pmml.PMML4Result;
+import org.dmg.pmml.FieldName;
+import org.jpmml.evaluator.DefaultVisitorBattery;
+import org.jpmml.evaluator.Evaluator;
+import org.jpmml.evaluator.FieldValue;
+import org.jpmml.evaluator.InputField;
+import org.jpmml.evaluator.LoadingModelEvaluatorBuilder;
+import org.jpmml.evaluator.OutputField;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
@@ -36,15 +42,11 @@ import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator.FormalParameter;
 import org.kie.dmn.model.api.DMNElement;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper;
-import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper.PMML4ExecutionHelperFactory;
-import org.kie.pmml.pmml_4_2.PMMLRequestDataBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DMNKiePMMLInvocationEvaluator implements DMNExpressionEvaluator {
-    private static final Logger logger = LoggerFactory.getLogger( DMNKiePMMLInvocationEvaluator.class );
+public class DMNjPMMLInvocationEvaluator implements DMNExpressionEvaluator {
+    private static final Logger logger = LoggerFactory.getLogger( DMNjPMMLInvocationEvaluator.class );
 
     private final String name;
     private final List<FormalParameter> parameters = new ArrayList<>();
@@ -56,7 +58,7 @@ public class DMNKiePMMLInvocationEvaluator implements DMNExpressionEvaluator {
 
     private String dmnNS;
 
-    public DMNKiePMMLInvocationEvaluator(String dmnNS, String nodeName, DMNElement node, String document, String model) {
+    public DMNjPMMLInvocationEvaluator(String dmnNS, String nodeName, DMNElement node, String document, String model) {
         this.dmnNS = dmnNS;
         this.name = nodeName;
         this.node = node;
@@ -87,40 +89,41 @@ public class DMNKiePMMLInvocationEvaluator implements DMNExpressionEvaluator {
 
     @Override
     public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
-        PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper(model,
-                                                                                     ResourceFactory.newUrlResource(document),
-                                                                                     null);
-        helper.addPossiblePackageName("org.drools.scorecards.example"); // TODO this is hardcoded in the .pmml file ?!
-
-        PMMLRequestDataBuilder request = new PMMLRequestDataBuilder(UUID.randomUUID().toString(),
-                                                                    model);
-
-        for (FormalParameter p : parameters) {
-            Object pValue = dmnr.getContext().get(p.name);
-            if (pValue instanceof BigDecimal) {
-                pValue = ((BigDecimal) pValue).doubleValue();
-            }
-            Class class1 = pValue.getClass();
-            request.addParameter(p.name, pValue, class1);
+        Evaluator evaluator;
+        try {
+            evaluator = new LoadingModelEvaluatorBuilder()
+                                                          .setLocatable(false)
+                                                          .setVisitors(new DefaultVisitorBattery())
+                                                          //.setOutputFilter(OutputFilters.KEEP_FINAL_RESULTS)
+                                                          .load(new URL(document).openStream())
+                                                          .build();
+            evaluator.verify();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new EvaluatorResultImpl(null, ResultType.FAILURE);
         }
-        PMML4Result resultHolder = helper.submitRequest(request.build());
 
-        Map<String, Object> resultVariables = resultHolder.getResultVariables();
-        Map<String, Object> result = new HashMap<>();
-        for (Object r : resultVariables.values()) {
-            if (r instanceof PMML4Field) {
-                PMML4Field pmml4Field = (PMML4Field) r;
-                if (pmml4Field.getName() != null && !pmml4Field.getName().isEmpty()) {
-                    String name = pmml4Field.getName();
-                    try {
-                        Method method = r.getClass().getMethod("getValue");
-                        Object value = method.invoke(r);
-                        result.put(name, value);
-                    } catch (Throwable e) {
-                        e.printStackTrace();
-                    }
-                }
+        List<? extends InputField> inputFields = evaluator.getInputFields();
+
+        Map<FieldName, FieldValue> arguments = new LinkedHashMap<>();
+        for (InputField inputField : inputFields) {
+            FieldName inputName = inputField.getName();
+            Object rawValue = dmnr.getContext().get(inputName.getValue());
+            if (rawValue instanceof BigDecimal) {
+                rawValue = ((BigDecimal) rawValue).doubleValue();
             }
+            FieldValue inputValue = inputField.prepare(rawValue);
+            System.out.println(inputName);
+            System.out.println(inputValue);
+            arguments.put(inputName, inputValue);
+        }
+        Map<FieldName, ?> results = evaluator.evaluate(arguments);
+
+        Map<String, Object> result = new HashMap<>();
+        for (OutputField of : evaluator.getOutputFields()) {
+            String outputFieldName = of.getName().getValue();
+            Optional<FieldName> fnKey = results.keySet().stream().filter(fn -> fn.getValue().equals(outputFieldName)).findFirst();
+            result.put(outputFieldName, fnKey.map(results::get).orElse(null));
         }
 
         return new EvaluatorResultImpl(result, ResultType.SUCCESS);

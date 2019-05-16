@@ -99,6 +99,20 @@
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>org.jpmml</groupId>
+      <artifactId>pmml-evaluator</artifactId>
+      <version>1.4.9</version>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.jpmml</groupId>
+      <artifactId>pmml-evaluator-extension</artifactId>
+      <version>1.4.9</version>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
     <!-- **** POC ****  -->
 
     <dependency>
