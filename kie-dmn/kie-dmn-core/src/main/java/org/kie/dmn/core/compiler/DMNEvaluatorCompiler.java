@@ -21,10 +21,10 @@ import org.kie.dmn.core.ast.DMNContextEvaluator;
 import org.kie.dmn.core.ast.DMNDTExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator;
 import org.kie.dmn.core.ast.DMNInvocationEvaluator;
+import org.kie.dmn.core.ast.DMNKiePMMLInvocationEvaluator;
 import org.kie.dmn.core.ast.DMNListEvaluator;
 import org.kie.dmn.core.ast.DMNLiteralExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNRelationEvaluator;
-import org.kie.dmn.core.ast.DMNjPMMLInvocationEvaluator;
 import org.kie.dmn.core.ast.EvaluatorResultImpl;
 import org.kie.dmn.core.compiler.execmodelbased.DMNRuleClassFile;
 import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNClassLoaderCompiler;
@@ -447,8 +447,8 @@ public class DMNEvaluatorCompiler {
                 }
                 if (pmmlDocument != null && pmmlModel != null) {
                     //  TODO *** POC ***
-                    // DMNKiePMMLInvocationEvaluator invoker = new DMNKiePMMLInvocationEvaluator(model.getNamespace(), node.getName(), funcDef, pmmlDocument, pmmlModel);
-                    DMNjPMMLInvocationEvaluator invoker = new DMNjPMMLInvocationEvaluator(model.getNamespace(), node.getName(), funcDef, pmmlDocument, pmmlModel);
+                    DMNKiePMMLInvocationEvaluator invoker = new DMNKiePMMLInvocationEvaluator(model.getNamespace(), node.getName(), funcDef, pmmlDocument, pmmlModel);
+                    //                    DMNjPMMLInvocationEvaluator invoker = new DMNjPMMLInvocationEvaluator(model.getNamespace(), node.getName(), funcDef, pmmlDocument, pmmlModel);
                     //  TODO *** POC ***
 
                     DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator(node.getName(), funcDef);

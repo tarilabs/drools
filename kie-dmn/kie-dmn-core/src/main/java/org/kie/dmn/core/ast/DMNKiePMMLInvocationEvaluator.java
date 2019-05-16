@@ -56,12 +56,19 @@ public class DMNKiePMMLInvocationEvaluator implements DMNExpressionEvaluator {
 
     private String dmnNS;
 
+    private PMML4ExecutionHelper helper;
+
     public DMNKiePMMLInvocationEvaluator(String dmnNS, String nodeName, DMNElement node, String document, String model) {
         this.dmnNS = dmnNS;
         this.name = nodeName;
         this.node = node;
         this.document = document;
         this.model = model;
+        helper = PMML4ExecutionHelperFactory.getExecutionHelper(model,
+                                                                ResourceFactory.newUrlResource(document),
+                                                                null);
+        helper.addPossiblePackageName("org.drools.scorecards.example"); // TODO this is hardcoded in the .pmml file ?!
+        helper.initModel();
     }
 
     public DMNType getParameterType(String name) {
@@ -87,11 +94,6 @@ public class DMNKiePMMLInvocationEvaluator implements DMNExpressionEvaluator {
 
     @Override
     public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
-        PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper(model,
-                                                                                     ResourceFactory.newUrlResource(document),
-                                                                                     null);
-        helper.addPossiblePackageName("org.drools.scorecards.example"); // TODO this is hardcoded in the .pmml file ?!
-
         PMMLRequestDataBuilder request = new PMMLRequestDataBuilder(UUID.randomUUID().toString(),
                                                                     model);
 
