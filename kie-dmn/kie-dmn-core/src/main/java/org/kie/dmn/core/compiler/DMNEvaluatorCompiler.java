@@ -433,7 +433,6 @@ public class DMNEvaluatorCompiler {
             }
         } else if (kind.equals(FunctionKind.PMML)) {
             if (funcDef.getExpression() instanceof Context) {
-                // proceed
                 Context context = (Context) funcDef.getExpression();
                 String pmmlDocument = null;
                 String pmmlModel = null;
@@ -447,8 +446,7 @@ public class DMNEvaluatorCompiler {
                     }
                 }
                 if (pmmlDocument != null && pmmlModel != null) {
-                    DMNKiePMMLInvocationEvaluator invoker = new DMNKiePMMLInvocationEvaluator(node.getName(), funcDef, pmmlDocument, pmmlModel);
-
+                    DMNKiePMMLInvocationEvaluator invoker = new DMNKiePMMLInvocationEvaluator(model.getNamespace(), node.getName(), funcDef, pmmlDocument, pmmlModel);
                     DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator(node.getName(), funcDef);
                     for (InformationItem p : funcDef.getFormalParameter()) {
                         DMNCompilerHelper.checkVariableName(model, p, p.getName());
@@ -458,6 +456,8 @@ public class DMNEvaluatorCompiler {
                     }
                     func.setEvaluator(invoker);
                     return func;
+                } else {
+                    // TODO error reporting..
                 }
             }
             // TODO error reporting..
