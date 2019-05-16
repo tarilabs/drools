@@ -21,6 +21,7 @@ import org.kie.dmn.core.ast.DMNContextEvaluator;
 import org.kie.dmn.core.ast.DMNDTExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator;
 import org.kie.dmn.core.ast.DMNInvocationEvaluator;
+import org.kie.dmn.core.ast.DMNKiePMMLInvocationEvaluator;
 import org.kie.dmn.core.ast.DMNListEvaluator;
 import org.kie.dmn.core.ast.DMNLiteralExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNRelationEvaluator;
@@ -431,14 +432,35 @@ public class DMNEvaluatorCompiler {
                                        node.getIdentifierString() );
             }
         } else if (kind.equals(FunctionKind.PMML)) {
-            MsgUtil.reportMessage( logger,
-                                   DMNMessage.Severity.WARN,
-                                   funcDef,
-                                   model,
-                                   null,
-                                   null,
-                                   Msg.FUNC_DEF_PMML_NOT_SUPPORTED,
-                                   node.getIdentifierString() );
+            if (funcDef.getExpression() instanceof Context) {
+                // proceed
+                Context context = (Context) funcDef.getExpression();
+                String pmmlDocument = null;
+                String pmmlModel = null;
+                for (ContextEntry ce : context.getContextEntry()) {
+                    if (ce.getVariable() != null && ce.getVariable().getName() != null && ce.getExpression() != null && ce.getExpression() instanceof LiteralExpression) {
+                        if (ce.getVariable().getName().equals("document")) {
+                            pmmlDocument = stripQuotes(((LiteralExpression) ce.getExpression()).getText().trim());
+                        } else if (ce.getVariable().getName().equals("model")) {
+                            pmmlModel = stripQuotes(((LiteralExpression) ce.getExpression()).getText().trim());
+                        }
+                    }
+                }
+                if (pmmlDocument != null && pmmlModel != null) {
+                    DMNKiePMMLInvocationEvaluator invoker = new DMNKiePMMLInvocationEvaluator(node.getName(), funcDef, pmmlDocument, pmmlModel);
+
+                    DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator(node.getName(), funcDef);
+                    for (InformationItem p : funcDef.getFormalParameter()) {
+                        DMNCompilerHelper.checkVariableName(model, p, p.getName());
+                        DMNType dmnType = compiler.resolveTypeRef(model, p, p, p.getTypeRef());
+                        func.addParameter(p.getName(), dmnType);
+                        invoker.addParameter(p.getName(), dmnType);
+                    }
+                    func.setEvaluator(invoker);
+                    return func;
+                }
+            }
+            // TODO error reporting..
         } else {
             MsgUtil.reportMessage( logger,
                                    DMNMessage.Severity.ERROR,

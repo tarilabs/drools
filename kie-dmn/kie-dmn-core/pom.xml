@@ -91,6 +91,13 @@
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
     </dependency>
+    
+    <!-- **** POC ****  -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kie-pmml</artifactId>
+    </dependency>
+    <!-- **** POC ****  -->
 
     <dependency>
       <groupId>org.osgi</groupId>
