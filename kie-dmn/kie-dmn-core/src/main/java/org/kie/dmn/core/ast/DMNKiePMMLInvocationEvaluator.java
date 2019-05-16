@@ -16,14 +16,17 @@
 
 package org.kie.dmn.core.ast;
 
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.kie.api.pmml.PMML4Field;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNType;
@@ -51,8 +54,14 @@ public class DMNKiePMMLInvocationEvaluator implements DMNExpressionEvaluator {
     private String document;
     private String model;
 
-    public DMNKiePMMLInvocationEvaluator(String nodeName, DMNElement node, String document, String model) {
+    private DMNElement node;
+
+    private String dmnNS;
+
+    public DMNKiePMMLInvocationEvaluator(String dmnNS, String nodeName, DMNElement node, String document, String model) {
+        this.dmnNS = dmnNS;
         this.name = nodeName;
+        this.node = node;
         this.document = document;
         this.model = model;
     }
@@ -85,7 +94,7 @@ public class DMNKiePMMLInvocationEvaluator implements DMNExpressionEvaluator {
         PMML4ExecutionHelper helper = PMML4ExecutionHelperFactory.getExecutionHelper(model,
                                                                                      ResourceFactory.newUrlResource(document),
                                                                                      null);
-        helper.addPossiblePackageName("org.drools.scorecards.example");
+        helper.addPossiblePackageName("org.drools.scorecards.example"); // TODO this is hardcoded in the .pmml file ?!
 
         PMMLRequestDataBuilder request = new PMMLRequestDataBuilder(UUID.randomUUID().toString(),
                                                                     model);
@@ -101,8 +110,24 @@ public class DMNKiePMMLInvocationEvaluator implements DMNExpressionEvaluator {
         PMML4Result resultHolder = helper.submitRequest(request.build());
 
         Map<String, Object> resultVariables = resultHolder.getResultVariables();
+        Map<String, Object> result = new HashMap<>();
+        for (Object r : resultVariables.values()) {
+            if (r instanceof PMML4Field) {
+                PMML4Field pmml4Field = (PMML4Field) r;
+                if (pmml4Field.getName() != null && !pmml4Field.getName().isEmpty()) {
+                    String name = pmml4Field.getName();
+                    try {
+                        Method method = r.getClass().getMethod("getValue");
+                        Object value = method.invoke(r);
+                        result.put(name, value);
+                    } catch (Throwable e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
 
-        return new EvaluatorResultImpl(resultVariables, ResultType.SUCCESS);
+        return new EvaluatorResultImpl(result, ResultType.SUCCESS);
     }
 
 }

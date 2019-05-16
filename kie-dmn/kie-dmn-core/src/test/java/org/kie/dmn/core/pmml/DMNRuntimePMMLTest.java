@@ -1,6 +1,6 @@
 package org.kie.dmn.core.pmml;
 
-import java.math.BigDecimal;
+import java.util.Map;
 
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.assertThat;
 
 public class DMNRuntimePMMLTest {
@@ -38,7 +39,6 @@ public class DMNRuntimePMMLTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext result = dmnResult.getContext();
-
-        assertThat( result.get( "Yearly Salary" ), is( new BigDecimal( "12000" ) ) );
+        assertThat((Map<String, Object>) result.get("my decision"), hasEntry("CalculatedScore", 41.345));
     }
 }
