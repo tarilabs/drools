@@ -121,7 +121,20 @@
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
-    
+    <dependency>
+      <groupId>org.jpmml</groupId>
+      <artifactId>pmml-agent</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>
+      <!-- ATTENTION 1.4.11 intentional, because 1.4.9 evaluators depend on 1.4.11 -->
+    </dependency>
+    <dependency>
+      <groupId>org.jpmml</groupId>
+      <artifactId>pmml-model</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>
+      <!-- ATTENTION 1.4.11 intentional, because 1.4.9 evaluators depend on 1.4.11 -->
+      </dependency>
     <dependency>
       <groupId>org.jpmml</groupId>
       <artifactId>pmml-evaluator</artifactId>
