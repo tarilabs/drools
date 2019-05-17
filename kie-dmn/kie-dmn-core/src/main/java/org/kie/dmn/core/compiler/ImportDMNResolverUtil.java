@@ -54,7 +54,8 @@ public class ImportDMNResolverUtil {
 
     public static enum ImportType {
         UNKNOWN,
-        DMN;
+        DMN,
+        PMML;
     }
 
     public static ImportType whichImportType(Import _import) {
@@ -63,6 +64,8 @@ public class ImportDMNResolverUtil {
             case "http://www.omg.org/spec/DMN1-2Alpha/20160929/MODEL":
             case KieDMNModelInstrumentedBase.URI_DMN:
                 return ImportType.DMN;
+            case "http://www.dmg.org/PMML-4_2":
+                return ImportType.PMML;
             default:
                 return ImportType.UNKNOWN;
         }
