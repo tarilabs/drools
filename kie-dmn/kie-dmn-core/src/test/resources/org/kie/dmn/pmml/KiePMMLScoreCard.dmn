@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns="http://www.trisotech.com/definitions/_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f" id="_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f" name="KiePMMLScoreCard" namespace="http://www.trisotech.com/definitions/_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f" exporter="DMN Modeler" exporterVersion="6.2.2.3" triso:logoChoice="Default">
     <semantic:extensionElements/>
+    <semantic:import namespace="iris" 
+                     name="iris" 
+                     locationURI="test_scorecard.pmml" 
+                     importType="http://www.dmg.org/PMML-4_2"/>    
     <semantic:decisionService id="_ca466dbe-20b4-4e88-a43f-4ce3aff26e4f_DS" name="Whole Model Decision Service" triso:dynamicDecisionService="true">
         <semantic:variable name="Whole Model Decision Service" id="_b3184a98-1820-4eed-a647-fad14b470fd1" typeRef="Any"/>
         <semantic:outputDecision href="#_c7724c41-b281-4890-ac3d-7d8ed1dc517f"/>
@@ -20,7 +24,7 @@
                 <semantic:contextEntry id="_71f89971-82d6-4e64-9c37-544f800eb258">
                     <semantic:variable name="document" id="_45eb749e-e8cf-4b6e-9d27-6489c9af463a" typeRef="string"/>
                     <semantic:literalExpression id="_3780fb28-6a1c-4f35-a70c-731bc1b9d69a">
-                        <semantic:text>"file:///home/mmortari/git/drools/kie-dmn/kie-dmn-core/src/test/resources/org/kie/pmml/test_scorecard.pmml"</semantic:text>
+                        <semantic:text>"iris"</semantic:text>
                     </semantic:literalExpression>
                 </semantic:contextEntry>
                 <semantic:contextEntry id="_9a55a338-30e1-41ce-a9dd-8f9df2701238">

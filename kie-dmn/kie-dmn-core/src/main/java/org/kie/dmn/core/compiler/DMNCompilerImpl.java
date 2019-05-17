@@ -201,6 +201,8 @@ public class DMNCompilerImpl implements DMNCompiler {
                         model.setImportAliasForNS(iAlias, located.getNamespace(), located.getName());
                         importFromModel(model, located, iAlias);
                     }
+                } else if (ImportDMNResolverUtil.whichImportType(i) == ImportType.PMML) {
+                    // TODO
                 } else {
                     MsgUtil.reportMessage(logger,
                                           DMNMessage.Severity.ERROR,

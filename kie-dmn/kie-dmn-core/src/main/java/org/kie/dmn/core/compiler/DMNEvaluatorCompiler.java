@@ -1,5 +1,6 @@
 package org.kie.dmn.core.compiler;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map.Entry;
@@ -56,6 +57,7 @@ import org.kie.dmn.model.api.Expression;
 import org.kie.dmn.model.api.FunctionDefinition;
 import org.kie.dmn.model.api.FunctionKind;
 import org.kie.dmn.model.api.HitPolicy;
+import org.kie.dmn.model.api.Import;
 import org.kie.dmn.model.api.InformationItem;
 import org.kie.dmn.model.api.InputClause;
 import org.kie.dmn.model.api.Invocation;
@@ -445,10 +447,19 @@ public class DMNEvaluatorCompiler {
                         }
                     }
                 }
-                if (pmmlDocument != null && pmmlModel != null) {
+                String locationURI = null;
+                if (pmmlDocument != null ) {
+                    for (Import i : model.getDefinitions().getImport()) {
+                        if (i.getName().equals(pmmlDocument)) {
+                            locationURI = i.getLocationURI();
+                        }
+                    }
+                }
+                if (locationURI != null) {
                     //  TODO *** POC ***
-                    DMNKiePMMLInvocationEvaluator invoker = new DMNKiePMMLInvocationEvaluator(model.getNamespace(), node.getName(), funcDef, pmmlDocument, pmmlModel);
-                    //                    DMNjPMMLInvocationEvaluator invoker = new DMNjPMMLInvocationEvaluator(model.getNamespace(), node.getName(), funcDef, pmmlDocument, pmmlModel);
+                    URL pmmlURL = getRootClassLoader().getResource(locationURI);
+                    DMNKiePMMLInvocationEvaluator invoker = new DMNKiePMMLInvocationEvaluator(model.getNamespace(), node.getName(), funcDef, pmmlURL, pmmlModel);
+                    //DMNjPMMLInvocationEvaluator invoker = new DMNjPMMLInvocationEvaluator(model.getNamespace(), node.getName(), funcDef, pmmlURL, pmmlModel);
                     //  TODO *** POC ***
 
                     DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator(node.getName(), funcDef);

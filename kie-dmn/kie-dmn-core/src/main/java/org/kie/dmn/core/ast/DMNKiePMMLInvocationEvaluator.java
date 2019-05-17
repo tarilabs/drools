@@ -18,6 +18,7 @@ package org.kie.dmn.core.ast;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -49,7 +50,7 @@ public class DMNKiePMMLInvocationEvaluator implements DMNExpressionEvaluator {
     private final String name;
     private final List<FormalParameter> parameters = new ArrayList<>();
 
-    private String document;
+    private URL document;
     private String model;
 
     private DMNElement node;
@@ -58,17 +59,25 @@ public class DMNKiePMMLInvocationEvaluator implements DMNExpressionEvaluator {
 
     private PMML4ExecutionHelper helper;
 
-    public DMNKiePMMLInvocationEvaluator(String dmnNS, String nodeName, DMNElement node, String document, String model) {
+    public DMNKiePMMLInvocationEvaluator(String dmnNS, String nodeName, DMNElement node, URL url, String model) {
         this.dmnNS = dmnNS;
         this.name = nodeName;
         this.node = node;
-        this.document = document;
+        this.document = url;
         this.model = model;
-        helper = PMML4ExecutionHelperFactory.getExecutionHelper(model,
-                                                                ResourceFactory.newUrlResource(document),
-                                                                null);
-        helper.addPossiblePackageName("org.drools.scorecards.example"); // TODO this is hardcoded in the .pmml file ?!
-        helper.initModel();
+        init();
+    }
+
+    private void init() {
+        try {
+            helper = PMML4ExecutionHelperFactory.getExecutionHelper(model,
+                                                                    ResourceFactory.newUrlResource(document),
+                                                                    null);
+            helper.addPossiblePackageName("org.drools.scorecards.example"); // TODO this is hardcoded in the .pmml file ?!
+            helper.initModel();
+        } catch (NoClassDefFoundError e) {
+            // TODO error reporting.
+        }
     }
 
     public DMNType getParameterType(String name) {

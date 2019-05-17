@@ -51,18 +51,18 @@ public class DMNjPMMLInvocationEvaluator implements DMNExpressionEvaluator {
     private final String name;
     private final List<FormalParameter> parameters = new ArrayList<>();
 
-    private String document;
+    private URL document;
     private String model;
 
     private DMNElement node;
 
     private String dmnNS;
 
-    public DMNjPMMLInvocationEvaluator(String dmnNS, String nodeName, DMNElement node, String document, String model) {
+    public DMNjPMMLInvocationEvaluator(String dmnNS, String nodeName, DMNElement node, URL url, String model) {
         this.dmnNS = dmnNS;
         this.name = nodeName;
         this.node = node;
-        this.document = document;
+        this.document = url;
         this.model = model;
     }
 
@@ -95,7 +95,7 @@ public class DMNjPMMLInvocationEvaluator implements DMNExpressionEvaluator {
                                                           .setLocatable(false)
                                                           .setVisitors(new DefaultVisitorBattery())
                                                           //.setOutputFilter(OutputFilters.KEEP_FINAL_RESULTS)
-                                                          .load(new URL(document).openStream())
+                                                          .load(document.openStream())
                                                           .build();
             evaluator.verify();
         } catch (Exception e) {
