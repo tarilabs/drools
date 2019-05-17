@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,22 +17,15 @@
 package org.kie.dmn.core.ast;
 
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.kie.api.pmml.PMML4Field;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.dmn.api.core.DMNResult;
-import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
-import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator.FormalParameter;
@@ -44,62 +37,18 @@ import org.kie.pmml.pmml_4_2.PMMLRequestDataBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Deprecated
-public class DMNKiePMMLInvocationEvaluator implements DMNExpressionEvaluator {
-    private static final Logger logger = LoggerFactory.getLogger( DMNKiePMMLInvocationEvaluator.class );
+public class DMNKiePMMLInvocationEvaluator extends AbstractPMMLInvocationEvaluator {
 
-    private final String name;
-    private final List<FormalParameter> parameters = new ArrayList<>();
+    private static final Logger LOG = LoggerFactory.getLogger(DMNKiePMMLInvocationEvaluator.class);
+    private final PMML4ExecutionHelper helper;
 
-    private URL document;
-    private String model;
-
-    private DMNElement node;
-
-    private String dmnNS;
-
-    private PMML4ExecutionHelper helper;
-
-    public DMNKiePMMLInvocationEvaluator(String dmnNS, String nodeName, DMNElement node, URL url, String model) {
-        this.dmnNS = dmnNS;
-        this.name = nodeName;
-        this.node = node;
-        this.document = url;
-        this.model = model;
-        init();
-    }
-
-    private void init() {
-        try {
-            helper = PMML4ExecutionHelperFactory.getExecutionHelper(model,
-                                                                    ResourceFactory.newUrlResource(document),
-                                                                    null);
-            helper.addPossiblePackageName("org.drools.scorecards.example"); // TODO this is hardcoded in the .pmml file ?!
-            helper.initModel();
-        } catch (NoClassDefFoundError e) {
-            // TODO error reporting.
-        }
-    }
-
-    public DMNType getParameterType(String name) {
-        for (FormalParameter fp : parameters) {
-            if (fp.name.equals(name)) {
-                return fp.type;
-            }
-        }
-        return null;
-    }
-
-    public List<List<String>> getParameterNames() {
-        return Collections.singletonList(parameters.stream().map(p -> p.name).collect(Collectors.toList()));
-    }
-
-    public List<List<DMNType>> getParameterTypes() {
-        return Collections.singletonList(parameters.stream().map(p -> p.type).collect(Collectors.toList()));
-    }
-
-    public void addParameter(String name, DMNType dmnType) {
-        this.parameters.add(new FormalParameter(name, dmnType));
+    public DMNKiePMMLInvocationEvaluator(String dmnNS, DMNElement node, URL url, String model) {
+        super(dmnNS, node, url, model);
+        helper = PMML4ExecutionHelperFactory.getExecutionHelper(model,
+                                                                ResourceFactory.newUrlResource(document),
+                                                                null);
+        helper.addPossiblePackageName("org.drools.scorecards.example"); // TODO this is hardcoded in the .pmml file ?!
+        helper.initModel();
     }
 
     @Override
@@ -108,10 +57,7 @@ public class DMNKiePMMLInvocationEvaluator implements DMNExpressionEvaluator {
                                                                     model);
 
         for (FormalParameter p : parameters) {
-            Object pValue = dmnr.getContext().get(p.name);
-            if (pValue instanceof BigDecimal) {
-                pValue = ((BigDecimal) pValue).doubleValue();
-            }
+            Object pValue = getValueForPMMLInput(dmnr, p.name);
             Class class1 = pValue.getClass();
             request.addParameter(p.name, pValue, class1);
         }
