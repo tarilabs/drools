@@ -28,18 +28,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBException;
 
 import org.dmg.pmml.FieldName;
 import org.jpmml.evaluator.DefaultVisitorBattery;
-import org.jpmml.evaluator.Evaluator;
 import org.jpmml.evaluator.FieldValue;
 import org.jpmml.evaluator.InputField;
 import org.jpmml.evaluator.LoadingModelEvaluatorBuilder;
+import org.jpmml.evaluator.ModelEvaluator;
 import org.jpmml.evaluator.OutputField;
-import org.jpmml.model.VisitorBattery;
 import org.kie.api.pmml.PMML4Field;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.dmn.api.core.DMNResult;
@@ -79,8 +79,7 @@ public class PMMLInvocationEvaluator implements DMNExpressionEvaluator {
     private PMML_RUNTIME runtime;
 
     private PMML4ExecutionHelper helper;
-    private Evaluator evaluator;
-
+    private ModelEvaluator<?> evaluator; // do NOT use interface, keep class.
 
     public PMMLInvocationEvaluator(String dmnNS, String nodeName, DMNElement node, URL url, String model) {
         this.dmnNS = dmnNS;
@@ -105,9 +104,9 @@ public class PMMLInvocationEvaluator implements DMNExpressionEvaluator {
         }
         try {
             LoadingModelEvaluatorBuilder builder = new LoadingModelEvaluatorBuilder();
-            VisitorBattery visitors = new DefaultVisitorBattery();
+            Supplier<DefaultVisitorBattery> visitors = () -> new DefaultVisitorBattery();
             evaluator = builder.setLocatable(false)
-                               .setVisitors(visitors)
+                               .setVisitors(visitors.get())
                                .load(document.openStream())
                                .build();
             evaluator.verify();
