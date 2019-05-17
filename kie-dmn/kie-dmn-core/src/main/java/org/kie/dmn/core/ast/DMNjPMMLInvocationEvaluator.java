@@ -92,8 +92,7 @@ public class DMNjPMMLInvocationEvaluator implements DMNExpressionEvaluator {
     public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
         Evaluator evaluator;
         try {
-            evaluator = new LoadingModelEvaluatorBuilder()
-                                                          .setLocatable(false)
+            evaluator = new LoadingModelEvaluatorBuilder().setLocatable(false)
                                                           .setVisitors(new DefaultVisitorBattery())
                                                           //.setOutputFilter(OutputFilters.KEEP_FINAL_RESULTS)
                                                           .load(document.openStream())

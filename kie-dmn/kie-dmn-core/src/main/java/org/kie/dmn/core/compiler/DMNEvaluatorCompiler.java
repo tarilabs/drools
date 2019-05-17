@@ -456,11 +456,13 @@ public class DMNEvaluatorCompiler {
                     }
                 }
                 if (locationURI != null) {
+                    System.out.println(locationURI);
                     URL pmmlURL = getRootClassLoader().getResource(locationURI);
+                    System.out.println(pmmlURL);
                     PMMLInvocationEvaluator invoker = new PMMLInvocationEvaluator(model.getNamespace(), node.getName(), funcDef, pmmlURL, pmmlModel);
 
                     DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator(node.getName(), funcDef);
-                        for (InformationItem p : funcDef.getFormalParameter()) {
+                    for (InformationItem p : funcDef.getFormalParameter()) {
                         DMNCompilerHelper.checkVariableName(model, p, p.getName());
                         DMNType dmnType = compiler.resolveTypeRef(model, p, p, p.getTypeRef());
                         func.addParameter(p.getName(), dmnType);

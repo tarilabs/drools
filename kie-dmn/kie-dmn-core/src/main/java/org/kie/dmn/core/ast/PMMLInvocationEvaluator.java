@@ -110,7 +110,7 @@ public class PMMLInvocationEvaluator implements DMNExpressionEvaluator {
                                .load(document.openStream())
                                .build();
             evaluator.verify();
-            runtime = PMML_RUNTIME.KIE_PMML;
+            runtime = PMML_RUNTIME.JPMML;
             return;
         } catch (NoClassDefFoundError e) {
             // TODO I tried jpmml.
@@ -152,15 +152,20 @@ public class PMMLInvocationEvaluator implements DMNExpressionEvaluator {
         }
     }
 
+    private static Object getValueForPMMLInput(DMNResult r, String name) {
+        Object pValue = r.getContext().get(name);
+        if (pValue instanceof BigDecimal) {
+            return ((BigDecimal) pValue).doubleValue();
+        }
+        return pValue;
+    }
+
     private EvaluatorResult internalEvaluateKiePMML(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
         PMMLRequestDataBuilder request = new PMMLRequestDataBuilder(UUID.randomUUID().toString(),
                                                                     model);
 
         for (FormalParameter p : parameters) {
-            Object pValue = dmnr.getContext().get(p.name);
-            if (pValue instanceof BigDecimal) {
-                pValue = ((BigDecimal) pValue).doubleValue();
-            }
+            Object pValue = getValueForPMMLInput(dmnr, p.name);
             Class class1 = pValue.getClass();
             request.addParameter(p.name, pValue, class1);
         }
@@ -193,10 +198,7 @@ public class PMMLInvocationEvaluator implements DMNExpressionEvaluator {
         Map<FieldName, FieldValue> arguments = new LinkedHashMap<>();
         for (InputField inputField : inputFields) {
             FieldName inputName = inputField.getName();
-            Object rawValue = dmnr.getContext().get(inputName.getValue());
-            if (rawValue instanceof BigDecimal) {
-                rawValue = ((BigDecimal) rawValue).doubleValue();
-            }
+            Object rawValue = getValueForPMMLInput(dmnr, inputName.getValue());
             FieldValue inputValue = inputField.prepare(rawValue);
             System.out.println(inputName);
             System.out.println(inputValue);
