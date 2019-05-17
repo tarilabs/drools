@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,17 +16,29 @@
 
 package org.kie.dmn.core.ast;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.xml.bind.JAXBException;
+
+import org.dmg.pmml.FieldName;
+import org.jpmml.evaluator.DefaultVisitorBattery;
+import org.jpmml.evaluator.Evaluator;
+import org.jpmml.evaluator.FieldValue;
+import org.jpmml.evaluator.InputField;
+import org.jpmml.evaluator.LoadingModelEvaluatorBuilder;
+import org.jpmml.evaluator.OutputField;
 import org.kie.api.pmml.PMML4Field;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.dmn.api.core.DMNResult;
@@ -43,10 +55,10 @@ import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper.PMML4ExecutionHelperFactory;
 import org.kie.pmml.pmml_4_2.PMMLRequestDataBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
-@Deprecated
-public class DMNKiePMMLInvocationEvaluator implements DMNExpressionEvaluator {
-    private static final Logger logger = LoggerFactory.getLogger( DMNKiePMMLInvocationEvaluator.class );
+public class PMMLInvocationEvaluator implements DMNExpressionEvaluator {
+    private static final Logger logger = LoggerFactory.getLogger( PMMLInvocationEvaluator.class );
 
     private final String name;
     private final List<FormalParameter> parameters = new ArrayList<>();
@@ -58,9 +70,18 @@ public class DMNKiePMMLInvocationEvaluator implements DMNExpressionEvaluator {
 
     private String dmnNS;
 
-    private PMML4ExecutionHelper helper;
+    private static enum PMML_RUNTIME {
+        KIE_PMML,
+        JPMML;
+    }
 
-    public DMNKiePMMLInvocationEvaluator(String dmnNS, String nodeName, DMNElement node, URL url, String model) {
+    private PMML_RUNTIME runtime;
+
+    private PMML4ExecutionHelper helper;
+    private Evaluator evaluator;
+
+
+    public PMMLInvocationEvaluator(String dmnNS, String nodeName, DMNElement node, URL url, String model) {
         this.dmnNS = dmnNS;
         this.name = nodeName;
         this.node = node;
@@ -76,8 +97,26 @@ public class DMNKiePMMLInvocationEvaluator implements DMNExpressionEvaluator {
                                                                     null);
             helper.addPossiblePackageName("org.drools.scorecards.example"); // TODO this is hardcoded in the .pmml file ?!
             helper.initModel();
+            runtime = PMML_RUNTIME.KIE_PMML;
+            return;
         } catch (NoClassDefFoundError e) {
-            // TODO error reporting.
+            // TODO I tried kie-pmml.
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        try {
+            DefaultVisitorBattery visitors = new DefaultVisitorBattery();
+            evaluator = new LoadingModelEvaluatorBuilder().setLocatable(false)
+                                                          .setVisitors(visitors)
+                                                          .load(document.openStream())
+                                                          .build();
+            evaluator.verify();
+            runtime = PMML_RUNTIME.KIE_PMML;
+            return;
+        } catch (NoClassDefFoundError e) {
+            // TODO I tried jpmml.
+        } catch (SAXException | JAXBException | IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -104,6 +143,17 @@ public class DMNKiePMMLInvocationEvaluator implements DMNExpressionEvaluator {
 
     @Override
     public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
+        if (runtime == PMML_RUNTIME.KIE_PMML) {
+            return internalEvaluateKiePMML(eventManager, dmnr);
+        } else if (runtime == PMML_RUNTIME.JPMML) {
+            return internalEvaluateJPMML(eventManager, dmnr);
+        } else {
+            // TODO emit error message that missed the PMML dependency, and the problem was noted at compile time.
+            return new EvaluatorResultImpl(null, ResultType.FAILURE);
+        }
+    }
+
+    private EvaluatorResult internalEvaluateKiePMML(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
         PMMLRequestDataBuilder request = new PMMLRequestDataBuilder(UUID.randomUUID().toString(),
                                                                     model);
 
@@ -138,4 +188,30 @@ public class DMNKiePMMLInvocationEvaluator implements DMNExpressionEvaluator {
         return new EvaluatorResultImpl(result, ResultType.SUCCESS);
     }
 
+    private EvaluatorResult internalEvaluateJPMML(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
+        List<? extends InputField> inputFields = evaluator.getInputFields();
+
+        Map<FieldName, FieldValue> arguments = new LinkedHashMap<>();
+        for (InputField inputField : inputFields) {
+            FieldName inputName = inputField.getName();
+            Object rawValue = dmnr.getContext().get(inputName.getValue());
+            if (rawValue instanceof BigDecimal) {
+                rawValue = ((BigDecimal) rawValue).doubleValue();
+            }
+            FieldValue inputValue = inputField.prepare(rawValue);
+            System.out.println(inputName);
+            System.out.println(inputValue);
+            arguments.put(inputName, inputValue);
+        }
+        Map<FieldName, ?> results = evaluator.evaluate(arguments);
+
+        Map<String, Object> result = new HashMap<>();
+        for (OutputField of : evaluator.getOutputFields()) {
+            String outputFieldName = of.getName().getValue();
+            Optional<FieldName> fnKey = results.keySet().stream().filter(fn -> fn.getValue().equals(outputFieldName)).findFirst();
+            result.put(outputFieldName, fnKey.map(results::get).orElse(null));
+        }
+
+        return new EvaluatorResultImpl(result, ResultType.SUCCESS);
+    }
 }

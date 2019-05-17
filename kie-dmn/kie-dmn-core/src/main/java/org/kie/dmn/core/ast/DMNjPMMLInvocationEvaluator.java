@@ -45,6 +45,7 @@ import org.kie.dmn.model.api.DMNElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deprecated
 public class DMNjPMMLInvocationEvaluator implements DMNExpressionEvaluator {
     private static final Logger logger = LoggerFactory.getLogger( DMNjPMMLInvocationEvaluator.class );
 

@@ -22,11 +22,11 @@ import org.kie.dmn.core.ast.DMNContextEvaluator;
 import org.kie.dmn.core.ast.DMNDTExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator;
 import org.kie.dmn.core.ast.DMNInvocationEvaluator;
-import org.kie.dmn.core.ast.DMNKiePMMLInvocationEvaluator;
 import org.kie.dmn.core.ast.DMNListEvaluator;
 import org.kie.dmn.core.ast.DMNLiteralExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNRelationEvaluator;
 import org.kie.dmn.core.ast.EvaluatorResultImpl;
+import org.kie.dmn.core.ast.PMMLInvocationEvaluator;
 import org.kie.dmn.core.compiler.execmodelbased.DMNRuleClassFile;
 import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNClassLoaderCompiler;
 import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNEvaluatorCompiler;
@@ -456,19 +456,16 @@ public class DMNEvaluatorCompiler {
                     }
                 }
                 if (locationURI != null) {
-                    //  TODO *** POC ***
                     URL pmmlURL = getRootClassLoader().getResource(locationURI);
-                    DMNKiePMMLInvocationEvaluator invoker = new DMNKiePMMLInvocationEvaluator(model.getNamespace(), node.getName(), funcDef, pmmlURL, pmmlModel);
-                    //DMNjPMMLInvocationEvaluator invoker = new DMNjPMMLInvocationEvaluator(model.getNamespace(), node.getName(), funcDef, pmmlURL, pmmlModel);
-                    //  TODO *** POC ***
+                    PMMLInvocationEvaluator invoker = new PMMLInvocationEvaluator(model.getNamespace(), node.getName(), funcDef, pmmlURL, pmmlModel);
 
                     DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator(node.getName(), funcDef);
-                    for (InformationItem p : funcDef.getFormalParameter()) {
+                        for (InformationItem p : funcDef.getFormalParameter()) {
                         DMNCompilerHelper.checkVariableName(model, p, p.getName());
                         DMNType dmnType = compiler.resolveTypeRef(model, p, p, p.getTypeRef());
                         func.addParameter(p.getName(), dmnType);
                         invoker.addParameter(p.getName(), dmnType);
-                    }
+                        }
                     func.setEvaluator(invoker);
                     return func;
                 } else {
