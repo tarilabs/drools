@@ -101,8 +101,6 @@ public class PMMLInvocationEvaluator implements DMNExpressionEvaluator {
             return;
         } catch (NoClassDefFoundError e) {
             // TODO I tried kie-pmml.
-        } catch (Throwable e) {
-            e.printStackTrace();
         }
         try {
             DefaultVisitorBattery visitors = new DefaultVisitorBattery();
