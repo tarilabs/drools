@@ -59,17 +59,15 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 public class PMMLInvocationEvaluator implements DMNExpressionEvaluator {
-    private static final Logger logger = LoggerFactory.getLogger( PMMLInvocationEvaluator.class );
 
-    private final String name;
+    private static final Logger LOG = LoggerFactory.getLogger(PMMLInvocationEvaluator.class);
+
+    private String dmnNS;
+    private DMNElement node;
     private final List<FormalParameter> parameters = new ArrayList<>();
 
     private URL document;
     private String model;
-
-    private DMNElement node;
-
-    private String dmnNS;
 
     private static enum PMML_RUNTIME {
         KIE_PMML,
@@ -81,9 +79,8 @@ public class PMMLInvocationEvaluator implements DMNExpressionEvaluator {
     private PMML4ExecutionHelper helper;
     private ModelEvaluator<?> evaluator; // do NOT use interface, keep class.
 
-    public PMMLInvocationEvaluator(String dmnNS, String nodeName, DMNElement node, URL url, String model) {
+    public PMMLInvocationEvaluator(String dmnNS, DMNElement node, URL url, String model) {
         this.dmnNS = dmnNS;
-        this.name = nodeName;
         this.node = node;
         this.document = url;
         this.model = model;
@@ -200,8 +197,8 @@ public class PMMLInvocationEvaluator implements DMNExpressionEvaluator {
             FieldName inputName = inputField.getName();
             Object rawValue = getValueForPMMLInput(dmnr, inputName.getValue());
             FieldValue inputValue = inputField.prepare(rawValue);
-            System.out.println(inputName);
-            System.out.println(inputValue);
+            LOG.trace("{}", inputName);
+            LOG.trace("{}", inputValue);
             arguments.put(inputName, inputValue);
         }
         Map<FieldName, ?> results = evaluator.evaluate(arguments);

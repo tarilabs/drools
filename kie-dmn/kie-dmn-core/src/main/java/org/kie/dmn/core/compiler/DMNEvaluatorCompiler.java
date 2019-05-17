@@ -456,10 +456,10 @@ public class DMNEvaluatorCompiler {
                     }
                 }
                 if (locationURI != null) {
-                    System.out.println(locationURI);
+                    logger.trace("{}", locationURI);
                     URL pmmlURL = getRootClassLoader().getResource(locationURI);
-                    System.out.println(pmmlURL);
-                    PMMLInvocationEvaluator invoker = new PMMLInvocationEvaluator(model.getNamespace(), node.getName(), funcDef, pmmlURL, pmmlModel);
+                    logger.trace("{}", pmmlURL);
+                    PMMLInvocationEvaluator invoker = new PMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlURL, pmmlModel);
 
                     DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator(node.getName(), funcDef);
                     for (InformationItem p : funcDef.getFormalParameter()) {
