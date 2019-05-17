@@ -39,6 +39,7 @@ import org.jpmml.evaluator.FieldValue;
 import org.jpmml.evaluator.InputField;
 import org.jpmml.evaluator.LoadingModelEvaluatorBuilder;
 import org.jpmml.evaluator.OutputField;
+import org.jpmml.model.VisitorBattery;
 import org.kie.api.pmml.PMML4Field;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.dmn.api.core.DMNResult;
@@ -103,11 +104,12 @@ public class PMMLInvocationEvaluator implements DMNExpressionEvaluator {
             // TODO I tried kie-pmml.
         }
         try {
-            DefaultVisitorBattery visitors = new DefaultVisitorBattery();
-            evaluator = new LoadingModelEvaluatorBuilder().setLocatable(false)
-                                                          .setVisitors(visitors)
-                                                          .load(document.openStream())
-                                                          .build();
+            LoadingModelEvaluatorBuilder builder = new LoadingModelEvaluatorBuilder();
+            VisitorBattery visitors = new DefaultVisitorBattery();
+            evaluator = builder.setLocatable(false)
+                               .setVisitors(visitors)
+                               .load(document.openStream())
+                               .build();
             evaluator.verify();
             runtime = PMML_RUNTIME.KIE_PMML;
             return;

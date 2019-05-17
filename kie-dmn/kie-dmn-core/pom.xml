@@ -28,6 +28,29 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <!-- **** POC ****  -->
+          <dependency>
+      <groupId>org.jpmml</groupId>
+      <artifactId>pmml-model</artifactId>
+      <version>1.4.9</version>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+          <dependency>
+      <groupId>org.jpmml</groupId>
+      <artifactId>pmml-evaluator</artifactId>
+      <version>1.4.9</version>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.jpmml</groupId>
+      <artifactId>pmml-evaluator-extension</artifactId>
+      <version>1.4.9</version>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    <!-- **** POC ****  -->
     </dependencies>
   </dependencyManagement>
 
@@ -101,15 +124,19 @@
     </dependency>
     <dependency>
       <groupId>org.jpmml</groupId>
+      <artifactId>pmml-model</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.jpmml</groupId>
       <artifactId>pmml-evaluator</artifactId>
-      <version>1.4.9</version>
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.jpmml</groupId>
       <artifactId>pmml-evaluator-extension</artifactId>
-      <version>1.4.9</version>
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
