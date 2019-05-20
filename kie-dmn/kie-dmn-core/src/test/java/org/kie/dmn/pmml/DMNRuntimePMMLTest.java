@@ -58,7 +58,7 @@ public class DMNRuntimePMMLTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
 
         final DMNContext result = dmnResult.getContext();
-        assertThat((Map<String, Object>) result.get("my decision"), hasEntry("CalculatedScore", 41.345));
+        assertThat((Map<String, Object>) result.get("my decision"), hasEntry("calculatedScore", 41.345));
     }
 
     /**
