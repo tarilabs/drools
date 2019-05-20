@@ -464,18 +464,20 @@ public class DMNEvaluatorCompiler {
                     AbstractPMMLInvocationEvaluator invoker = null;
                     if (invoker == null) {
                         try {
-                            invoker = new DMNKiePMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlURL, pmmlModel);
+                            invoker = new DMNjPMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlURL, pmmlModel);
                         } catch (NoClassDefFoundError e) {
-                            logger.warn("I tried binding kie-pmml, failing.");
+                            logger.warn("I tried binding jPMML, failing.");
+                        } catch (Throwable e) {
+                            logger.warn("Binding jPMML succeded but initialization failed.", e);
                         }
                     }
                     if (invoker == null) {
                         try {
-                            invoker = new DMNjPMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlURL, pmmlModel);
+                            invoker = new DMNKiePMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlURL, pmmlModel);
                         } catch (NoClassDefFoundError e) {
-                            logger.warn("I tried binding jPMML, failing.");
-                        } catch (Exception e) {
-                            logger.warn("Binding jPMML succeded but initialization failed.", e);
+                            logger.warn("I tried binding kie-pmml, failing.");
+                        } catch (Throwable e) {
+                            logger.warn("Binding kie-pmml succeded but initialization failed.", e);
                         }
                     }
                     if (invoker == null) {
