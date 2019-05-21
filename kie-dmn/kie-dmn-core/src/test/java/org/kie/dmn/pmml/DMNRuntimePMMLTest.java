@@ -17,6 +17,9 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.assembler.DMNAssemblerService;
+import org.kie.dmn.core.compiler.DMNCompilerImpl.PMMLImportInfo;
+import org.kie.dmn.core.compiler.DMNCompilerImpl.PMMLImportInfo.PMMLModelInfo;
+import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
@@ -25,8 +28,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
@@ -59,6 +65,21 @@ public class DMNRuntimePMMLTest {
 
         final DMNContext result = dmnResult.getContext();
         assertThat((Map<String, Object>) result.get("my decision"), hasEntry("calculatedScore", 41.345));
+        
+        // additional import info.
+        Map<String, PMMLImportInfo> pmmlImportInfo = ((DMNModelImpl) dmnModel).getPmmlImportInfo();
+        assertThat(pmmlImportInfo.keySet(), hasSize(1));
+        PMMLImportInfo p0 = pmmlImportInfo.values().iterator().next();
+        assertThat(p0.getImportName(), is("iris"));
+        assertThat(p0.getModels(), hasSize(1));
+        PMMLModelInfo m0 = p0.getModels().iterator().next();
+        assertThat(m0.getName(), is("Sample Score"));
+        assertThat(m0.getInputFields(), hasEntry(is("age"), anything()));
+        assertThat(m0.getInputFields(), hasEntry(is("occupation"), anything()));
+        assertThat(m0.getInputFields(), hasEntry(is("residenceState"), anything()));
+        assertThat(m0.getInputFields(), hasEntry(is("validLicense"), anything()));
+        assertThat(m0.getInputFields(), not(hasEntry(is("overallScore"), anything())));
+        assertThat(m0.getInputFields(), not(hasEntry(is("calculatedScore"), anything())));
     }
 
     /**

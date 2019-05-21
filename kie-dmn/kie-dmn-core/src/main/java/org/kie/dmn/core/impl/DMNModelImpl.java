@@ -56,6 +56,7 @@ import org.kie.dmn.core.assembler.DMNAssemblerService;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
+import org.kie.dmn.core.compiler.DMNCompilerImpl.PMMLImportInfo;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV11;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV12;
@@ -532,4 +533,15 @@ public class DMNModelImpl
     public void addAllUnfiltered(List<? extends DMNMessage> messages) {
         this.messages.addAllUnfiltered( messages );
     }
+
+    private Map<String, PMMLImportInfo> pmmlImportInfo = new HashMap<>();
+
+    public void addPMMLImportInfo(PMMLImportInfo info) {
+        this.pmmlImportInfo.put(info.getImportName(), info);
+    }
+
+    public Map<String, PMMLImportInfo> getPmmlImportInfo() {
+        return Collections.unmodifiableMap(pmmlImportInfo);
+    }
+
 }
