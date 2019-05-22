@@ -17,8 +17,6 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.assembler.DMNAssemblerService;
-import org.kie.dmn.core.compiler.DMNCompilerImpl.PMMLImportInfo;
-import org.kie.dmn.core.compiler.DMNCompilerImpl.PMMLImportInfo.PMMLModelInfo;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.internal.builder.IncrementalResults;
@@ -67,12 +65,12 @@ public class DMNRuntimePMMLTest {
         assertThat((Map<String, Object>) result.get("my decision"), hasEntry("calculatedScore", 41.345));
         
         // additional import info.
-        Map<String, PMMLImportInfo> pmmlImportInfo = ((DMNModelImpl) dmnModel).getPmmlImportInfo();
+        Map<String, DMNImportPMMLInfo> pmmlImportInfo = ((DMNModelImpl) dmnModel).getPmmlImportInfo();
         assertThat(pmmlImportInfo.keySet(), hasSize(1));
-        PMMLImportInfo p0 = pmmlImportInfo.values().iterator().next();
+        DMNImportPMMLInfo p0 = pmmlImportInfo.values().iterator().next();
         assertThat(p0.getImportName(), is("iris"));
         assertThat(p0.getModels(), hasSize(1));
-        PMMLModelInfo m0 = p0.getModels().iterator().next();
+        DMNPMMLModelInfo m0 = p0.getModels().iterator().next();
         assertThat(m0.getName(), is("Sample Score"));
         assertThat(m0.getInputFields(), hasEntry(is("age"), anything()));
         assertThat(m0.getInputFields(), hasEntry(is("occupation"), anything()));

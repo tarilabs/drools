@@ -56,7 +56,6 @@ import org.kie.dmn.core.assembler.DMNAssemblerService;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
-import org.kie.dmn.core.compiler.DMNCompilerImpl.PMMLImportInfo;
 import org.kie.dmn.core.compiler.DMNTypeRegistry;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV11;
 import org.kie.dmn.core.compiler.DMNTypeRegistryV12;
@@ -64,6 +63,7 @@ import org.kie.dmn.core.util.DefaultDMNMessagesManager;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Definitions;
 import org.kie.dmn.model.v1_1.TDefinitions;
+import org.kie.dmn.pmml.DMNImportPMMLInfo;
 
 public class DMNModelImpl
         implements DMNModel, DMNMessageManager, Externalizable {
@@ -534,13 +534,13 @@ public class DMNModelImpl
         this.messages.addAllUnfiltered( messages );
     }
 
-    private Map<String, PMMLImportInfo> pmmlImportInfo = new HashMap<>();
+    private Map<String, DMNImportPMMLInfo> pmmlImportInfo = new HashMap<>();
 
-    public void addPMMLImportInfo(PMMLImportInfo info) {
+    public void addPMMLImportInfo(DMNImportPMMLInfo info) {
         this.pmmlImportInfo.put(info.getImportName(), info);
     }
 
-    public Map<String, PMMLImportInfo> getPmmlImportInfo() {
+    public Map<String, DMNImportPMMLInfo> getPmmlImportInfo() {
         return Collections.unmodifiableMap(pmmlImportInfo);
     }
 
