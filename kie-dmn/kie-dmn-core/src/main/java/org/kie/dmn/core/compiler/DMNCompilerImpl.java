@@ -19,7 +19,6 @@ package org.kie.dmn.core.compiler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
@@ -37,13 +36,6 @@ import java.util.stream.Collectors;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
-import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.DataField;
-import org.dmg.pmml.MiningField.UsageType;
-import org.dmg.pmml.MiningSchema;
-import org.dmg.pmml.Model;
-import org.dmg.pmml.OpType;
-import org.dmg.pmml.PMML;
 import org.kie.api.io.Resource;
 import org.kie.dmn.api.core.DMNCompiler;
 import org.kie.dmn.api.core.DMNCompilerConfiguration;
@@ -96,6 +88,7 @@ import org.kie.dmn.model.api.UnaryTests;
 import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.TInformationItem;
 import org.kie.dmn.model.v1_1.extensions.DecisionServices;
+import org.kie.dmn.pmml.DMNImportPMMLInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -231,86 +224,14 @@ public class DMNCompilerImpl implements DMNCompiler {
     }
 
     private void processPMMLImport(DMNModelImpl model, Import i) {
-        try {
-            InputStream pmmlIS = ((DMNCompilerConfigurationImpl) dmnCompilerConfig).getRootClassLoader().getResourceAsStream(i.getLocationURI());
-            PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(pmmlIS);
-            List<PMMLImportInfo.PMMLModelInfo> models = new ArrayList<>();
-            for (Model pm : pmml.getModels()) {
-                MiningSchema miningSchema = pm.getMiningSchema();
-                Map<String, DMNType> inputFields = new HashMap<>();
-                miningSchema.getMiningFields()
-                            .stream()
-                            .filter(mf -> mf.getUsageType() == UsageType.ACTIVE)
-                            .forEach(fn -> inputFields.put(fn.getName().getValue(), model.getTypeRegistry().unknown()));
-                models.add(new PMMLImportInfo.PMMLModelInfo(pm.getModelName(), inputFields));
-            }
-            PMMLImportInfo info = new PMMLImportInfo(i, models);
-            model.addPMMLImportInfo(info);
-            DataDictionary dd = pmml.getDataDictionary();
-            for (DataField df : dd.getDataFields()) {
-                BuiltInType baseFeelType = BuiltInType.UNKNOWN;
-                switch (df.getDataType()) {
-                    case BOOLEAN:
-                        baseFeelType = BuiltInType.BOOLEAN;
-                        break;
-                    case DOUBLE:
-                    case FLOAT:
-                    case INTEGER:
-                        baseFeelType = BuiltInType.NUMBER;
-                        break;
-                    case STRING:
-                        baseFeelType = BuiltInType.STRING;
-                        break;
-                    default:
-                        logger.warn("{}", df.getDataType());
-                        break;
-                }
-                if (df.getOpType() == OpType.CATEGORICAL) {
-
-                }
-            }
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static class PMMLImportInfo {
-
-        private final Import i;
-        private final Collection<PMMLModelInfo> models;
-
-        public PMMLImportInfo(Import i, Collection<PMMLModelInfo> models) {
-            this.i = i;
-            this.models = Collections.unmodifiableList(new ArrayList<>(models));
-        }
-
-        public String getImportName() {
-            return i.getName();
-        }
-
-        public Collection<PMMLModelInfo> getModels() {
-            return models;
-        }
-
-        public static class PMMLModelInfo {
-
-            private final String name;
-            private final Map<String, DMNType> inputFields;
-
-            public PMMLModelInfo(String name, Map<String, DMNType> inputFields) {
-                this.name = name;
-                this.inputFields = Collections.unmodifiableMap(new HashMap<>(inputFields));
-            }
-
-            public String getName() {
-                return name;
-            }
-
-            public Map<String, DMNType> getInputFields() {
-                return inputFields;
-            }
-
-        }
+        InputStream pmmlIS = ((DMNCompilerConfigurationImpl) dmnCompilerConfig).getRootClassLoader().getResourceAsStream(i.getLocationURI());
+        Either<Exception, DMNImportPMMLInfo> pmml = DMNImportPMMLInfo.from(pmmlIS, model, i).cata(x -> {
+            logger.warn("Error inspecting the imported PMML model", x);
+            return null;
+        }, x -> {
+            model.addPMMLImportInfo(x);
+            return null;
+        });
     }
 
     private void importFromModel(DMNModelImpl model, DMNModel m, String iAlias) {
