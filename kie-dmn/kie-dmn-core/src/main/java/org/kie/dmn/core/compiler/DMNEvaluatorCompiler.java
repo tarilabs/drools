@@ -33,8 +33,8 @@ import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNMavenSourceCompiler;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.pmml.AbstractPMMLInvocationEvaluator;
-import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
 import org.kie.dmn.core.pmml.AbstractPMMLInvocationEvaluator.PMMLInvocationEvaluatorFactory;
+import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
@@ -460,11 +460,11 @@ public class DMNEvaluatorCompiler {
                     }
                 }
                 if (locationURI != null) {
-                    logger.trace("{}", locationURI);
+                    logger.debug("locationURI: {}", locationURI);
                     URL pmmlURL = getRootClassLoader().getResource(locationURI);
-                    logger.trace("{}", pmmlURL);
-                    AbstractPMMLInvocationEvaluator invoker = PMMLInvocationEvaluatorFactory.newInstance(getRootClassLoader(),
-                                                                                                         model.getNamespace(),
+                    logger.debug("pmmlURL: {}", pmmlURL);
+                    AbstractPMMLInvocationEvaluator invoker = PMMLInvocationEvaluatorFactory.newInstance(model,
+                                                                                                         getRootClassLoader(),
                                                                                                          funcDef,
                                                                                                          pmmlURL,
                                                                                                          pmmlModel,
@@ -479,10 +479,27 @@ public class DMNEvaluatorCompiler {
                     func.setEvaluator(invoker);
                     return func;
                 } else {
-                    // TODO error reporting..
+                    MsgUtil.reportMessage(logger,
+                                          DMNMessage.Severity.ERROR,
+                                          expression,
+                                          model,
+                                          null,
+                                          null,
+                                          Msg.FUNC_DEF_PMML_MISSING_ENTRY,
+                                          functionName,
+                                          node.getIdentifierString());
                 }
+            } else {
+                // error, PMML function definitions require a context
+                MsgUtil.reportMessage(logger,
+                                      DMNMessage.Severity.ERROR,
+                                      funcDef,
+                                      model,
+                                      null,
+                                      null,
+                                      Msg.FUNC_DEF_BODY_NOT_CONTEXT,
+                                      node.getIdentifierString());
             }
-            // TODO error reporting..
         } else {
             MsgUtil.reportMessage( logger,
                                    DMNMessage.Severity.ERROR,

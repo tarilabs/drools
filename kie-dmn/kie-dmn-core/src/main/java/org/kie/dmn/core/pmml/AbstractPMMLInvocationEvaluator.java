@@ -23,15 +23,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
-import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator;
-import org.kie.dmn.core.ast.EvaluatorResultImpl;
 import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator.FormalParameter;
+import org.kie.dmn.core.ast.EvaluatorResultImpl;
+import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.impl.DMNResultImpl;
+import org.kie.dmn.core.util.Msg;
+import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.api.DMNElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,7 +94,14 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
 
         @Override
         public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult result) {
-            // TODO reminder error also at runtime.
+            MsgUtil.reportMessage(LOG,
+                                  DMNMessage.Severity.WARN,
+                                  node,
+                                  ((DMNResultImpl) result),
+                                  null,
+                                  null,
+                                  Msg.FUNC_DEF_PMML_NOT_SUPPORTED,
+                                  node.getIdentifierString());
             return new EvaluatorResultImpl(null, ResultType.FAILURE);
         }
 
@@ -98,7 +109,7 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
 
     public static class PMMLInvocationEvaluatorFactory {
 
-        public static AbstractPMMLInvocationEvaluator newInstance(ClassLoader classLoader, String modelNS, DMNElement funcDef, URL pmmlURL, String pmmlModel, PMMLInfo<?> pmmlInfo) {
+        public static AbstractPMMLInvocationEvaluator newInstance(DMNModelImpl model, ClassLoader classLoader, DMNElement funcDef, URL pmmlURL, String pmmlModel, PMMLInfo<?> pmmlInfo) {
             try {
                 @SuppressWarnings("unchecked")
                 Class<AbstractPMMLInvocationEvaluator> cl = (Class<AbstractPMMLInvocationEvaluator>) classLoader.loadClass("org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
@@ -106,23 +117,31 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
                                                  DMNElement.class,
                                                  URL.class,
                                                  String.class)
-                         .newInstance(modelNS,
+                         .newInstance(model.getNamespace(),
                                       funcDef,
                                       pmmlURL,
                                       pmmlModel);
             } catch (NoClassDefFoundError | ClassNotFoundException e) {
-                LOG.warn("I tried binding jPMML, failing.");
+                LOG.warn("Tried binding org.kie:kie-dmn-jpmml, failed.");
             } catch (Throwable e) {
-                LOG.warn("Binding jPMML succeded but initialization failed.", e);
+                LOG.warn("Binding org.kie:kie-dmn-jpmml succeded but initialization failed.", e);
             }
             try {
-                return new DMNKiePMMLInvocationEvaluator(modelNS, funcDef, pmmlURL, pmmlModel, pmmlInfo);
+                return new DMNKiePMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlURL, pmmlModel, pmmlInfo);
             } catch (NoClassDefFoundError e) {
-                LOG.warn("I tried binding kie-pmml, failing.");
+                LOG.warn("Tried binding org.drools:kie-pmml, failed.");
             } catch (Throwable e) {
-                LOG.warn("Binding kie-pmml succeded but initialization failed.", e);
+                LOG.warn("Binding org.drools:kie-pmml succeded but initialization failed.", e);
             }
-            return new AbstractPMMLInvocationEvaluator.DummyPMMLInvocationEvaluator(modelNS, funcDef, pmmlURL, pmmlModel);
+            MsgUtil.reportMessage(LOG,
+                                  DMNMessage.Severity.WARN,
+                                  funcDef,
+                                  model,
+                                  null,
+                                  null,
+                                  Msg.FUNC_DEF_PMML_NOT_SUPPORTED,
+                                  funcDef.getIdentifierString());
+            return new AbstractPMMLInvocationEvaluator.DummyPMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlURL, pmmlModel);
         }
 
         private PMMLInvocationEvaluatorFactory() {
