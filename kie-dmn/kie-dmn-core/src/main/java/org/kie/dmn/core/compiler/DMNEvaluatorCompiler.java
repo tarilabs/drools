@@ -18,16 +18,15 @@ import org.kie.dmn.api.core.ast.DecisionNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.ast.AbstractPMMLInvocationEvaluator;
+import org.kie.dmn.core.ast.AbstractPMMLInvocationEvaluator.PMMLInvocationEvaluatorFactory;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DMNContextEvaluator;
 import org.kie.dmn.core.ast.DMNDTExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator;
 import org.kie.dmn.core.ast.DMNInvocationEvaluator;
-import org.kie.dmn.core.ast.DMNKiePMMLInvocationEvaluator;
 import org.kie.dmn.core.ast.DMNListEvaluator;
 import org.kie.dmn.core.ast.DMNLiteralExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNRelationEvaluator;
-import org.kie.dmn.core.ast.DMNjPMMLInvocationEvaluator;
 import org.kie.dmn.core.ast.EvaluatorResultImpl;
 import org.kie.dmn.core.compiler.execmodelbased.DMNRuleClassFile;
 import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNClassLoaderCompiler;
@@ -464,29 +463,12 @@ public class DMNEvaluatorCompiler {
                     logger.trace("{}", locationURI);
                     URL pmmlURL = getRootClassLoader().getResource(locationURI);
                     logger.trace("{}", pmmlURL);
-                    AbstractPMMLInvocationEvaluator invoker = null;
-                    if (invoker == null) {
-                        try {
-                            invoker = new DMNjPMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlURL, pmmlModel);
-                        } catch (NoClassDefFoundError e) {
-                            logger.warn("I tried binding jPMML, failing.");
-                        } catch (Throwable e) {
-                            logger.warn("Binding jPMML succeded but initialization failed.", e);
-                        }
-                    }
-                    if (invoker == null) {
-                        try {
-                            invoker = new DMNKiePMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlURL, pmmlModel, pmmlInfo);
-                        } catch (NoClassDefFoundError e) {
-                            logger.warn("I tried binding kie-pmml, failing.");
-                        } catch (Throwable e) {
-                            logger.warn("Binding kie-pmml succeded but initialization failed.", e);
-                        }
-                    }
-                    if (invoker == null) {
-                        invoker = new AbstractPMMLInvocationEvaluator.DummyPMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlURL, pmmlModel);
-                    }
-
+                    AbstractPMMLInvocationEvaluator invoker = PMMLInvocationEvaluatorFactory.newInstance(getRootClassLoader(),
+                                                                                                         model.getNamespace(),
+                                                                                                         funcDef,
+                                                                                                         pmmlURL,
+                                                                                                         pmmlModel,
+                                                                                                         pmmlInfo);
                     DMNFunctionDefinitionEvaluator func = new DMNFunctionDefinitionEvaluator(node.getName(), funcDef);
                     for (InformationItem p : funcDef.getFormalParameter()) {
                         DMNCompilerHelper.checkVariableName(model, p, p.getName());

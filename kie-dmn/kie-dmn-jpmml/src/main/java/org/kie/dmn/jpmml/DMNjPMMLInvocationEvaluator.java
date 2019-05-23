@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.ast;
+package org.kie.dmn.jpmml;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -35,6 +35,8 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
+import org.kie.dmn.core.ast.AbstractPMMLInvocationEvaluator;
+import org.kie.dmn.core.ast.EvaluatorResultImpl;
 import org.kie.dmn.model.api.DMNElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

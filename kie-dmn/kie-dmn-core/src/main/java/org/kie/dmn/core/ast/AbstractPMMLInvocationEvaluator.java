@@ -30,6 +30,7 @@ import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator.FormalParameter;
+import org.kie.dmn.core.pmml.PMMLInfo;
 import org.kie.dmn.model.api.DMNElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,5 +93,39 @@ public abstract class AbstractPMMLInvocationEvaluator implements DMNExpressionEv
             return new EvaluatorResultImpl(null, ResultType.FAILURE);
         }
 
+    }
+
+    public static class PMMLInvocationEvaluatorFactory {
+
+        public static AbstractPMMLInvocationEvaluator newInstance(ClassLoader classLoader, String modelNS, DMNElement funcDef, URL pmmlURL, String pmmlModel, PMMLInfo<?> pmmlInfo) {
+            try {
+                @SuppressWarnings("unchecked")
+                Class<AbstractPMMLInvocationEvaluator> cl = (Class<AbstractPMMLInvocationEvaluator>) classLoader.loadClass("org.kie.dmn.jpmml.DMNjPMMLInvocationEvaluator");
+                return cl.getDeclaredConstructor(String.class,
+                                                 DMNElement.class,
+                                                 URL.class,
+                                                 String.class)
+                         .newInstance(modelNS,
+                                      funcDef,
+                                      pmmlURL,
+                                      pmmlModel);
+            } catch (NoClassDefFoundError | ClassNotFoundException e) {
+                LOG.warn("I tried binding jPMML, failing.");
+            } catch (Throwable e) {
+                LOG.warn("Binding jPMML succeded but initialization failed.", e);
+            }
+            try {
+                return new DMNKiePMMLInvocationEvaluator(modelNS, funcDef, pmmlURL, pmmlModel, pmmlInfo);
+            } catch (NoClassDefFoundError e) {
+                LOG.warn("I tried binding kie-pmml, failing.");
+            } catch (Throwable e) {
+                LOG.warn("Binding kie-pmml succeded but initialization failed.", e);
+            }
+            return new AbstractPMMLInvocationEvaluator.DummyPMMLInvocationEvaluator(modelNS, funcDef, pmmlURL, pmmlModel);
+        }
+
+        private PMMLInvocationEvaluatorFactory() {
+            // Constructing instances is not allowed for this Factory
+        }
     }
 }

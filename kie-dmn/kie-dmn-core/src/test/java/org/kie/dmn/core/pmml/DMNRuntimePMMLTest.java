@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.kie.dmn.core.pmml;
 
 import java.util.Map;
@@ -18,8 +34,6 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.assembler.DMNAssemblerService;
 import org.kie.dmn.core.impl.DMNModelImpl;
-import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
-import org.kie.dmn.core.pmml.DMNPMMLModelInfo;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
@@ -47,7 +61,7 @@ public class DMNRuntimePMMLTest {
     @Test
     public void testSimpleItemDefinition() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntimeWithAdditionalResources("KiePMMLScoreCard.dmn",
-                                                                                       this.getClass(),
+                                                                                       DMNRuntimePMMLTest.class,
                                                                                        "test_scorecard.pmml");
         runDMNModelInvokingPMML(runtime);
     }
@@ -94,11 +108,11 @@ public class DMNRuntimePMMLTest {
 
         KieFileSystem kfs = ks.newKieFileSystem();
 
-        kfs.write("src/main/resources/test_scorecard.pmml", ks.getResources().newClassPathResource("test_scorecard.pmml", this.getClass()));
+        kfs.write("src/main/resources/test_scorecard.pmml", ks.getResources().newClassPathResource("test_scorecard.pmml", DMNRuntimePMMLTest.class));
         KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
         assertEquals(0, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size());
 
-        kfs.write("src/main/resources/KiePMMLScoreCard.dmn", ks.getResources().newClassPathResource("KiePMMLScoreCard.dmn", this.getClass()));
+        kfs.write("src/main/resources/KiePMMLScoreCard.dmn", ks.getResources().newClassPathResource("KiePMMLScoreCard.dmn", DMNRuntimePMMLTest.class));
         IncrementalResults addResults = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/KiePMMLScoreCard.dmn").build();
         assertEquals(0, addResults.getAddedMessages().size());
         assertEquals(0, addResults.getRemovedMessages().size());

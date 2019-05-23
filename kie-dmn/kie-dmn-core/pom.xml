@@ -39,16 +39,6 @@
         <artifactId>pmml-model</artifactId>
         <version>1.4.11</version> <!-- ATTENTION 1.4.11 intentional, because 1.4.9 evaluators depend on 1.4.11 -->
       </dependency>
-      <dependency>
-        <groupId>org.jpmml</groupId>
-        <artifactId>pmml-evaluator</artifactId>
-        <version>1.4.9</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jpmml</groupId>
-        <artifactId>pmml-evaluator-extension</artifactId>
-        <version>1.4.9</version>
-      </dependency>
       <!-- **** POC **** -->
     </dependencies>
   </dependencyManagement>
@@ -123,30 +113,9 @@
     </dependency>
     <dependency>
       <groupId>org.jpmml</groupId>
-      <artifactId>pmml-agent</artifactId>
-      <scope>provided</scope>
-      <optional>true</optional>
-      <!-- ATTENTION 1.4.11 intentional, because 1.4.9 evaluators depend on 1.4.11 -->
-    </dependency>
-    <dependency>
-      <groupId>org.jpmml</groupId>
       <artifactId>pmml-model</artifactId>
-      <scope>provided</scope>
-      <optional>true</optional>
       <!-- ATTENTION 1.4.11 intentional, because 1.4.9 evaluators depend on 1.4.11 -->
       </dependency>
-    <dependency>
-      <groupId>org.jpmml</groupId>
-      <artifactId>pmml-evaluator</artifactId>
-      <scope>provided</scope>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.jpmml</groupId>
-      <artifactId>pmml-evaluator-extension</artifactId>
-      <scope>provided</scope>
-      <optional>true</optional>
-    </dependency>
     <!-- **** POC ****  -->
 
     <dependency>
