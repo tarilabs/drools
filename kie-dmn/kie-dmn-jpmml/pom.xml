@@ -60,14 +60,21 @@ This module will automatically disable kie-pmml Assembler.
   </dependencyManagement>
 
   <dependencies>
+  <!-- ********* POC *************** -->
         <dependency>
         <groupId>org.jpmml</groupId>
         <artifactId>pmml-evaluator</artifactId>
+        <scope>provided</scope> <!-- ********* Provided+optional or just compile? *************** -->
+        <optional>true</optional>
       </dependency>
       <dependency>
         <groupId>org.jpmml</groupId>
         <artifactId>pmml-evaluator-extension</artifactId>
+        <scope>provided</scope> <!-- ********* Provided+optional or just compile? *************** -->
+        <optional>true</optional>
       </dependency>
+      
+  <!-- ********* POC *************** -->
             <dependency>
         <groupId>org.jpmml</groupId>
         <artifactId>pmml-model</artifactId>
