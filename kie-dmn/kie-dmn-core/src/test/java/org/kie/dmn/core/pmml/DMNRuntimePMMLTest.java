@@ -1,4 +1,4 @@
-package org.kie.dmn.pmml;
+package org.kie.dmn.core.pmml;
 
 import java.util.Map;
 
@@ -18,6 +18,8 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.assembler.DMNAssemblerService;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
+import org.kie.dmn.core.pmml.DMNPMMLModelInfo;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;

@@ -61,6 +61,7 @@ import org.kie.dmn.core.compiler.ImportDMNResolverUtil.ImportType;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.FEELProfile;
@@ -88,7 +89,6 @@ import org.kie.dmn.model.api.UnaryTests;
 import org.kie.dmn.model.v1_1.KieDMNModelInstrumentedBase;
 import org.kie.dmn.model.v1_1.TInformationItem;
 import org.kie.dmn.model.v1_1.extensions.DecisionServices;
-import org.kie.dmn.pmml.DMNImportPMMLInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

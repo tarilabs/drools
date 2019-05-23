@@ -1,8 +1,10 @@
-package org.kie.dmn.pmml;
+package org.kie.dmn.core.pmml;
 
 import java.io.InputStream;
 
 import org.junit.Test;
+import org.kie.dmn.core.pmml.PMMLInfo;
+import org.kie.dmn.core.pmml.PMMLModelInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
