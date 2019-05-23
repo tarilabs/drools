@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
+import org.dmg.pmml.Extension;
 import org.dmg.pmml.MiningField.UsageType;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
@@ -28,14 +29,19 @@ public class DMNImportPMMLInfo extends PMMLInfo<DMNPMMLModelInfo> {
 
     private final Import i;
 
-    public DMNImportPMMLInfo(Import i, Collection<DMNPMMLModelInfo> models) {
-        super(models);
+    public DMNImportPMMLInfo(Import i, Collection<DMNPMMLModelInfo> models, PMMLHeaderInfo h) {
+        super(models, h);
         this.i = i;
     }
 
     public static Either<Exception, DMNImportPMMLInfo> from(InputStream is, DMNModelImpl model, Import i) {
         try {
             PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(is);
+            Map<String, String> headerExtensions = new HashMap<>();
+            for (Extension ex : pmml.getHeader().getExtensions()) {
+                headerExtensions.put(ex.getName(), ex.getValue());
+            }
+            PMMLHeaderInfo h = new PMMLHeaderInfo(headerExtensions);
             List<DMNPMMLModelInfo> models = new ArrayList<>();
             for (Model pm : pmml.getModels()) {
                 MiningSchema miningSchema = pm.getMiningSchema();
@@ -44,7 +50,9 @@ public class DMNImportPMMLInfo extends PMMLInfo<DMNPMMLModelInfo> {
                             .stream()
                             .filter(mf -> mf.getUsageType() == UsageType.ACTIVE)
                             .forEach(fn -> inputFields.put(fn.getName().getValue(), model.getTypeRegistry().unknown()));
-                models.add(new DMNPMMLModelInfo(pm.getModelName(), inputFields));
+                Collection<String> outputFields = new ArrayList<>();
+                pm.getOutput().getOutputFields().forEach(of -> outputFields.add(of.getName().getValue()));
+                models.add(new DMNPMMLModelInfo(pm.getModelName(), inputFields, outputFields));
             }
 
             DataDictionary dd = pmml.getDataDictionary();
@@ -70,7 +78,7 @@ public class DMNImportPMMLInfo extends PMMLInfo<DMNPMMLModelInfo> {
 
                 }
             }
-            DMNImportPMMLInfo info = new DMNImportPMMLInfo(i, models);
+            DMNImportPMMLInfo info = new DMNImportPMMLInfo(i, models, h);
             return Either.ofRight(info);
         } catch (Throwable e) {
             e.printStackTrace();

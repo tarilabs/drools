@@ -35,6 +35,7 @@ import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNEvaluatorCompiler;
 import org.kie.dmn.core.compiler.execmodelbased.ExecModelDMNMavenSourceCompiler;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.FEEL;
@@ -450,10 +451,12 @@ public class DMNEvaluatorCompiler {
                     }
                 }
                 String locationURI = null;
+                DMNImportPMMLInfo pmmlInfo = null;
                 if (pmmlDocument != null ) {
                     for (Import i : model.getDefinitions().getImport()) {
                         if (i.getName().equals(pmmlDocument)) {
                             locationURI = i.getLocationURI();
+                            pmmlInfo = model.getPmmlImportInfo().get(pmmlDocument);
                         }
                     }
                 }
@@ -473,7 +476,7 @@ public class DMNEvaluatorCompiler {
                     }
                     if (invoker == null) {
                         try {
-                            invoker = new DMNKiePMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlURL, pmmlModel);
+                            invoker = new DMNKiePMMLInvocationEvaluator(model.getNamespace(), funcDef, pmmlURL, pmmlModel, pmmlInfo);
                         } catch (NoClassDefFoundError e) {
                             logger.warn("I tried binding kie-pmml, failing.");
                         } catch (Throwable e) {
