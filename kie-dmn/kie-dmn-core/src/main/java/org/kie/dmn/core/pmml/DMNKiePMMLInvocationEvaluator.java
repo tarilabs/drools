@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.ast;
+package org.kie.dmn.core.pmml;
 
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -29,8 +29,9 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
+import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator;
+import org.kie.dmn.core.ast.EvaluatorResultImpl;
 import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator.FormalParameter;
-import org.kie.dmn.core.pmml.PMMLInfo;
 import org.kie.dmn.model.api.DMNElement;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper;
