@@ -1,4 +1,4 @@
-package org.kie.dmn.pmml;
+package org.kie.dmn.core.pmml;
 
 import java.io.InputStream;
 import java.util.ArrayList;

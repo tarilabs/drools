@@ -1,4 +1,4 @@
-package org.kie.dmn.pmml;
+package org.kie.dmn.core.pmml;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -11,15 +11,17 @@ import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.PMML;
 
-public class PMMLInfo<M extends PMMLModelInfo> {
+public class PMMLModelInfo {
 
-    protected final Collection<M> models;
+    protected final String name;
+    private final Collection<String> inputFieldNames;
 
-    public PMMLInfo(Collection<M> models) {
-        this.models = Collections.unmodifiableList(new ArrayList<>(models));
+    public PMMLModelInfo(String name, Collection<String> inputFieldNames) {
+        this.name = name;
+        this.inputFieldNames = Collections.unmodifiableList(new ArrayList<>(inputFieldNames));
     }
 
-    public static PMMLInfo<PMMLModelInfo> from(InputStream is) throws Exception {
+    public static PMMLInfo from(InputStream is) throws Exception {
         PMML pmml = org.jpmml.model.PMMLUtil.unmarshal(is);
         List<PMMLModelInfo> models = new ArrayList<>();
         for (Model pm : pmml.getModels()) {
@@ -31,11 +33,16 @@ public class PMMLInfo<M extends PMMLModelInfo> {
                         .forEach(fn -> inputFields.add(fn.getName().getValue()));
             models.add(new PMMLModelInfo(pm.getModelName(), inputFields));
         }
-        PMMLInfo<PMMLModelInfo> info = new PMMLInfo<>(models);
+        PMMLInfo info = new PMMLInfo(models);
         return info;
     }
 
-    public Collection<M> getModels() {
-        return models;
+    public String getName() {
+        return name;
     }
+
+    public Collection<String> getInputFieldNames() {
+        return inputFieldNames;
+    }
+
 }

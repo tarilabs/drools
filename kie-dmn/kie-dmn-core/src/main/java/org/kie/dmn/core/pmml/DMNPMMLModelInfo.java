@@ -1,4 +1,4 @@
-package org.kie.dmn.pmml;
+package org.kie.dmn.core.pmml;
 
 import java.util.Collections;
 import java.util.HashMap;
