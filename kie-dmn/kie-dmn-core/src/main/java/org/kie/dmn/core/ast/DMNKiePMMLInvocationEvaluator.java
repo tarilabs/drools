@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.kie.api.pmml.PMML4Field;
@@ -29,6 +30,7 @@ import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator.FormalParameter;
+import org.kie.dmn.core.pmml.PMMLInfo;
 import org.kie.dmn.model.api.DMNElement;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper;
@@ -41,13 +43,15 @@ public class DMNKiePMMLInvocationEvaluator extends AbstractPMMLInvocationEvaluat
 
     private static final Logger LOG = LoggerFactory.getLogger(DMNKiePMMLInvocationEvaluator.class);
     private final PMML4ExecutionHelper helper;
+    private final PMMLInfo<?> pmmlInfo;
 
-    public DMNKiePMMLInvocationEvaluator(String dmnNS, DMNElement node, URL url, String model) {
+    public DMNKiePMMLInvocationEvaluator(String dmnNS, DMNElement node, URL url, String model, PMMLInfo<?> pmmlInfo) {
         super(dmnNS, node, url, model);
+        this.pmmlInfo = pmmlInfo;
         helper = PMML4ExecutionHelperFactory.getExecutionHelper(model,
                                                                 ResourceFactory.newUrlResource(document),
                                                                 null);
-        helper.addPossiblePackageName("org.drools.scorecards.example"); // TODO this is hardcoded in the .pmml file ?!
+        helper.addPossiblePackageName(pmmlInfo.getHeader().getHeaderExtensions().get("modelPackage"));
         helper.initModel();
     }
 
@@ -68,8 +72,18 @@ public class DMNKiePMMLInvocationEvaluator extends AbstractPMMLInvocationEvaluat
         for (Object r : resultVariables.values()) {
             if (r instanceof PMML4Field) {
                 PMML4Field pmml4Field = (PMML4Field) r;
-                if (pmml4Field.getName() != null && !pmml4Field.getName().isEmpty()) {
-                    String name = pmml4Field.getName();
+                final String pmml4FieldName = pmml4Field.getName();
+                if (pmml4FieldName != null && !pmml4FieldName.isEmpty()) {
+                    String name = pmml4FieldName;
+                    Optional<String> outputFieldNameFromInfo = pmmlInfo.getModels()
+                                                                       .stream()
+                                                                       .filter(m -> model.equals(m.getName()))
+                                                                       .flatMap(m -> m.getOutputFieldNames().stream())
+                                                                       .filter(ofn -> ofn.equalsIgnoreCase(pmml4FieldName))
+                                                                       .findFirst();
+                    if (outputFieldNameFromInfo.isPresent()) {
+                        name = outputFieldNameFromInfo.get();
+                    }
                     try {
                         Method method = r.getClass().getMethod("getValue");
                         Object value = method.invoke(r);
