@@ -36,6 +36,7 @@ public class PMMLInfoTest {
         InputStream inputStream = this.getClass().getResourceAsStream("test_scorecard.pmml");
         PMMLInfo<PMMLModelInfo> p0 = PMMLInfo.from(inputStream);
         assertThat(p0.getModels(), hasSize(1));
+        assertThat(p0.getHeader().getPmmlNSURI(), is("http://www.dmg.org/PMML-4_2"));
         PMMLModelInfo m0 = p0.getModels().iterator().next();
         assertThat(m0.getName(), is("Sample Score"));
         assertThat(m0.getInputFieldNames(), containsInAnyOrder(is("age"),

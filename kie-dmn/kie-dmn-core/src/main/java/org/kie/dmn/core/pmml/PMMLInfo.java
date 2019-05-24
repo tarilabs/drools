@@ -42,7 +42,7 @@ public class PMMLInfo<M extends PMMLModelInfo> {
         for (Extension ex : pmml.getHeader().getExtensions()) {
             headerExtensions.put(ex.getName(), ex.getValue());
         }
-        PMMLInfo<PMMLModelInfo> info = new PMMLInfo<>(models, new PMMLHeaderInfo(headerExtensions));
+        PMMLInfo<PMMLModelInfo> info = new PMMLInfo<>(models, new PMMLHeaderInfo("http://www.dmg.org/PMML-" + pmml.getBaseVersion().replace(".", "_"), headerExtensions));
         return info;
     }
 
@@ -57,13 +57,19 @@ public class PMMLInfo<M extends PMMLModelInfo> {
     public static class PMMLHeaderInfo {
 
         protected final Map<String, String> headerExtensions;
+        protected final String pmmlNSURI;
 
-        public PMMLHeaderInfo(Map<String, String> headerExtensions) {
+        public PMMLHeaderInfo(String pmmlNSURI, Map<String, String> headerExtensions) {
+            this.pmmlNSURI = pmmlNSURI;
             this.headerExtensions = Collections.unmodifiableMap(new HashMap<>(headerExtensions));
         }
 
         public Map<String, String> getHeaderExtensions() {
             return headerExtensions;
+        }
+
+        public String getPmmlNSURI() {
+            return pmmlNSURI;
         }
 
     }

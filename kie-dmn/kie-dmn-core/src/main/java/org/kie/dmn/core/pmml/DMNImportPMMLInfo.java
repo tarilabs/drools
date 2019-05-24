@@ -41,7 +41,7 @@ public class DMNImportPMMLInfo extends PMMLInfo<DMNPMMLModelInfo> {
             for (Extension ex : pmml.getHeader().getExtensions()) {
                 headerExtensions.put(ex.getName(), ex.getValue());
             }
-            PMMLHeaderInfo h = new PMMLHeaderInfo(headerExtensions);
+            PMMLHeaderInfo h = new PMMLHeaderInfo("http://www.dmg.org/PMML-" + pmml.getBaseVersion().replace(".", "_"), headerExtensions);
             List<DMNPMMLModelInfo> models = new ArrayList<>();
             for (Model pm : pmml.getModels()) {
                 MiningSchema miningSchema = pm.getMiningSchema();
