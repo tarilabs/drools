@@ -18,8 +18,6 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.assembler.DMNAssemblerService;
 import org.kie.dmn.core.impl.DMNModelImpl;
-import org.kie.dmn.core.pmml.DMNImportPMMLInfo;
-import org.kie.dmn.core.pmml.DMNPMMLModelInfo;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
@@ -94,12 +92,12 @@ public class DMNRuntimePMMLTest {
 
         KieFileSystem kfs = ks.newKieFileSystem();
 
-        kfs.write("src/main/resources/test_scorecard.pmml", ks.getResources().newClassPathResource("test_scorecard.pmml", this.getClass()));
+        kfs.write("src/main/resources/org/acme/test_scorecard.pmml", ks.getResources().newClassPathResource("test_scorecard.pmml", this.getClass()));
         KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
         assertEquals(0, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size());
 
-        kfs.write("src/main/resources/KiePMMLScoreCard.dmn", ks.getResources().newClassPathResource("KiePMMLScoreCard.dmn", this.getClass()));
-        IncrementalResults addResults = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/KiePMMLScoreCard.dmn").build();
+        kfs.write("src/main/resources/org/acme/KiePMMLScoreCard.dmn", ks.getResources().newClassPathResource("KiePMMLScoreCard.dmn", this.getClass()));
+        IncrementalResults addResults = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/org/acme/KiePMMLScoreCard.dmn").build();
         assertEquals(0, addResults.getAddedMessages().size());
         assertEquals(0, addResults.getRemovedMessages().size());
 
