@@ -106,6 +106,11 @@ public class DMNModelImpl
         importChain = new ImportChain(this);
     }
 
+    public DMNModelImpl(Definitions dmndefs, Resource resource) {
+        this(dmndefs);
+        this.setResource(resource);
+    }
+
     private void wireTypeRegistry(Definitions definitions) {
         if (definitions instanceof TDefinitions) {
             types = new DMNTypeRegistryV11();

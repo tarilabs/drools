@@ -1,5 +1,7 @@
 package org.kie.dmn.core.compiler;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -460,9 +462,15 @@ public class DMNEvaluatorCompiler {
                     }
                 }
                 if (locationURI != null) {
-                    logger.debug("locationURI: {}", locationURI);
-                    URL pmmlURL = getRootClassLoader().getResource(locationURI);
-                    logger.debug("pmmlURL: {}", pmmlURL);
+                    logger.trace("{}", locationURI);
+                    URL pmmlURL = null;
+                    try {
+                        URI resolveRelativeURI = DMNCompilerImpl.resolveRelativeURI(model, locationURI);
+                        pmmlURL = getRootClassLoader().getResource(resolveRelativeURI.toString());
+                    } catch (URISyntaxException e1) {
+                        logger.warn("Unable to locate pmml model from locationURI {}.", locationURI, e1);
+                    }
+                    logger.trace("{}", pmmlURL);
                     AbstractPMMLInvocationEvaluator invoker = PMMLInvocationEvaluatorFactory.newInstance(model,
                                                                                                          getRootClassLoader(),
                                                                                                          funcDef,
