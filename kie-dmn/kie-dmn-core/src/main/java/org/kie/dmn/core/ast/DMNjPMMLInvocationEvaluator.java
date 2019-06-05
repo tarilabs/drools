@@ -35,6 +35,7 @@ import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
+import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.model.api.DMNElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +75,7 @@ public class DMNjPMMLInvocationEvaluator extends AbstractPMMLInvocationEvaluator
         for (OutputField of : evaluator.getOutputFields()) {
             String outputFieldName = of.getName().getValue();
             Optional<FieldName> fnKey = results.keySet().stream().filter(fn -> fn.getValue().equals(outputFieldName)).findFirst();
-            result.put(outputFieldName, fnKey.map(results::get).orElse(null));
+            result.put(outputFieldName, EvalHelper.coerceNumber(fnKey.map(results::get).orElse(null)));
         }
 
         return new EvaluatorResultImpl(result, ResultType.SUCCESS);

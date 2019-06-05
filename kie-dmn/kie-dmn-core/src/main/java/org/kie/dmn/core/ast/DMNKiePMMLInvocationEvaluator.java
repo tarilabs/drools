@@ -31,6 +31,7 @@ import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.ast.DMNFunctionDefinitionEvaluator.FormalParameter;
 import org.kie.dmn.core.pmml.PMMLInfo;
+import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.model.api.DMNElement;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.pmml.pmml_4_2.PMML4ExecutionHelper;
@@ -87,7 +88,7 @@ public class DMNKiePMMLInvocationEvaluator extends AbstractPMMLInvocationEvaluat
                     try {
                         Method method = r.getClass().getMethod("getValue");
                         Object value = method.invoke(r);
-                        result.put(name, value);
+                        result.put(name, EvalHelper.coerceNumber(value));
                     } catch (Throwable e) {
                         e.printStackTrace();
                     }
