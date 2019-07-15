@@ -2521,5 +2521,22 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat((Map<?, ?>) ((Map<?, ?>) result.get("hardcoded decision")).get("supervisor"), hasEntry(is("full name"), is("supervisor of John")));
         assertThat((Map<?, ?>) ((Map<?, ?>) result.get("hardcoded decision")).get("supervisor"), hasEntry(is("supervisor"), nullValue()));
     }
+
+    @Test
+    public void testMatteo() {
+        // DROOLS-
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("test20190715.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_f4d01590-fd4a-49cb-aef5-0b086f8ed159", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("my test"), is(Boolean.TRUE));
+    }
 }
 

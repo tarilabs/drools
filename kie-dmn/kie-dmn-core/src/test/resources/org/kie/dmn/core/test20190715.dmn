@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns="http://www.trisotech.com/definitions/_f4d01590-fd4a-49cb-aef5-0b086f8ed159" id="_f4d01590-fd4a-49cb-aef5-0b086f8ed159" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_f4d01590-fd4a-49cb-aef5-0b086f8ed159" exporter="DMN Modeler" exporterVersion="6.2.5.2" triso:logoChoice="Default">
+    <semantic:extensionElements/>
+    <semantic:decisionService id="_f4d01590-fd4a-49cb-aef5-0b086f8ed159_DS" name="Whole Model Decision Service" triso:dynamicDecisionService="true">
+        <semantic:variable name="Whole Model Decision Service" id="_6d202396-7b5d-45b3-b3d2-eee1a391a6eb" typeRef="Any"/>
+        <semantic:outputDecision href="#_56df9192-759e-4a68-a0e3-4568cb07533b"/>
+    </semantic:decisionService>
+    <semantic:decisionService id="_844ceaf0-034b-4919-ac33-4ea0530c4df6_DS" name="Diagram Page 1" triso:dynamicDecisionService="true">
+        <semantic:variable name="Diagram Page 1" id="_aa17cf65-156a-4a06-8a2f-55819468f7a5" typeRef="Any"/>
+        <semantic:outputDecision href="#_56df9192-759e-4a68-a0e3-4568cb07533b"/>
+    </semantic:decisionService>
+    <semantic:decision id="_56df9192-759e-4a68-a0e3-4568cb07533b" name="my test">
+        <semantic:variable name="my test" id="_0fec5341-b68d-43ee-8349-f97106adf030" typeRef="Any"/>
+        <semantic:literalExpression id="_2324bb8a-0755-449a-991e-2c2c2be6ea03" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" triso:unparsed="true" typeRef="Any" triso:expressionId="_b3a38ccc-4bc1-4070-a3ca-bcd73749acb9">
+            <semantic:text>before( 10, 20 )</semantic:text>
+        </semantic:literalExpression>
+    </semantic:decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_844ceaf0-034b-4919-ac33-4ea0530c4df6" triso:modelElementRef="_73d73ddf-7fd5-4e58-9941-d68e0dcdbc24" name="Page 1">
+            <di:extension/>
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="_827421ef-b131-4f38-996d-107faafdda16" dmnElementRef="_56df9192-759e-4a68-a0e3-4568cb07533b">
+                <dc:Bounds x="261" y="140" width="153" height="60"/>
+                <dmndi:DMNLabel sharedStyle="LS_f4d01590-fd4a-49cb-aef5-0b086f8ed159_0" trisodmn:defaultBounds="true"/>
+            </dmndi:DMNShape>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_f4d01590-fd4a-49cb-aef5-0b086f8ed159_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</semantic:definitions>
