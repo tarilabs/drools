@@ -45,6 +45,7 @@ import java.util.stream.Stream;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.FEELProperty;
+import org.kie.dmn.feel.lang.FEELPropertyAccessible;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.lang.types.impl.ComparablePeriod;
 import org.kie.dmn.feel.runtime.Range;
@@ -297,6 +298,8 @@ public class EvalHelper {
         Object result;
         if ( current == null ) {
             return PropertyValueResult.notDefined();
+        } else if (current instanceof FEELPropertyAccessible) {
+            return ((FEELPropertyAccessible) current).getFEELProperty(property);
         } else if ( current instanceof Map ) {
             result = ((Map) current).get(property);
             if (result == null) {

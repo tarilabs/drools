@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20180521/MODEL/"  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"  xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"  xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"  xmlns:drools="http://www.drools.org/kie/dmn/1.1"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:rss="http://purl.org/rss/2.0/"  xmlns:openapi="https://openapis.org/omg/extension/1.0"  xmlns="http://www.trisotech.com/definitions/_bb6a44e2-e2e5-4981-ae74-446f01787b58" id="_bb6a44e2-e2e5-4981-ae74-446f01787b58" name="Drawing 1" namespace="http://www.trisotech.com/definitions/_bb6a44e2-e2e5-4981-ae74-446f01787b58" exporter="DMN Modeler" exporterVersion="6.2.7" triso:logoChoice="Default">
+    <semantic:decision id="_9d783bc6-af4e-47e9-bb86-d39fe6a5dad1" name="hardcoded">
+        <semantic:variable name="hardcoded" id="_5736f536-18a2-4f64-b9d3-8e33256c90cf" typeRef="Any"/>
+        <semantic:list id="_bf82ad79-4760-44f7-902e-4b304c01e1b6" typeRef="Any" triso:expressionId="_abc45b1f-8c70-4c82-81af-d66063024fec">
+            <semantic:literalExpression id="_c3869422-8661-4268-87f2-a23b42b8653d">
+                <semantic:text>1</semantic:text>
+            </semantic:literalExpression>
+            <semantic:literalExpression id="_38980392-25cc-4508-abc1-85dd76392913">
+                <semantic:text>2</semantic:text>
+            </semantic:literalExpression>
+            <semantic:literalExpression id="_04ae84f2-7c1f-4d68-8919-1824dfe32095">
+                <semantic:text>3</semantic:text>
+            </semantic:literalExpression>
+        </semantic:list>
+    </semantic:decision>
+    <semantic:decision id="_7cfb4e07-9594-476d-a3c5-f8df84b4c627" name="my decision">
+        <semantic:variable name="my decision" id="_1719a42c-e5b8-4d2c-9955-58d7a25e3e1a" typeRef="Any"/>
+        <semantic:informationRequirement id="_7055436b-b0ff-4cf1-b3b4-3397048e6831">
+            <semantic:requiredDecision href="#_9d783bc6-af4e-47e9-bb86-d39fe6a5dad1"/>
+        </semantic:informationRequirement>
+        <semantic:decisionTable id="_1db3a1a3-c2d7-454b-be81-0da264b81334" hitPolicy="UNIQUE" outputLabel="my decision" typeRef="Any" triso:expressionId="_9141ccdb-ab52-40e3-8afc-ca629cceb102">
+            <semantic:input id="_4fdbe24c-d66f-431c-a509-606438b00f27">
+                <semantic:inputExpression typeRef="Any">
+                    <semantic:text>hardcoded[2]</semantic:text>
+                </semantic:inputExpression>
+            </semantic:input>
+            <semantic:output id="_ce71d385-800f-439c-991b-ba79ccd39718" triso:allowNull="true"/>
+            <semantic:annotation name="Description"/>
+            <semantic:rule id="_4e426914-fa78-4537-aab6-9c846e5a53e8">
+                <semantic:inputEntry id="_84f341b1-200a-4386-982e-08a4b13966e7">
+                    <semantic:text>2</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry id="_64cb3e42-2956-4833-aaf1-44fa0c1ed4b5">
+                    <semantic:text>"middle is two"</semantic:text>
+                </semantic:outputEntry>
+                <semantic:annotationEntry>
+                    <semantic:text/>
+                </semantic:annotationEntry>
+            </semantic:rule>
+        </semantic:decisionTable>
+    </semantic:decision>
+</semantic:definitions>

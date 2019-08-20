@@ -2849,6 +2849,53 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("Decision-2").getResult(), is(true));
+
+    }
+
+    @Test
+    public void testMatteo() {
+        // DROOLS-
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("a.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_2ceee5b6-0f0d-41ef-890e-2cd6fb1adb10", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        HashMap value = new HashMap();
+        value.put("name", "x");
+        value.put("age", 2);
+        context.set("p", value);
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Decision Table"), is("A"));
+        assertThat(result.get("Litteral Expression"), is("A"));
+    }
+
+    @Test
+    public void testMatteo2() {
+        // DROOLS-
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("a2.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_bb6a44e2-e2e5-4981-ae74-446f01787b58", "Drawing 1");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        HashMap value = new HashMap();
+        value.put("name", "x");
+        value.put("age", 2);
+        context.set("p", value);
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Decision Table"), is("A"));
+        assertThat(result.get("Litteral Expression"), is("A"));
     }
 }
 

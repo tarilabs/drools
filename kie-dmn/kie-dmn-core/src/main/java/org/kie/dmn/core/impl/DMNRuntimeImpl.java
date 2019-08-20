@@ -35,6 +35,7 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.ResourceTypePackageRegistry;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.kie.api.builder.KieModule;
 import org.kie.api.io.ResourceType;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
@@ -68,6 +69,7 @@ import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
+import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,6 +88,11 @@ public class DMNRuntimeImpl
 
     public DMNRuntimeImpl(InternalKnowledgeBase knowledgeBase) {
         this.knowledgeBase = knowledgeBase;
+        KnowledgeBaseImpl kbi = (KnowledgeBaseImpl) knowledgeBase;
+        KieContainerImpl kci = (KieContainerImpl) kbi.getKieContainer();
+        KieModule mainKieModule = kci.getKieModuleForKBase(knowledgeBase.getId());
+        ChainedProperties chainedProperties = knowledgeBase.getConfiguration().getChainedProperties();
+        System.out.println(chainedProperties.getProperty("matteo", "?"));
         this.eventManager = new DMNRuntimeEventManagerImpl();
         if (knowledgeBase != null && knowledgeBase instanceof KnowledgeBaseImpl) {
             KnowledgeBaseImpl knowledgeBaseImpl = (KnowledgeBaseImpl) knowledgeBase;
