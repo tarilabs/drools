@@ -18,6 +18,7 @@ package org.kie.dmn.core;
 
 import java.math.BigDecimal;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
@@ -33,22 +34,31 @@ import static org.junit.Assert.assertThat;
 public class DMNDecisionTableAlphaSupportingTest extends BaseInterpretedVsCompiledTest {
 
     private static final Logger LOG = org.slf4j.LoggerFactory.getLogger(DMNDecisionTableAlphaSupportingTest.class);
+    private DMNRuntime runtime;
+    private DMNModel dmnModel;
 
     public DMNDecisionTableAlphaSupportingTest(final boolean useExecModelCompiler ) {
         super( useExecModelCompiler );
     }
 
-    @Test
-    public void testSimpleDecision() {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("alphasupport.dmn", this.getClass());
-        final DMNModel dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_c0cf6e20-0b43-43ce-9def-c759a5f86df2", "DMN Specification Chapter 11 Example Reduced");
+    @Before
+    public void init() {
+        runtime = DMNRuntimeUtil.createRuntime("alphasupport.dmn", this.getClass());
+        dmnModel = runtime.getModel("http://www.trisotech.com/definitions/_c0cf6e20-0b43-43ce-9def-c759a5f86df2", "DMN Specification Chapter 11 Example Reduced");
         assertThat(dmnModel, notNullValue());
+    }
 
+    public DMNResult doTest() {
         final DMNContext context = runtime.newContext();
         context.set("Existing Customer", "false");
         context.set("Application Risk Score", new BigDecimal("123"));
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-        LOG.info("{}", dmnResult);
+        return runtime.evaluateAll(dmnModel, context);
+    }
+
+    @Test
+    public void testSimpleDecision() {
+        final DMNResult dmnResult = doTest();
+        LOG.debug("{}", dmnResult);
         assertThat(dmnResult.getContext().get("Pre-bureau risk category table"), is("LOW"));
     }
 }
