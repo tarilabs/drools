@@ -110,9 +110,6 @@
                 <semantic:inputExpression typeRef="string">
                     <semantic:text>Existing Customer</semantic:text>
                 </semantic:inputExpression>
-                <semantic:inputValues triso:constraintsType="enumeration">
-                    <semantic:text>"false","true"</semantic:text>
-                </semantic:inputValues>
             </semantic:input>
             <semantic:input id="_7b875789-213e-4008-aed8-b63f01a53996">
                 <semantic:inputExpression typeRef="number">
@@ -237,6 +234,2297 @@
                     <semantic:text/>
                 </semantic:annotationEntry>
             </semantic:rule>
+            
+                        <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"A"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"A"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"A"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"A"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"B"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"B"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"B"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"B"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"C"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"C"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"C"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"C"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"D"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"D"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"D"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"D"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"E"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"E"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"E"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"E"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"F"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"F"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"F"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"F"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"G"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"G"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"G"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"G"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"H"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"H"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"H"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"H"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"I"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"I"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"I"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"I"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"J"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"J"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"J"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"J"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"K"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"K"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"K"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"K"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"L"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"L"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"L"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"L"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"M"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"M"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"M"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"M"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"N"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"N"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"N"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"N"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"O"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"O"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"O"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"O"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"P"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"P"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"P"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"P"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"Q"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"Q"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"Q"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"Q"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"R"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"R"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"R"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"R"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"S"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"S"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"S"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"S"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"T"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"T"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"T"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"T"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"U"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"U"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"U"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"U"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"V"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"V"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"V"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"V"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"W"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"W"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"W"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"W"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"X"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"X"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"X"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"X"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"Y"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"Y"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"Y"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"Y"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"Z"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"Z"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"Z"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"Z"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"a"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"a"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"a"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"a"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"b"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"b"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"b"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"b"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"c"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"c"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"c"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"c"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"d"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"d"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"d"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"d"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"e"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"e"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"e"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"e"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"f"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"f"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"f"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"f"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"g"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"g"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"g"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"g"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"h"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"h"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"h"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"h"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"i"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"i"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"i"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"i"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"j"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"j"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"j"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"j"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"k"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"k"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"k"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"k"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"l"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"l"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"l"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"l"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"m"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"m"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"m"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"m"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"n"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"n"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"n"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"n"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"o"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"o"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"o"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"o"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"p"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"p"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"p"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"p"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"q"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"q"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"q"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"q"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"r"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"r"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"r"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"r"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"s"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"s"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"s"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"s"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"t"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"t"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"t"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"t"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"u"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"u"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"u"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"u"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"v"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"v"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"v"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"v"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"w"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"w"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"w"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"w"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"x"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"x"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"x"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"x"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"y"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"y"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"y"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"y"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"z"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&lt;100</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"HIGH"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"z"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[100..120)</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"MEDIUM"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"z"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>[120..130]</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry>
+                    <semantic:text>"LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            <semantic:rule >
+                <semantic:inputEntry >
+                    <semantic:text>"z"</semantic:text>
+                </semantic:inputEntry>
+                <semantic:inputEntry >
+                    <semantic:text>&gt;130</semantic:text>
+                </semantic:inputEntry>
+                <semantic:outputEntry >
+                    <semantic:text>"VERY LOW"</semantic:text>
+                </semantic:outputEntry>
+            </semantic:rule>
+            
+            
         </semantic:decisionTable>
     </semantic:decision>
     <semantic:inputData id="_23dbf246-2a97-4cf9-ab2a-c0271b287fbb" name="Existing Customer">

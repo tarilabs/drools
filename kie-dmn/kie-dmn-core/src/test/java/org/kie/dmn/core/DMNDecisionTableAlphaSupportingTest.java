@@ -19,6 +19,7 @@ package org.kie.dmn.core;
 import java.math.BigDecimal;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
@@ -50,7 +51,7 @@ public class DMNDecisionTableAlphaSupportingTest extends BaseInterpretedVsCompil
 
     public DMNResult doTest() {
         final DMNContext context = runtime.newContext();
-        context.set("Existing Customer", "false");
+        context.set("Existing Customer", "s");
         context.set("Application Risk Score", new BigDecimal("123"));
         return runtime.evaluateAll(dmnModel, context);
     }
@@ -60,5 +61,58 @@ public class DMNDecisionTableAlphaSupportingTest extends BaseInterpretedVsCompil
         final DMNResult dmnResult = doTest();
         LOG.debug("{}", dmnResult);
         assertThat(dmnResult.getContext().get("Pre-bureau risk category table"), is("LOW"));
+    }
+
+    @Ignore
+    @Test
+    public void asd() {
+        String x = "            <semantic:rule >\n" + 
+                   "                <semantic:inputEntry >\n" +
+                   "                    <semantic:text>\"%1$s\"</semantic:text>\n" +
+                   "                </semantic:inputEntry>\n" +
+                   "                <semantic:inputEntry >\n" +
+                   "                    <semantic:text>&lt;100</semantic:text>\n" +
+                   "                </semantic:inputEntry>\n" +
+                   "                <semantic:outputEntry >\n" +
+                   "                    <semantic:text>\"HIGH\"</semantic:text>\n" +
+                   "                </semantic:outputEntry>\n" +
+                   "            </semantic:rule>\n" +
+                   "            <semantic:rule >\n" +
+                   "                <semantic:inputEntry >\n" +
+                   "                    <semantic:text>\"%1$s\"</semantic:text>\n" +
+                   "                </semantic:inputEntry>\n" +
+                   "                <semantic:inputEntry >\n" +
+                   "                    <semantic:text>[100..120)</semantic:text>\n" +
+                   "                </semantic:inputEntry>\n" +
+                   "                <semantic:outputEntry >\n" +
+                   "                    <semantic:text>\"MEDIUM\"</semantic:text>\n" +
+                   "                </semantic:outputEntry>\n" +
+                   "            </semantic:rule>\n" +
+                   "            <semantic:rule >\n" +
+                   "                <semantic:inputEntry >\n" +
+                   "                    <semantic:text>\"%1$s\"</semantic:text>\n" +
+                   "                </semantic:inputEntry>\n" +
+                   "                <semantic:inputEntry >\n" +
+                   "                    <semantic:text>[120..130]</semantic:text>\n" +
+                   "                </semantic:inputEntry>\n" +
+                   "                <semantic:outputEntry>\n" +
+                   "                    <semantic:text>\"LOW\"</semantic:text>\n" +
+                   "                </semantic:outputEntry>\n" +
+                   "            </semantic:rule>\n" +
+                   "            <semantic:rule >\n" +
+                   "                <semantic:inputEntry >\n" +
+                   "                    <semantic:text>\"%1$s\"</semantic:text>\n" +
+                   "                </semantic:inputEntry>\n" +
+                   "                <semantic:inputEntry >\n" +
+                   "                    <semantic:text>&gt;130</semantic:text>\n" +
+                   "                </semantic:inputEntry>\n" +
+                   "                <semantic:outputEntry >\n" +
+                   "                    <semantic:text>\"VERY LOW\"</semantic:text>\n" +
+                   "                </semantic:outputEntry>\n" +
+                   "            </semantic:rule>";
+        char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
+        for (char c : alphabet) {
+            System.out.println(String.format(x, String.valueOf(c)));
+        }
     }
 }

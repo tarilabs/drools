@@ -17,6 +17,7 @@
 package org.kie.dmn.core.alphasupport;
 
 import java.math.BigDecimal;
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -63,8 +64,18 @@ public class DMNDecisionTableAlphaSupportingDraftBench {
 
     @Setup(Level.Iteration)
     public void initIterationValues() {
-        this.existingCustomer = Math.random() > 0.5 ? "true" : "false";
+        this.existingCustomer = existingCustomer();
         this.score = new BigDecimal(Double.valueOf((Math.random() * (140 - 70)) + 70).intValue());
+    }
+
+    public String existingCustomer() {
+        char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
+        int randomIdx = new Random().nextInt(alphabet.length + 2);
+        if (randomIdx < alphabet.length - 2) {
+            return String.valueOf(alphabet[randomIdx]);
+        } else {
+            return (randomIdx - 2) == 0 ? "true" : "false";
+        }
     }
 
     @Benchmark
@@ -85,6 +96,7 @@ public class DMNDecisionTableAlphaSupportingDraftBench {
     public static void main(String[] args) {
         DMNDecisionTableAlphaSupportingDraftBench u = new DMNDecisionTableAlphaSupportingDraftBench();
         u.init();
+        u.initIterationValues();
         u.doTest();
     }
 }
