@@ -17,6 +17,7 @@
 package org.kie.dmn.core.compiler.alphanetbased;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,6 +58,7 @@ import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.gt;
 import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.includes;
 import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.lt;
 import static org.kie.dmn.feel.codegen.feel11.CompiledFEELSemanticMappings.range;
+
 public class CompiledAlphaNetwork {
 
     private final ResultCollector resultCollector = new ResultCollector();
@@ -145,6 +147,9 @@ public class CompiledAlphaNetwork {
         addResultSink(ctx, network, alphac2r8, "LOW");
 
         char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
+        System.out.println(System.getProperty("alphalength"));
+        int alphalength = Integer.valueOf(System.getProperty("alphalength", "52"));
+        alphabet = Arrays.copyOf(alphabet, alphalength);
         for (char c : alphabet) {
             alphabet(network, ctx, String.valueOf(c));
         }
@@ -159,7 +164,6 @@ public class CompiledAlphaNetwork {
     }
 
     private static void alphabet(CompiledAlphaNetwork network, NetworkBuilderContext ctx, String sChar) {
-        System.out.println(sChar);
         final org.kie.dmn.feel.runtime.UnaryTest UTx = (feelExprCtx, left) -> gracefulEq(feelExprCtx, sChar, left);
         Index index1 = createIndex(String.class, x -> (String) x.getValue("Existing Customer"), sChar);
         AlphaNode alphac1r1 = createAlphaNode(ctx, ctx.otn, "\"" + sChar + "\"", x -> UTx.apply(x, x.getValue("Existing Customer")), index1);
