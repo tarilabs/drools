@@ -40,6 +40,7 @@ import org.kie.dmn.feel.util.Msg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deprecated
 public class DecisionTableFunction
         extends BaseFEELFunction {
 
@@ -66,6 +67,7 @@ public class DecisionTableFunction
      composed of outputs and output values; else default output value is one
      of the output values.
      */
+    @Deprecated
     public Object invoke(@ParameterName("ctx") EvaluationContext ctx, 
             @ParameterName("outputs") Object outputs,
             @ParameterName("input expression list") Object inputExpressionList,

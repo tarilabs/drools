@@ -60,7 +60,7 @@ public class BuiltInFunctions {
             new DecimalFunction(),
             new FloorFunction(),
             new CeilingFunction(),
-            new DecisionTableFunction(),
+                                                                         //new DecisionTableFunction(),
             new NotFunction(),
             new SortFunction(),
             new GetEntriesFunction(),

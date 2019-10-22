@@ -72,25 +72,20 @@ public class DMNDTExpressionEvaluator
         EventResults r = null;
         try {
             DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable( dmrem, node.getName(), dt.getName(), result );
-            List<String> paramNames = dt.getParameterNames().get( 0 );
-            Object[] params = new Object[paramNames.size()];
             EvaluationContextImpl ctx = feel.newEvaluationContext(Arrays.asList(events::add), Collections.emptyMap());
             ctx.setPerformRuntimeTypeCheck(((DMNRuntimeImpl) dmrem.getRuntime()).performRuntimeTypeCheck(result.getModel()));
 
             Map<String, Object> contextValues = result.getContext().getAll();
-            ctx.enterFrame((int) Math.ceil((contextValues.size() + params.length) / 0.75));
+            ctx.enterFrame((int) Math.ceil((contextValues.size()) / 0.75));
             // need to set the values for in context variables...
             for (Map.Entry<String, Object> entry : contextValues.entrySet()) {
                 ctx.setValue( entry.getKey(), entry.getValue() );
             }
             EvaluationContext dtContext = ctx.current();
-            for ( int i = 0; i < params.length; i++ ) {
-                EvaluationContext evalCtx = ctx.current();
-                evalCtx.enterFrame();
-                params[i] = feel.evaluate(dt.getDecisionTable().getCompiledParameterNames().get(i), evalCtx);
-                ctx.setValue( paramNames.get( i ), params[i] );
-            }
-            Object dtr = dt.invoke( dtContext, params ).cata( e -> { events.add( e); return null; }, Function.identity());
+            Object dtr = dt.invoke(dtContext).cata(e -> {
+                events.add(e);
+                return null;
+            }, Function.identity());
 
             // since ctx is a local variable that will be discarded, no need for a try/finally,
             // but still wanted to match the enter/exit frame for future maintainability purposes

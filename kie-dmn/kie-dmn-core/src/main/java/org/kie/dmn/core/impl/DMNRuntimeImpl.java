@@ -701,6 +701,7 @@ public class DMNRuntimeImpl
                     return false;
                 }
             } catch( Throwable t ) {
+                t.printStackTrace();
                 DMNMessage message = MsgUtil.reportMessage( logger,
                                                             DMNMessage.Severity.ERROR,
                                                             decision.getSource(),

@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
@@ -108,6 +109,7 @@ public class FlightRebookingTest extends BaseInterpretedVsCompiledTest {
         assertThat( result.get( "Rebooked Passengers" ), is( loadExpectedResult() ) );
     }
 
+    @Ignore("DMN v1.2 onwards have removed the buggy FEEL decision table() builtin function")
     @Test
     public void testSolutionBadExample() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("0019-flight-rebooking-bad-example.dmn", this.getClass() );

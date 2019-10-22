@@ -21,12 +21,8 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.decisiontables.DecisionTableImpl;
 import org.kie.dmn.feel.runtime.events.FEELEventBase;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collections;
-import java.util.List;
 
 public class DTInvokerFunction
         extends BaseFEELFunction {
@@ -39,14 +35,11 @@ public class DTInvokerFunction
         this.dt = dt;
     }
 
-    public FEELFnResult<Object> invoke(EvaluationContext ctx, Object[] params) {
+    public FEELFnResult<Object> invoke(EvaluationContext ctx) {
         FEELEvent capturedException = null;
         try {
             ctx.enterFrame();
-            for( int i = 0; i < params.length; i++ ) {
-                ctx.setValue( dt.getParameterNames().get( i ), params[i] );
-            }
-            return dt.evaluate( ctx, params );
+            return dt.evaluate(ctx);
         } catch ( Exception e ) {
             String message = "Error invoking decision table '" + getName() + "': " + e.getClass().getSimpleName();
             capturedException = new FEELEventBase( Severity.ERROR, message, e);
@@ -66,10 +59,6 @@ public class DTInvokerFunction
         return dt;
     }
 
-    public List<List<String>> getParameterNames() {
-        return Collections.singletonList( dt.getParameterNames() );
-    }
-
     @Override
     public void setName(String name) {
         super.setName(name);
@@ -78,6 +67,6 @@ public class DTInvokerFunction
     
     @Override
     public String toString() {
-        return "decision table " + dt.getSignature();
+        return "decision table " + dt.getName();
     }
 }

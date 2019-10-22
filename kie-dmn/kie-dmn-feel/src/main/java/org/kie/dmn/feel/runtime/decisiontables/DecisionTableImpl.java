@@ -49,8 +49,6 @@ public class DecisionTableImpl implements DecisionTable {
     private static final Logger logger = LoggerFactory.getLogger( DecisionTableImpl.class );
 
     private String               name;
-    private List<String>         parameterNames;
-    private List<CompiledExpression> compiledParameterNames;
     private List<DTInputClause>  inputs;
     private List<DTOutputClause> outputs;
     private List<DTDecisionRule> decisionRules;
@@ -67,7 +65,6 @@ public class DecisionTableImpl implements DecisionTable {
                              HitPolicy hitPolicy,
                              FEEL feel) {
         this.name = name;
-        this.parameterNames = parameterNames;
         this.inputs = inputs;
         this.outputs = outputs;
         this.decisionRules = decisionRules;
@@ -83,7 +80,7 @@ public class DecisionTableImpl implements DecisionTable {
      *               decision table that are expressions derived from these parameters
      * @return
      */
-    public FEELFnResult<Object> evaluate(EvaluationContext ctx, Object[] params) {
+    public FEELFnResult<Object> evaluate(EvaluationContext ctx) {
         if ( decisionRules.isEmpty() ) {
             return FEELFnResult.ofError(new FEELEventBase(Severity.WARN, "Decision table is empty", null));
         }
@@ -349,28 +346,6 @@ public class DecisionTableImpl implements DecisionTable {
 
     public List<DTOutputClause> getOutputs() {
         return outputs;
-    }
-
-    public List<String> getParameterNames() {
-        return parameterNames;
-    }
-
-    /**
-     * This is leveraged from the DMN layer, and currently unused from a pure FEEL layer perspective (DT FEEL expression deprecated anyway from the DMN spec itself).
-     */
-    public void setCompiledParameterNames(List<CompiledExpression> compiledParameterNames) {
-        this.compiledParameterNames = compiledParameterNames;
-    }
-
-    /**
-     * This is leveraged from the DMN layer, and currently unused from a pure FEEL layer perspective (DT FEEL expression deprecated anyway from the DMN spec itself).
-     */
-    public List<CompiledExpression> getCompiledParameterNames() {
-        return compiledParameterNames;
-    }
-
-    public String getSignature() {
-        return getName() + "( " + parameterNames.stream().collect( Collectors.joining( ", " ) ) + " )";
     }
 
 }

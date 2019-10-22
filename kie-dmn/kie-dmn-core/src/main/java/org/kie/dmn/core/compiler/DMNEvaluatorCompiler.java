@@ -731,7 +731,6 @@ public class DMNEvaluatorCompiler {
         FEEL feelInstance = ctx.getFeelHelper().newFEELInstance();
 
         DecisionTableImpl dti = new DecisionTableImpl(dtName, parameterNames, inputs, outputs, rules, hp, feelInstance);
-        dti.setCompiledParameterNames(compiledParameterNames);
         DTInvokerFunction dtf = new DTInvokerFunction( dti );
         DMNDTExpressionEvaluator dtee = new DMNDTExpressionEvaluator(node, feelInstance, dtf);
         return dtee;
