@@ -39,7 +39,6 @@ import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.SimpleTypeImpl;
 import org.kie.dmn.feel.lang.FEELProfile;
-import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.util.Either;
@@ -112,7 +111,7 @@ public class DMNImportPMMLInfo extends PMMLInfo<DMNPMMLModelInfo> {
 
     private static void registerOutputFieldType(Model pmmlModel, DMNModelImpl dmnModel, Import i) {
         String modelName = pmmlModel.getModelName();
-        List<OutputField> outputFields = pmmlModel.getOutput().getOutputFields();
+        List<OutputField> outputFields = pmmlModel.getOutput() == null ? Collections.emptyList() : pmmlModel.getOutput().getOutputFields();
         if (outputFields.size() > 1) {
             if (modelName != null && !modelName.isEmpty()) {
                 // In case of multiple output fields,
@@ -128,17 +127,11 @@ public class DMNImportPMMLInfo extends PMMLInfo<DMNPMMLModelInfo> {
                 dmnModel.getTypeRegistry().registerType(compositeType);
                 return;
             } else {
-                LOG.warn("PMML modelName is not provided. Falls back to <import name>.<pmml datafield name> simple types");
+                // Mon, Jan 13, 4:20 PM
+                // in the only case of multiple/complex output AND model without name, I would advise we will raise a Warning from the compilation/engine side, and for the editor to use FEEL Any as the typeRef
+                LOG.warn("PMML modelName is not provided, while output is a composite / multiple fields. Unable to synthesize CompositeType for DMN side.");
             }
         }
-        // In case of single output field or no modelName provided,
-        // register <import name>.<pmml datafield name>
-        outputFields.stream().forEach(field -> {
-            String fieldName = field.getName().getValue();
-            BuiltInType ft = getBuiltInTypeByDataType(field.getDataType());
-            DMNType type = new SimpleTypeImpl(i.getNamespace(), fieldName, null, false, null, null, ft);
-            dmnModel.getTypeRegistry().registerType(type);
-        });
     }
 
     private static BuiltInType getBuiltInTypeByDataType(DataType dt) {
