@@ -127,8 +127,7 @@ public class DMNImportPMMLInfo extends PMMLInfo<DMNPMMLModelInfo> {
                 dmnModel.getTypeRegistry().registerType(compositeType);
                 return;
             } else {
-                // Mon, Jan 13, 4:20 PM
-                // in the only case of multiple/complex output AND model without name, I would advise we will raise a Warning from the compilation/engine side, and for the editor to use FEEL Any as the typeRef
+                // Case of multiple/complex output AND model without name, raise a Warning from the compilation/engine side (for the editor to use FEEL Any as the typeRef in the BKM)
                 LOG.warn("PMML modelName is not provided, while output is a composite / multiple fields. Unable to synthesize CompositeType for DMN side.");
             }
         }
