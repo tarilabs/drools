@@ -11,11 +11,11 @@
         <semantic:outputDecision href="#_c7724c41-b281-4890-ac3d-7d8ed1dc517f"/>
     </semantic:decisionService>
     <semantic:businessKnowledgeModel id="_3bb6bcbe-54ac-449a-b198-59130cf9be1b" name="call my pmml">
-        <semantic:variable name="call my pmml" id="_7a2e03c5-3532-4f7f-baaf-21e0c8423b14" typeRef="Any"/>
-        <semantic:encapsulatedLogic id="_6e04a10d-a086-4631-98e8-c4fdc740106b" kind="PMML" typeRef="Any" triso:expressionId="_8d3f10b8-a53b-49db-a086-c8b63c270730">
-            <semantic:formalParameter name="fld1" typeRef="Any" triso:typeRef="test_regression_clax.tfld1" id="_1ec7b9fa-58bd-468a-8891-6a412629ff07"/>
-            <semantic:formalParameter name="fld2" typeRef="Any" triso:typeRef="test_regression_clax.tfld2" id="_76c6333e-1ce2-43d0-bf6c-e75e81274ca5"/>
-            <semantic:formalParameter name="fld3" typeRef="Any" triso:typeRef="test_regression_clax.tfld3" id="_242b8c5e-ffba-4093-a09f-e47c641716e9"/>
+        <semantic:variable name="call my pmml" id="_7a2e03c5-3532-4f7f-baaf-21e0c8423b14" typeRef="test_regression_clax.LinReg"/>
+        <semantic:encapsulatedLogic id="_6e04a10d-a086-4631-98e8-c4fdc740106b" kind="PMML" typeRef="test_regression_clax.LinReg" triso:expressionId="_8d3f10b8-a53b-49db-a086-c8b63c270730">
+            <semantic:formalParameter name="fld1" typeRef="test_regression_clax.fld1" triso:typeRef="test_regression_clax.tfld1" id="_1ec7b9fa-58bd-468a-8891-6a412629ff07"/>
+            <semantic:formalParameter name="fld2" typeRef="test_regression_clax.fld2" triso:typeRef="test_regression_clax.tfld2" id="_76c6333e-1ce2-43d0-bf6c-e75e81274ca5"/>
+            <semantic:formalParameter name="fld3" typeRef="test_regression_clax.fld3" triso:typeRef="test_regression_clax.tfld3" id="_242b8c5e-ffba-4093-a09f-e47c641716e9"/>
             <semantic:context typeRef="Any">
                 <semantic:contextEntry id="_71f89971-82d6-4e64-9c37-544f800eb258">
                     <semantic:variable name="document" id="_45eb749e-e8cf-4b6e-9d27-6489c9af463a" typeRef="string"/>
