@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -334,7 +335,7 @@ public class DMNValidatorImpl implements DMNValidator {
                             results.addAll(model.getMessages());
                             otherModel_DMNModels.add(model);
                             if (flags.contains(ANALYZE_DECISION_TABLE)) {
-                                List<DTAnalysis> vs = validator.dmnDTValidator.analyse(model);
+                                List<DTAnalysis> vs = validator.dmnDTValidator.analyse(model, flags);
                                 List<DMNMessage> dtAnalysisResults = vs.stream().flatMap(a -> a.asDMNMessages().stream()).collect(Collectors.toList());
                                 results.addAllUnfiltered(dtAnalysisResults);
                             }
@@ -489,7 +490,7 @@ public class DMNValidatorImpl implements DMNValidator {
             results.addAll( validateCompilation( dmnModel ) );
         }
         if (flags.contains( ANALYZE_DECISION_TABLE )) {
-            results.addAllUnfiltered(validateDT(dmnModel));
+            results.addAllUnfiltered(analyseDT(dmnModel, flags));
         }
     }
 
@@ -585,12 +586,12 @@ public class DMNValidatorImpl implements DMNValidator {
         return Collections.emptyList();
     }
 
-    private List<DMNMessage> validateDT(Definitions dmnModel) {
+    private List<DMNMessage> analyseDT(Definitions dmnModel, Set<Validation> flags) {
         if (dmnModel != null) {
             DMNCompilerImpl compiler = new DMNCompilerImpl(dmnCompilerConfig);
             DMNModel model = compiler.compile(dmnModel);
             if (model != null) {
-                List<DTAnalysis> vs = dmnDTValidator.analyse(model);
+                List<DTAnalysis> vs = dmnDTValidator.analyse(model, flags);
                 List<DMNMessage> results = vs.stream().flatMap(a -> a.asDMNMessages().stream()).collect(Collectors.toList());
                 return results;
             } else {
