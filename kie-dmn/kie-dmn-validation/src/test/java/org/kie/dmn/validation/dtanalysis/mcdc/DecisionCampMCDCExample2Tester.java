@@ -62,7 +62,7 @@ import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TA
 import static org.kie.dmn.validation.DMNValidator.Validation.COMPUTE_DECISION_TABLE_MCDC;
 
 @RunWith(AllTests.class)
-public final class DecisionCampMCDCExample1Tester extends AbstractDTAnalysisTest {
+public final class DecisionCampMCDCExample2Tester extends AbstractDTAnalysisTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(ExampleMCDCTest.class);
     private static DMNValidator validator;
@@ -71,14 +71,14 @@ public final class DecisionCampMCDCExample1Tester extends AbstractDTAnalysisTest
 
     public static TestSuite suite() throws Exception {
         initValidator();
-        final String resourceFileName = "example1.dmn";
+        final String resourceFileName = "example2.dmn";
         List<DMNMessage> validate = validator.validate(new InputStreamReader(ExampleMCDCTest.class.getResourceAsStream(resourceFileName)), ANALYZE_DECISION_TABLE, COMPUTE_DECISION_TABLE_MCDC);
 
         initRuntime(resourceFileName);
 
-        DTAnalysis analysis = getAnalysis(validate, "_452a0adf-dd49-47c3-b02d-fe0ad45902c7");
+        DTAnalysis analysis = getAnalysis(validate, "_e31c78b7-63ef-4112-a0bc-b0546043ebe9");
         Collection<Record> mcdcCases = computeMCDCCases(analysis.getMCDCSelectedBlocks());
-        assertThat(mcdcCases, hasSize(16));
+        assertThat(mcdcCases, hasSize(14));
         TestSuite suite = new TestSuite();
         for (Test test : findAllTestCasesRuntime(analysis.getSource(), mcdcCases)) {
             suite.addTest(test);
