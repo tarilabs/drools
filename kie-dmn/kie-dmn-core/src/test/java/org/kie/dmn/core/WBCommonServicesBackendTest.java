@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.dmn.api.core.DMNContext;
@@ -93,5 +94,53 @@ public class WBCommonServicesBackendTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("the shortest distance"), is(new BigDecimal("5")));
+    }
+
+    @Test
+    public void testDMN2JAVA() throws Exception {
+        final String CLASSCONTENT = "package com.sample;\n" +
+                                    "import java.math.BigDecimal;\n" +
+                                    "\n" +
+                                    "public class StandardDeviation{\n" +
+                                    "\n" +
+                                    " public static BigDecimal std(Number val) {\n" +
+                                    "     return new BigDecimal(val.doubleValue() * 2);\n" +
+                                    " }\n" +
+                                    "}";
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId v100 = ks.newReleaseId("org.kie", "dmn-testDMN2JAVA", "1.0.0");
+        final KieModule kieModule = KieHelper.createAndDeployJar(ks,
+                                                                 v100,
+                                                                 ks.getResources().newByteArrayResource(CLASSCONTENT.getBytes()).setResourceType(ResourceType.JAVA).setTargetPath("com/sample/StandardDeviation.java"),
+                                                                 ks.getResources().newClassPathResource("wbcommonservicesbackend_java.dmn", this.getClass()));
+
+        final KieContainer kieContainer = ks.newKieContainer(v100);
+        final KieSession kieSession = kieContainer.newKieSession();
+        final DMNRuntime runtime = kieSession.getKieRuntime(DMNRuntime.class);
+        Assert.assertNotNull(runtime);
+        assertThat(runtime.getModels(), hasSize(1));
+        checkDMN2JAVA(runtime);
+
+        // the below is performed by the WB at: https://github.com/kiegroup/kie-wb-common/blob/master/kie-wb-common-services/kie-wb-common-services-backend/src/main/java/org/kie/workbench/common/services/backend/builder/core/Builder.java#L592
+        final KieProject kieProject = new KieModuleKieProject((InternalKieModule) kieModule, null);
+        final KieContainer kieContainer2 = new KieContainerImpl(kieProject, ks.getRepository(), v100);
+        final KieSession kieSession2 = kieContainer2.newKieSession();
+        final DMNRuntime runtime2 = kieSession2.getKieRuntime(DMNRuntime.class);
+        Assert.assertNotNull(runtime2);
+        assertThat(runtime2.getModels(), hasSize(1));
+        checkDMN2JAVA(runtime2);
+    }
+
+    private void checkDMN2JAVA(DMNRuntime runtime) {
+        DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_2F0FB386-C8DD-482A-95D6-55445212DDDB", "sample");
+        DMNContext context = runtime.newContext();
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Decision-1"), is(new BigDecimal("4")));
     }
 }

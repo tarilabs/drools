@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_2F0FB386-C8DD-482A-95D6-55445212DDDB" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_46D5C473-EE1C-47C4-B72A-A3DE175C11E4" name="sample" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_2F0FB386-C8DD-482A-95D6-55445212DDDB">
+  <dmn:extensionElements/>
+  <dmn:decision id="_6EAB56B4-5EB3-4757-91C9-510981CD0410" name="Decision-1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_99A71A2B-5281-4F49-9782-18C4B4318B23" name="Decision-1" typeRef="number"/>
+    <dmn:knowledgeRequirement id="_82F3059B-7407-4055-A283-68482326ACF9">
+      <dmn:requiredKnowledge href="#_D966954F-939E-4BBA-BA86-BA97BB128185"/>
+    </dmn:knowledgeRequirement>
+    <dmn:literalExpression id="_FBE981C1-5C0B-4423-95AC-0644C5D9EDB8">
+      <dmn:text>stdev(2)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:businessKnowledgeModel id="_D966954F-939E-4BBA-BA86-BA97BB128185" name="stdev">
+    <dmn:extensionElements/>
+    <dmn:variable id="_D7DADE06-9A98-4DF4-B14E-681DC9093ABD" name="stdev" typeRef="number"/>
+    <dmn:encapsulatedLogic id="_54D97A44-A426-48C3-9CF4-6C274AEFDE3C" kind="Java">
+      <dmn:formalParameter id="_9B267ABC-C9F5-47D8-956C-D411AC4500A6" name="val" typeRef="number"/>
+      <dmn:context id="_F2B8F207-F4C1-47DB-BAE4-E48010473F73">
+        <dmn:contextEntry>
+          <dmn:variable id="_C067224B-CCEF-45E5-BF1A-ADBF0D2CA953" name="class" typeRef="string"/>
+          <dmn:literalExpression id="_608749B3-596A-4039-AE0D-102154032643">
+            <dmn:text>"com.sample.StandardDeviation"</dmn:text>
+          </dmn:literalExpression>
+        </dmn:contextEntry>
+        <dmn:contextEntry>
+          <dmn:variable id="_6217C667-CB3C-4B07-870E-3BAF9417A893" name="method signature" typeRef="string"/>
+          <dmn:literalExpression id="_FE2501D5-2843-4929-BDE3-F0A3DA9DE8C3">
+            <dmn:text>"std(java.lang.Number)"</dmn:text>
+          </dmn:literalExpression>
+        </dmn:contextEntry>
+      </dmn:context>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+</dmn:definitions>
