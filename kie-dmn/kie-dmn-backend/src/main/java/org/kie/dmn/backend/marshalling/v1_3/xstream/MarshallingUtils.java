@@ -22,12 +22,15 @@ import java.util.regex.Pattern;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
+import org.kie.dmn.model.api.Conditional;
 import org.kie.dmn.model.api.Context;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.Expression;
+import org.kie.dmn.model.api.Filter;
 import org.kie.dmn.model.api.FunctionDefinition;
 import org.kie.dmn.model.api.Invocation;
+import org.kie.dmn.model.api.Iterator;
 import org.kie.dmn.model.api.List;
 import org.kie.dmn.model.api.LiteralExpression;
 import org.kie.dmn.model.api.Relation;
@@ -86,6 +89,12 @@ public final class MarshallingUtils {
             nodeName = "relation";
         } else if (e instanceof List) {
             nodeName = "list";
+        } else if (e instanceof Conditional) {
+            nodeName = "conditional";
+        } else if (e instanceof Filter) {
+            nodeName = "filter";
+        } else if (e instanceof Iterator) {
+            nodeName = "iterator";
         }
         return nodeName;
     }

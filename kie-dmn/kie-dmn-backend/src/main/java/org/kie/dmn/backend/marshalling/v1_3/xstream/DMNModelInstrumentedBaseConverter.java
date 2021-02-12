@@ -108,6 +108,18 @@ public abstract class DMNModelInstrumentedBaseConverter
             staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DI, "waypoint", diPrefix), "waypoint");
             staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DI, "extension", diPrefix), "extension");
             staxWriter.getQNameMap().registerMapping(new QName(KieDMNModelInstrumentedBase.URI_DC, "Bounds", dcPrefix), "Bounds");
+
+            staxWriter.getQNameMap().registerMapping(new QName("https://www.trisotech.com/spec/DMN/20191111/EXT/", "conditional", "boxedext"), "conditional");
+            staxWriter.getQNameMap().registerMapping(new QName("https://www.trisotech.com/spec/DMN/20191111/EXT/", "if", "boxedext"), "if");
+            staxWriter.getQNameMap().registerMapping(new QName("https://www.trisotech.com/spec/DMN/20191111/EXT/", "then", "boxedext"), "then");
+            staxWriter.getQNameMap().registerMapping(new QName("https://www.trisotech.com/spec/DMN/20191111/EXT/", "else", "boxedext"), "else");
+        
+            staxWriter.getQNameMap().registerMapping(new QName("https://www.trisotech.com/spec/DMN/20191111/EXT/", "filter", "boxedext"), "filter");
+            staxWriter.getQNameMap().registerMapping(new QName("https://www.trisotech.com/spec/DMN/20191111/EXT/", "in", "boxedext"), "in");
+            staxWriter.getQNameMap().registerMapping(new QName("https://www.trisotech.com/spec/DMN/20191111/EXT/", "return", "boxedext"), "return");
+
+            staxWriter.getQNameMap().registerMapping(new QName("https://www.trisotech.com/spec/DMN/20191111/EXT/", "iterator", "boxedext"), "iterator");
+            staxWriter.getQNameMap().registerMapping(new QName("https://www.trisotech.com/spec/DMN/20191111/EXT/", "match", "boxedext"), "match");
         }
     }
 }

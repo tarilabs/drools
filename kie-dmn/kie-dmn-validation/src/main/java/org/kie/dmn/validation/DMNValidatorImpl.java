@@ -113,7 +113,8 @@ public class DMNValidatorImpl implements DMNValidator {
                                       .newSchema(new Source[]{new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20191111/DC.xsd")),
                                                               new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20191111/DI.xsd")),
                                                               new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20191111/DMNDI13.xsd")),
-                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20191111/DMN13.xsd"))
+                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("org/omg/spec/DMN/20191111/DMN13.xsd")),
+                                                              new StreamSource(DMNValidatorImpl.class.getResourceAsStream("extension/TrisotechDMN13.xsd"))
                                       });
         } catch (SAXException e) {
             throw new RuntimeException("Unable to initialize correctly DMNValidator.", e);

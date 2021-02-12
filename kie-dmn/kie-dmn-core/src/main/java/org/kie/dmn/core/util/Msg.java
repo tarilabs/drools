@@ -17,6 +17,7 @@
 package org.kie.dmn.core.util;
 
 import org.kie.dmn.api.core.DMNMessageType;
+import org.kie.dmn.feel.util.Msg.Message2;
 
 public final class Msg {
     // consolidated
@@ -48,6 +49,9 @@ public final class Msg {
     public static final Message1 MISSING_EXPRESSION_FOR_DECISION                     = new Message1( DMNMessageType.MISSING_EXPRESSION, "Missing expression for Decision Node '%s'" );
     public static final Message1 MISSING_EXPRESSION_FOR_NODE                         = new Message1( DMNMessageType.MISSING_EXPRESSION, "Missing expression for Node '%s'" );
     public static final Message1 MISSING_EXPRESSION_FOR_INVOCATION                   = new Message1( DMNMessageType.MISSING_EXPRESSION, "Missing expression for invocation node '%s'" );
+    public static final Message2 MISSING_EXPRESSION_FOR_CONDITION                    = new Message2( DMNMessageType.MISSING_EXPRESSION, "Missing %s expression for Conditional node '%s'" );
+    public static final Message2 MISSING_EXPRESSION_FOR_ITERATOR                     = new Message2( DMNMessageType.MISSING_EXPRESSION, "Missing %s expression for Iterator node '%s'" );
+    public static final Message2 MISSING_EXPRESSION_FOR_FILTER                       = new Message2( DMNMessageType.MISSING_EXPRESSION, "Missing %s expression for Filter node '%s'" );
     public static final Message3 EXPRESSION_FOR_INVOCATION_NOT_RESOLVED              = new Message3( DMNMessageType.REQ_NOT_FOUND, "The expression '%s' for invocation node '%s' did not resolve during compile time. In this DMN scope: %s" );
     public static final Message2 MISSING_EXPRESSION_FOR_PARAM_OF_INVOCATION          = new Message2( DMNMessageType.MISSING_EXPRESSION, "Missing expression for parameter %s on node '%s'");
     public static final Message1 MISSING_PARAMETER_FOR_INVOCATION                    = new Message1( DMNMessageType.MISSING_EXPRESSION, "Missing parameter for invocation node '%s'" );
@@ -153,9 +157,12 @@ public final class Msg {
     public static final Message1 DMNDI_MISSING_SHAPE                                 = new Message1( DMNMessageType.DMNDI_MISSING_DIAGRAM, "Missing DMNShape for '%s'" );
     public static final Message1 DMNDI_MISSING_EDGE                                  = new Message1( DMNMessageType.DMNDI_MISSING_DIAGRAM, "Missing DMNEdge for '%s'" );
     public static final Message2 DMNDI_UNKNOWN_REF                                   = new Message2( DMNMessageType.DMNDI_UNKNOWN_REF, "Unable to resolve dmnElementRef '%s' on '%s'" );
+
     public static final Message1 UNABLE_TO_RETRIEVE_PMML_RESULT                      = new Message1( DMNMessageType.INVOCATION_ERROR, "Unable to retrieve result from PMML model '%s'" );
 
-
+    public static final Message2 CONDITION_RESULT_NOT_BOOLEAN                        = new Message2( DMNMessageType.ERROR_EVAL_NODE, "The if condition on node %s returned a non boolean result: '%s'" );
+    public static final Message1 IN_RESULT_NULL                                      = new Message1( DMNMessageType.ERROR_EVAL_NODE, "The in condition on node %s returned null.");
+    public static final Message2 INDEX_OUT_OF_BOUND                                  = new Message2( DMNMessageType.ERROR_EVAL_NODE, "Index out of bound: list of %s elements, index %s; will evaluate as FEEL null");
     public static interface Message {
         String getMask();
 
