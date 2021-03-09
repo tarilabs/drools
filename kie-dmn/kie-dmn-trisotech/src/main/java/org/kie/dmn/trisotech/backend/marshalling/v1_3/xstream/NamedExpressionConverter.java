@@ -7,8 +7,8 @@ import org.kie.dmn.backend.marshalling.v1_3.xstream.DMNModelInstrumentedBaseConv
 import org.kie.dmn.backend.marshalling.v1_3.xstream.MarshallingUtils;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Expression;
-import org.kie.dmn.model.api.NamedExpression;
-import org.kie.dmn.model.v1_3.TNamedExpression;
+import org.kie.dmn.trisotech.model.api.NamedExpression;
+import org.kie.dmn.trisotech.model.v1_3.TNamedExpression;
 
 public class NamedExpressionConverter extends DMNModelInstrumentedBaseConverter {
 
@@ -27,7 +27,7 @@ public class NamedExpressionConverter extends DMNModelInstrumentedBaseConverter 
     protected void writeChildren(HierarchicalStreamWriter writer, MarshallingContext context, Object parent) {
         super.writeChildren(writer, context, parent);
         NamedExpression namedExp = (NamedExpression) parent;        
-        writeChildrenNode(writer, context, namedExp.getExpression(), MarshallingUtils.defineExpressionNodeName(namedExp.getExpression()));
+        writeChildrenNode(writer, context, namedExp.getExpression(), MarshallingUtils.defineExpressionNodeName(xstream, namedExp.getExpression()));
     }
     
     public NamedExpressionConverter(XStream xstream) {

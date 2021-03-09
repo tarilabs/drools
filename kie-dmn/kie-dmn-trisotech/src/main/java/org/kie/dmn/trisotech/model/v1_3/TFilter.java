@@ -17,7 +17,7 @@
 package org.kie.dmn.trisotech.model.v1_3;
 
 import org.kie.dmn.model.api.Expression;
-import org.kie.dmn.model.api.Filter;
+import org.kie.dmn.trisotech.model.api.Filter;
 import org.kie.dmn.model.v1_3.TExpression;
 
 public class TFilter extends TExpression implements Filter {

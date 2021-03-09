@@ -20,13 +20,15 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.backend.marshalling.v1_3.xstream.ExpressionConverter;
+import org.kie.dmn.backend.marshalling.v1x.ConverterDefinesExpressionNodeName;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
-import org.kie.dmn.model.api.Filter;
-import org.kie.dmn.model.api.NamedExpression;
-import org.kie.dmn.model.v1_3.TFilter;
-import org.kie.dmn.model.v1_3.TNamedExpression;
+import org.kie.dmn.model.api.Expression;
+import org.kie.dmn.trisotech.model.api.Filter;
+import org.kie.dmn.trisotech.model.api.NamedExpression;
+import org.kie.dmn.trisotech.model.v1_3.TFilter;
+import org.kie.dmn.trisotech.model.v1_3.TNamedExpression;
 
-public class FilterConverter extends ExpressionConverter {
+public class FilterConverter extends ExpressionConverter implements ConverterDefinesExpressionNodeName {
 
     public static final String IN = "in";
     public static final String MATCH = "match";
@@ -66,6 +68,11 @@ public class FilterConverter extends ExpressionConverter {
     @Override
     public boolean canConvert(Class clazz) {
         return clazz.equals(TFilter.class);
+    }
+
+    @Override
+    public String defineExpressionNodeName(Expression e) {
+        return "filter";
     }
 
 }

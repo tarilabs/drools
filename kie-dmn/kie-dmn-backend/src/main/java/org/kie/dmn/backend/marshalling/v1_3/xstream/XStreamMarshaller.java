@@ -49,7 +49,6 @@ import org.kie.dmn.model.v1_3.TAuthorityRequirement;
 import org.kie.dmn.model.v1_3.TBinding;
 import org.kie.dmn.model.v1_3.TBusinessContextElement;
 import org.kie.dmn.model.v1_3.TBusinessKnowledgeModel;
-import org.kie.dmn.model.v1_3.TConditional;
 import org.kie.dmn.model.v1_3.TContext;
 import org.kie.dmn.model.v1_3.TContextEntry;
 import org.kie.dmn.model.v1_3.TDMNElement;
@@ -61,7 +60,6 @@ import org.kie.dmn.model.v1_3.TDecisionTable;
 import org.kie.dmn.model.v1_3.TDefinitions;
 import org.kie.dmn.model.v1_3.TElementCollection;
 import org.kie.dmn.model.v1_3.TExpression;
-import org.kie.dmn.model.v1_3.TFilter;
 import org.kie.dmn.model.v1_3.TFunctionDefinition;
 import org.kie.dmn.model.v1_3.TFunctionItem;
 import org.kie.dmn.model.v1_3.TGroup;
@@ -73,12 +71,10 @@ import org.kie.dmn.model.v1_3.TInputClause;
 import org.kie.dmn.model.v1_3.TInputData;
 import org.kie.dmn.model.v1_3.TInvocation;
 import org.kie.dmn.model.v1_3.TItemDefinition;
-import org.kie.dmn.model.v1_3.TIterator;
 import org.kie.dmn.model.v1_3.TKnowledgeRequirement;
 import org.kie.dmn.model.v1_3.TKnowledgeSource;
 import org.kie.dmn.model.v1_3.TLiteralExpression;
 import org.kie.dmn.model.v1_3.TNamedElement;
-import org.kie.dmn.model.v1_3.TNamedExpression;
 import org.kie.dmn.model.v1_3.TOrganizationUnit;
 import org.kie.dmn.model.v1_3.TOutputClause;
 import org.kie.dmn.model.v1_3.TPerformanceIndicator;
@@ -217,7 +213,6 @@ public class XStreamMarshaller
         xStream.alias("businessContextElement", TBusinessContextElement.class);
         xStream.alias("businessKnowledgeModel", TBusinessKnowledgeModel.class);
         xStream.alias("column", TInformationItem.class);
-        xStream.alias("conditional", TConditional.class);
         xStream.alias("context", TContext.class);
         xStream.alias("contextEntry", TContextEntry.class);
         xStream.alias("decision", TDecision.class);
@@ -231,17 +226,13 @@ public class XStreamMarshaller
         xStream.alias("definitions", TDefinitions.class);
         xStream.alias("drgElement", TDMNElementReference.class);
         xStream.alias("elementCollection", TElementCollection.class);
-        xStream.alias("else", TNamedExpression.class);
         xStream.alias("encapsulatedDecision", TDMNElementReference.class);
         xStream.alias("encapsulatedLogic", TFunctionDefinition.class);
         xStream.alias("expression", TExpression.class);
-        xStream.alias("filter", TFilter.class);
         xStream.alias("formalParameter", TInformationItem.class);
         xStream.alias("functionItem", TFunctionItem.class);
         xStream.alias("functionDefinition", TFunctionDefinition.class);
         xStream.alias("group", TGroup.class);
-        xStream.alias("if", TNamedExpression.class);
-        xStream.alias("in", TNamedExpression.class);
         xStream.alias("impactedPerformanceIndicator", TDMNElementReference.class);
         xStream.alias("impactingDecision", TDMNElementReference.class);
         xStream.alias("import", TImport.class);
@@ -259,11 +250,9 @@ public class XStreamMarshaller
         xStream.alias("invocation", TInvocation.class);
         xStream.alias("itemComponent", TItemDefinition.class);
         xStream.alias("itemDefinition", TItemDefinition.class);
-        xStream.alias("iterator", TIterator.class);
         xStream.alias("knowledgeRequirement", TKnowledgeRequirement.class);
         xStream.alias("knowledgeSource", TKnowledgeSource.class);
         xStream.alias("literalExpression", TLiteralExpression.class);
-        xStream.alias("match", TNamedExpression.class);
         xStream.alias("namedElement", TNamedElement.class);
         xStream.alias("organizationUnit", TOrganizationUnit.class);
         xStream.alias("output", TOutputClause.class);
@@ -279,13 +268,11 @@ public class XStreamMarshaller
         xStream.alias("requiredDecision", TDMNElementReference.class);
         xStream.alias("requiredInput", TDMNElementReference.class);
         xStream.alias("requiredKnowledge", TDMNElementReference.class);
-        xStream.alias("return", TNamedExpression.class);
         xStream.alias("rule", TDecisionRule.class);
         xStream.alias("sourceRef", TDMNElementReference.class);
         xStream.alias("supportedObjective", TDMNElementReference.class);
         xStream.alias("targetRef", TDMNElementReference.class);
         xStream.alias("textAnnotation", TTextAnnotation.class);
-        xStream.alias("then", TNamedExpression.class);
         xStream.alias("type", String.class ); // TODO where?
         xStream.alias("typeRef", QName.class );
         xStream.alias("usingProcess", TDMNElementReference.class);
@@ -346,7 +333,6 @@ public class XStreamMarshaller
         xStream.registerConverter(new AuthorityRequirementConverter( xStream ) );
         xStream.registerConverter(new BindingConverter( xStream ) );
         xStream.registerConverter(new BusinessKnowledgeModelConverter( xStream ) );
-        xStream.registerConverter(new ConditionalConverter( xStream ) );
         xStream.registerConverter(new ContextConverter( xStream ) );
         xStream.registerConverter(new ContextEntryConverter( xStream ) );
         xStream.registerConverter(new DecisionConverter( xStream ) );
@@ -356,7 +342,6 @@ public class XStreamMarshaller
         xStream.registerConverter(new DefinitionsConverter( xStream ) );
         xStream.registerConverter(new DMNElementReferenceConverter( xStream ) );
         xStream.registerConverter(new GroupConverter( xStream ) );
-        xStream.registerConverter(new FilterConverter( xStream ) );
         xStream.registerConverter(new FunctionDefinitionConverter( xStream ) );
         xStream.registerConverter(new ImportConverter( xStream ) );
         xStream.registerConverter(new ImportedValuesConverter( xStream ) );
@@ -366,11 +351,9 @@ public class XStreamMarshaller
         xStream.registerConverter(new InputDataConverter( xStream ) );
         xStream.registerConverter(new InvocationConverter( xStream ) );
         xStream.registerConverter(new ItemDefinitionConverter( xStream ) );
-        xStream.registerConverter(new IteratorConverter(xStream));
         xStream.registerConverter(new KnowledgeRequirementConverter( xStream ) );
         xStream.registerConverter(new KnowledgeSourceConverter( xStream ) );
         xStream.registerConverter(new LiteralExpressionConverter( xStream ) );
-        xStream.registerConverter(new NamedExpressionConverter( xStream ) );
         xStream.registerConverter(new OrganizationUnitConverter( xStream ) );
         xStream.registerConverter(new OutputClauseConverter( xStream ) );
         xStream.registerConverter(new PerformanceIndicatorConverter( xStream ) );
@@ -385,12 +368,12 @@ public class XStreamMarshaller
         xStream.registerConverter(new ExtensionElementsConverter( xStream, extensionRegisters ) );
         xStream.registerConverter(new DiagramElementExtensionConverter(xStream, extensionRegisters));
         
-        xStream.ignoreUnknownElements();
 
         for(DMNExtensionRegister extensionRegister : extensionRegisters) {
             extensionRegister.registerExtensionConverters(xStream);
         }
 
+        xStream.ignoreUnknownElements();
         return xStream;
     }
 

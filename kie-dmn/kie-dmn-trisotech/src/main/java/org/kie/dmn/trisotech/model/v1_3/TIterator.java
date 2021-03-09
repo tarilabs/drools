@@ -17,7 +17,7 @@
 package org.kie.dmn.trisotech.model.v1_3;
 
 import org.kie.dmn.model.api.Expression;
-import org.kie.dmn.model.api.Iterator;
+import org.kie.dmn.trisotech.model.api.Iterator;
 import org.kie.dmn.model.v1_3.TExpression;
 
 public class TIterator extends TExpression implements Iterator {

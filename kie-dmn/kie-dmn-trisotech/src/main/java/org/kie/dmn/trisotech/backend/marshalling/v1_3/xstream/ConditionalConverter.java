@@ -20,14 +20,15 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.backend.marshalling.v1_3.xstream.ExpressionConverter;
-import org.kie.dmn.model.api.Conditional;
+import org.kie.dmn.backend.marshalling.v1x.ConverterDefinesExpressionNodeName;
+import org.kie.dmn.trisotech.model.api.Conditional;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.kie.dmn.model.api.Expression;
-import org.kie.dmn.model.api.NamedExpression;
-import org.kie.dmn.model.v1_3.TConditional;
-import org.kie.dmn.model.v1_3.TNamedExpression;
+import org.kie.dmn.trisotech.model.api.NamedExpression;
+import org.kie.dmn.trisotech.model.v1_3.TConditional;
+import org.kie.dmn.trisotech.model.v1_3.TNamedExpression;
 
-public class ConditionalConverter extends ExpressionConverter {
+public class ConditionalConverter extends ExpressionConverter implements ConverterDefinesExpressionNodeName {
 
     public static final String IF = "if";
     public static final String THEN = "then";
@@ -71,6 +72,11 @@ public class ConditionalConverter extends ExpressionConverter {
     @Override
     public boolean canConvert(Class clazz) {
         return clazz.equals(TConditional.class);
+    }
+
+    @Override
+    public String defineExpressionNodeName(Expression e) {
+        return "conditional";
     }
 
 }

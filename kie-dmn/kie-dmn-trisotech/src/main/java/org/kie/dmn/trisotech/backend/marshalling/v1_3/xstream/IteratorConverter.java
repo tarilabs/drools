@@ -21,13 +21,15 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.backend.marshalling.v1_3.xstream.ExpressionConverter;
+import org.kie.dmn.backend.marshalling.v1x.ConverterDefinesExpressionNodeName;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
-import org.kie.dmn.model.api.Iterator;
-import org.kie.dmn.model.api.NamedExpression;
-import org.kie.dmn.model.v1_3.TIterator;
-import org.kie.dmn.model.v1_3.TNamedExpression;
+import org.kie.dmn.model.api.Expression;
+import org.kie.dmn.trisotech.model.api.Iterator;
+import org.kie.dmn.trisotech.model.api.NamedExpression;
+import org.kie.dmn.trisotech.model.v1_3.TIterator;
+import org.kie.dmn.trisotech.model.v1_3.TNamedExpression;
 
-public class IteratorConverter extends ExpressionConverter {
+public class IteratorConverter extends ExpressionConverter implements ConverterDefinesExpressionNodeName {
 
     public static final String VARIABLE = "iteratorVariable";
     public static final String TYPE = "iteratorType";
@@ -99,6 +101,11 @@ public class IteratorConverter extends ExpressionConverter {
     @Override
     public boolean canConvert(Class clazz) {
         return clazz.equals(TIterator.class);
+    }
+
+    @Override
+    public String defineExpressionNodeName(Expression e) {
+        return "iterator";
     }
 
 }
