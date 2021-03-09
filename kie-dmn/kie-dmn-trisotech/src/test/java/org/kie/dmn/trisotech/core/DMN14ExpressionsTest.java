@@ -14,14 +14,23 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core;
+package org.kie.dmn.trisotech.core;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.io.Resource;
+import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -31,21 +40,56 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class DMN14ExpressionsTest extends BaseInterpretedVsCompiledTest {
+@RunWith(Parameterized.class)
+public class DMN14ExpressionsTest {
 
     private DMNRuntime runtime;
     private DMNModel model;
+    private TestStrategy testConfig;
 
-    public DMN14ExpressionsTest(final boolean useExecModelCompiler) {
-        super(useExecModelCompiler);
+    @Parameterized.Parameters(name = "{0}")
+    public static Object[] params() {
+        return new Object[]{TestStrategy.KIE_API};
+    }
+
+    public static enum TestStrategy {
+        KIE_API
+    }
+
+    public DMNRuntime createRuntime(String model, Class<?> class1) {
+        final KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "dmn-test-" + UUID.randomUUID(), "1.0");
+        final KieFileSystem kfs = ks.newKieFileSystem();
+        Resource modelResource = ks.getResources().newClassPathResource(model, class1);
+        kfs.write(modelResource);
+        kfs.writeKModuleXML("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                            "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
+                            "  <configuration>\n" +
+                            "    <property key=\"org.kie.dmn.profiles.trisotech\" value=\"org.kie.dmn.trisotech.TrisotechDMNProfile\"/>\n" +
+                            "    <property key=\"org.kie.dmn.decisionlogiccompilerfactory\" value=\"org.kie.dmn.trisotech.core.compiler.TrisotechDMNEvaluatorCompilerFactory\"/>\n" +
+                            "  </configuration>\n" +
+                            "</kmodule>");
+        kfs.generateAndWritePomXML(releaseId);
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        assertTrue(kieBuilder.getResults().getMessages().toString(), kieBuilder.getResults().getMessages().isEmpty());
+        final KieContainer kieContainer = ks.newKieContainer(releaseId);
+        final DMNRuntime runtime = DMNRuntimeUtil.typeSafeGetKieRuntime(kieContainer);
+        return runtime;
+    }
+
+    public DMN14ExpressionsTest(final TestStrategy testConfig) {
+        this.testConfig = testConfig;
     }
 
     @Before
     public void setup() {
-        runtime = DMNRuntimeUtil.createRuntime("dmn14expressions.dmn", this.getClass());
+        runtime = createRuntime("dmn14expressions.dmn", DMN14ExpressionsTest.class);
+        assertNotNull(runtime);
         model = runtime.getModel("http://www.trisotech.com/definitions/_3404349f-5046-4ad3-ad15-7f1e27291ab5", "DMN 1.4 expressions");
+        assertNotNull(model);
     }
 
     @Test
@@ -63,8 +107,6 @@ public class DMN14ExpressionsTest extends BaseInterpretedVsCompiledTest {
 
     @Test
     public void testConditionalNonBooleanIf() throws Throwable {
-        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("dmn14expressions.dmn", this.getClass());
-        DMNModel model = runtime.getModel("http://www.trisotech.com/definitions/_3404349f-5046-4ad3-ad15-7f1e27291ab5", "DMN 1.4 expressions");
         DMNResult results = runtime.evaluateByName(model, new DMNContextImpl(), "Non boolean");
         assertEquals(1, results.getMessages().size());
         assertEquals(DMNMessageType.ERROR_EVAL_NODE, results.getMessages().iterator().next().getMessageType());

@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.ast;
+package org.kie.dmn.trisotech.core.ast;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
@@ -26,43 +29,42 @@ import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
+import org.kie.dmn.core.ast.EvaluatorResultImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.util.IterableRange;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.model.api.DMNElement;
-import org.kie.dmn.model.api.Iterator;
-import org.kie.dmn.model.api.Iterator.IteratorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DMNIteratorEvaluator implements DMNExpressionEvaluator {
+public class DMNFilterEvaluator implements DMNExpressionEvaluator {
 
-    private static final Logger logger = LoggerFactory.getLogger(DMNIteratorEvaluator.class);
+    private static final Logger logger = LoggerFactory.getLogger(DMNFilterEvaluator.class);
 
-    private String variable;
-    private IteratorType type;
     private DMNExpressionEvaluator inEvaluator;
-    private DMNExpressionEvaluator returnEvaluator;
+    private DMNExpressionEvaluator filterEvaluator;
     private DMNElement node;
     private String name;
 
-    public DMNIteratorEvaluator(String name, DMNElement node, Iterator.IteratorType type, String variable, DMNExpressionEvaluator in, DMNExpressionEvaluator ret) {
+    public DMNFilterEvaluator(String name, DMNElement node, DMNExpressionEvaluator inEvaluator, DMNExpressionEvaluator filterEvaluator) {
         this.name = name;
         this.node = node;
-        this.type = type;
-        this.variable = variable;
-        this.inEvaluator = in;
-        this.returnEvaluator = ret;
+        this.inEvaluator = inEvaluator;
+        this.filterEvaluator = filterEvaluator;
     }
 
     @Override
     public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult dmnr) {
         DMNResultImpl result = (DMNResultImpl) dmnr;
 
+        if (inEvaluator == null || filterEvaluator == null) {
+            return new EvaluatorResultImpl(null, ResultType.FAILURE);
+        }
+
         EvaluatorResult inResult = inEvaluator.evaluate(eventManager, result);
-        if (inResult == null || inResult.getResultType() != ResultType.SUCCESS) {
+        if (inResult.getResultType() != ResultType.SUCCESS) {
             return inResult;
         }
         Object inObj = inResult.getResult();
@@ -70,7 +72,6 @@ public class DMNIteratorEvaluator implements DMNExpressionEvaluator {
         if (inObj instanceof Range) {
             inObj = new IterableRange((Range) inObj);
         } else if (!(inObj instanceof Iterable)) {
-
             //Can't iterate on null
             if (inObj == null) {
                 MsgUtil.reportMessage(logger,
@@ -81,7 +82,6 @@ public class DMNIteratorEvaluator implements DMNExpressionEvaluator {
                                       null,
                                       Msg.IN_RESULT_NULL,
                                       name);
-
                 return new EvaluatorResultImpl(null, ResultType.FAILURE);
             }
 
@@ -95,41 +95,53 @@ public class DMNIteratorEvaluator implements DMNExpressionEvaluator {
         LinkedList<Object> returnList = new LinkedList<>();
         try {
             result.setContext(dmnContext);
-            dmnContext.set("partial", returnList);
 
+            boolean first = true;
             for (Object item : (Iterable) inObj) {
-                dmnContext.set(variable, item);
-                EvaluatorResult evaluate = returnEvaluator.evaluate(eventManager, dmnr);
-                returnList.add(evaluate.getResult());
+
+                dmnContext.set("item", item);
+                if (item instanceof Map) {
+                    Map<String, Object> complexItem = (Map<String, Object>) item;
+                    complexItem.forEach((k, v) -> dmnContext.set(k, v));
+                }
+
+                EvaluatorResult evaluate = filterEvaluator.evaluate(eventManager, dmnr);
+                Object evalReturn = evaluate.getResult();
+
+                //If the evaluation is a boolean result, we add the item based on a return of true
+                if (evalReturn instanceof Boolean && ((Boolean) evalReturn).booleanValue() == true) {
+                    returnList.add(item);
+                }
+
+                //If on the first evaluation, a number is returned, we are using an index instead of a boolean filter
+                if (first && evalReturn instanceof Number) {
+                    List list = inObj instanceof List ? (List) inObj : Arrays.asList(inObj);
+                    int i = ((Number) evalReturn).intValue();
+                    if (i > 0 && i <= list.size()) {
+                        return new EvaluatorResultImpl(list.get(i - 1), ResultType.SUCCESS);
+                    } else if (i < 0 && Math.abs(i) <= list.size()) {
+                        return new EvaluatorResultImpl(list.get(list.size() + i), ResultType.SUCCESS);
+                    } else {
+                        MsgUtil.reportMessage(logger,
+                                              DMNMessage.Severity.ERROR,
+                                              node,
+                                              result,
+                                              null,
+                                              null,
+                                              Msg.INDEX_OUT_OF_BOUND,
+                                              list.size(),
+                                              i);
+                        return new EvaluatorResultImpl(null, ResultType.FAILURE);
+                    }
+                }
+                first = false;
             }
 
         } finally {
             result.setContext(previousContext);
         }
 
-        switch (type) {
-            case EVERY:
-                for (Object satisfies : returnList) {
-                    if (!(satisfies instanceof Boolean) || ((Boolean) satisfies).booleanValue() == false) {
-                        return new EvaluatorResultImpl(Boolean.FALSE, ResultType.SUCCESS);
-                    }
-                }
-                return new EvaluatorResultImpl(Boolean.TRUE, ResultType.SUCCESS);
-
-            case SOME:
-                for (Object satisfies : returnList) {
-                    if (satisfies instanceof Boolean && ((Boolean) satisfies).booleanValue() == true) {
-                        return new EvaluatorResultImpl(Boolean.TRUE, ResultType.SUCCESS);
-                    }
-                }
-                return new EvaluatorResultImpl(Boolean.FALSE, ResultType.SUCCESS);
-
-            case FOR:
-                return new EvaluatorResultImpl(returnList, ResultType.SUCCESS);
-        }
-
-        return new EvaluatorResultImpl(null, ResultType.FAILURE);
-
+        return new EvaluatorResultImpl(returnList, ResultType.SUCCESS);
     }
 
 }

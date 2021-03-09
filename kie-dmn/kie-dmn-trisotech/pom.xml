@@ -24,6 +24,12 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency> <!-- this is not an user dependency, hence is not added to the boms. -->
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-core</artifactId>
+        <classifier>tests</classifier>
+        <version>${project.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -40,14 +46,14 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-backend</artifactId>
     </dependency>
-<!--     <dependency>
+    <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-feel</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-core</artifactId>
-    </dependency> -->
+    </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
@@ -55,14 +61,6 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-internal</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
     </dependency>
     <!-- External dependencies -->
     <dependency>
@@ -103,6 +101,12 @@
     <dependency>
       <groupId>org.xmlunit</groupId>
       <artifactId>xmlunit-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-core</artifactId>
+      <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
 
