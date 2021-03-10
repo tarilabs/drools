@@ -23,7 +23,6 @@ import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNEvaluatorCompiler;
-import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
@@ -129,10 +128,11 @@ public class TrisotechDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             ctx.enterFrame();
             DMNType outputType = compiler.resolveTypeRef(model, null, node.getSource(), expression.getTypeRef());
             DMNType elementType = outputType;
-            if (outputType != null && outputType.isCollection() && outputType instanceof BaseDMNTypeImpl) {
-                elementType = elementType.clone();
-                ((BaseDMNTypeImpl)elementType).setCollection(false);
-            }
+            // TODO why was this needed?
+            //            if (outputType != null && outputType.isCollection() && outputType instanceof BaseDMNTypeImpl) {
+            //                elementType = elementType.clone();
+            //                ((BaseDMNTypeImpl)elementType).setCollection(false);
+            //            }
 
             ctx.setVariable(expression.getVariable(), elementType != null ? elementType : model.getTypeRegistry().unknown());
             ctx.setVariable("partial", outputType != null ? outputType : model.getTypeRegistry().unknown());
@@ -179,10 +179,11 @@ public class TrisotechDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
             DMNType outputType = compiler.resolveTypeRef(model, null, node.getSource(), expression.getTypeRef());
             DMNType elementType = outputType;
-            if (outputType != null && outputType.isCollection() && outputType instanceof BaseDMNTypeImpl) {
-                elementType = elementType.clone();
-                ((BaseDMNTypeImpl)elementType).setCollection(false);
-            }
+            // TODO why was this needed?
+            //            if (outputType != null && outputType.isCollection() && outputType instanceof BaseDMNTypeImpl) {
+            //                elementType = elementType.clone();
+            //                ((BaseDMNTypeImpl)elementType).setCollection(false);
+            //            }
 
             ctx.setVariable("item", elementType != null ? elementType : model.getTypeRegistry().unknown());
             if (elementType != null && elementType.isComposite()) {
