@@ -134,10 +134,10 @@ public class DMN14ExpressionsTest {
     @Test
     public void testIteratorForInRangeClose() throws Throwable {
         DMNResult results = runtime.evaluateByName(model, new DMNContextImpl(Collections.singletonMap("Number Input", 1)), "Addition Range Close");
-        assertEquals(Arrays.asList(2, 3, 4, 5).toString(), results.getDecisionResultByName("Addition Range Close").getResult().toString());
+        assertEquals(Arrays.asList(3, 4).toString(), results.getDecisionResultByName("Addition Range Close").getResult().toString());
 
         results = runtime.evaluateByName(model, new DMNContextImpl(Collections.singletonMap("Number Input", 2)), "Addition Range Close");
-        assertEquals(Arrays.asList(3, 4, 5, 6).toString(), results.getDecisionResultByName("Addition Range Close").getResult().toString());
+        assertEquals(Arrays.asList(4, 5).toString(), results.getDecisionResultByName("Addition Range Close").getResult().toString());
     } 
 
     @Test
