@@ -255,21 +255,25 @@ public class DMNAssemblerService implements KieAssemblerService {
             compilerConfiguration.setProperty(RuntimeTypeCheckOption.PROPERTY_NAME, "true");
         }
 
-        String definedDLCompiler = compilerConfiguration.getProperties().get(DMN_DECISION_LOGIC_COMPILER);
-        if (definedDLCompiler != null) {
-            try {
-                DMNDecisionLogicCompilerFactory factory = (DMNDecisionLogicCompilerFactory) kbuilderImpl.getRootClassLoader()
-                                                                                                        .loadClass(definedDLCompiler).newInstance();
-                compilerConfiguration.setDecisionLogicCompilerFactory(factory);
-            } catch (Exception e) {
-                kbuilderImpl.addBuilderResult(new DMNKnowledgeBuilderError(ResultSeverity.WARNING, "Trying to load a non-existing DMNDecisionLogicCompilerFactory " + e.getLocalizedMessage()));
-                logger.error("Trying to load a non-existing DMNDecisionLogicCompilerFactory {}", e.getLocalizedMessage(), e);
-                kbuilderImpl.addBuilderResult(new DMNKnowledgeBuilderError(ResultSeverity.WARNING, "DMN Compiler configuration contained errors, will fall-back to defaults."));
-                logger.warn("DMN Compiler configuration contained errors, will fall-back to defaults.");
-            }
+        try {
+            applyDecisionLogicCompilerFactory(kbuilderImpl.getRootClassLoader(), compilerConfiguration);
+        } catch (Exception e) {
+            kbuilderImpl.addBuilderResult(new DMNKnowledgeBuilderError(ResultSeverity.WARNING, "Trying to load a non-existing DMNDecisionLogicCompilerFactory " + e.getLocalizedMessage()));
+            logger.error("Trying to load a non-existing DMNDecisionLogicCompilerFactory {}", e.getLocalizedMessage(), e);
+            kbuilderImpl.addBuilderResult(new DMNKnowledgeBuilderError(ResultSeverity.WARNING, "DMN Compiler configuration contained errors, will fall-back to defaults."));
+            logger.warn("DMN Compiler configuration contained errors, will fall-back to defaults.");
         }
 
         return DMNFactory.newCompiler(compilerConfiguration);
+    }
+
+    public static DMNCompilerConfigurationImpl applyDecisionLogicCompilerFactory(ClassLoader classLoader, DMNCompilerConfigurationImpl config) throws Exception {
+        String definedDLCompiler = config.getProperties().get(DMN_DECISION_LOGIC_COMPILER);
+        if (definedDLCompiler != null) {
+            DMNDecisionLogicCompilerFactory factory = (DMNDecisionLogicCompilerFactory) classLoader.loadClass(definedDLCompiler).newInstance();
+            config.setDecisionLogicCompilerFactory(factory);
+        }
+        return config;
     }
 
     /**

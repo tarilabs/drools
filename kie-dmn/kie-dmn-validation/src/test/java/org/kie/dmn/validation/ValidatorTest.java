@@ -47,7 +47,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
@@ -521,26 +520,5 @@ public class ValidatorTest extends AbstractValidatorTest {
         assertTrue(ValidatorUtil.formatMessages(validate),
                    validate.stream().allMatch(p -> p.getLevel() == Level.WARNING &&
                                                    p.getSourceId().equals("_FE47213A-2042-49DE-9A44-65831DA6AD11")));
-    }
-
-    @Test
-    public void testBoxedExtension_Conditional13() {
-        List<DMNMessage> validate = validator.validate(getReader("boxedcontextextension/conditional.dmn"),
-                VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertEquals(0, validate.size());
-    }
-
-    @Test
-    public void testBoxedExtension_Iterator13() {
-        List<DMNMessage> validate = validator.validate(getReader("boxedcontextextension/iterator.dmn"),
-                VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertEquals(0, validate.size());
-    }
-    
-    @Test
-    public void testBoxedExtension_Filter13() {
-        List<DMNMessage> validate = validator.validate(getReader("boxedcontextextension/filter.dmn"),
-                VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION);
-        assertEquals(0, validate.size());
     }
 }
