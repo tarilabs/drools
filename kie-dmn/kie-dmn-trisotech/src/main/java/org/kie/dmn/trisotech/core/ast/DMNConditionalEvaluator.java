@@ -24,9 +24,9 @@ import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.ast.EvaluatorResultImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
-import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.api.DMNElement;
+import org.kie.dmn.trisotech.core.util.Msg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
