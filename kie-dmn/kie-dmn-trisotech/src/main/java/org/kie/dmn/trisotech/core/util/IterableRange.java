@@ -1,4 +1,4 @@
-package org.kie.dmn.core.util;
+package org.kie.dmn.trisotech.core.util;
 
 import java.math.BigDecimal;
 import java.util.Iterator;
