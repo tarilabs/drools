@@ -36,7 +36,10 @@ import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.core.impl.DMNContextImpl;
+import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.trisotech.TrisotechDMNProfile;
+import org.kie.dmn.trisotech.core.compiler.TrisotechDMNEvaluatorCompilerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -52,14 +55,23 @@ public class DMN14ExpressionsTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static Object[] params() {
-        return new Object[]{TestStrategy.KIE_API};
+        return new Object[]{TestStrategy.KIE_API, TestStrategy.DMNRUNTIMEBUILDER};
     }
 
     public static enum TestStrategy {
-        KIE_API
+        KIE_API,
+        DMNRUNTIMEBUILDER
     }
 
     public DMNRuntime createRuntime(String model, Class<?> class1) {
+        if (testConfig == TestStrategy.DMNRUNTIMEBUILDER) {
+            return createRuntimeUsingBuilder(model, class1);
+        } else {
+            return createRuntimeUsingKieAPI(model, class1);
+        }
+    }
+
+    public DMNRuntime createRuntimeUsingKieAPI(String model, Class<?> class1) {
         final KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId = ks.newReleaseId("org.kie", "dmn-test-" + UUID.randomUUID(), "1.0");
         final KieFileSystem kfs = ks.newKieFileSystem();
@@ -78,6 +90,15 @@ public class DMN14ExpressionsTest {
         final KieContainer kieContainer = ks.newKieContainer(releaseId);
         final DMNRuntime runtime = DMNRuntimeUtil.typeSafeGetKieRuntime(kieContainer);
         return runtime;
+    }
+
+    public DMNRuntime createRuntimeUsingBuilder(String model, Class<?> class1) {
+        return DMNRuntimeBuilder.fromDefaults()
+                                .addProfile(new TrisotechDMNProfile())
+                                .setDecisionLogicCompilerFactory(new TrisotechDMNEvaluatorCompilerFactory())
+                                .buildConfiguration()
+                                .fromClasspathResource(model, class1)
+                                .getOrElseThrow(e -> new RuntimeException("Error initalizing DMNRuntime", e));
     }
 
     public DMN14ExpressionsTest(final TestStrategy testConfig) {
