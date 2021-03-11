@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,6 @@
 
 package org.kie.dmn.trisotech.backend.marshalling.v1_3.xstream;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.backend.marshalling.v1_3.xstream.ExpressionConverter;
 import org.kie.dmn.backend.marshalling.v1x.ConverterDefinesExpressionNodeName;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
@@ -28,6 +24,11 @@ import org.kie.dmn.trisotech.model.api.Iterator;
 import org.kie.dmn.trisotech.model.api.NamedExpression;
 import org.kie.dmn.trisotech.model.v1_3.TIterator;
 import org.kie.dmn.trisotech.model.v1_3.TNamedExpression;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 public class IteratorConverter extends ExpressionConverter implements ConverterDefinesExpressionNodeName {
 

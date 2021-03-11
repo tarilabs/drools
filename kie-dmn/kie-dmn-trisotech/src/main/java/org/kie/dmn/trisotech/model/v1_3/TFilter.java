@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 package org.kie.dmn.trisotech.model.v1_3;
 
 import org.kie.dmn.model.api.Expression;
-import org.kie.dmn.trisotech.model.api.Filter;
 import org.kie.dmn.model.v1_3.TExpression;
+import org.kie.dmn.trisotech.model.api.Filter;
 
 public class TFilter extends TExpression implements Filter {
 

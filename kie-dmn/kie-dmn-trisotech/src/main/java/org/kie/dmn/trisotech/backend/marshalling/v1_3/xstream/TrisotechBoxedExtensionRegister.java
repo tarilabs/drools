@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,14 @@ package org.kie.dmn.trisotech.backend.marshalling.v1_3.xstream;
 
 import javax.xml.namespace.QName;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.QNameMap;
 import org.kie.dmn.api.marshalling.DMNExtensionRegister;
 import org.kie.dmn.trisotech.model.v1_3.TConditional;
 import org.kie.dmn.trisotech.model.v1_3.TFilter;
 import org.kie.dmn.trisotech.model.v1_3.TIterator;
 import org.kie.dmn.trisotech.model.v1_3.TNamedExpression;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.QNameMap;
 
 public class TrisotechBoxedExtensionRegister implements DMNExtensionRegister {
 
