@@ -45,7 +45,7 @@ public class DecisionConverter extends DRGElementConverter {
     public static final String USING_PROCESS = "usingProcess";
     public static final String USING_TASK = "usingTask";
     public static final String EXPRESSION = "expression";
-    
+
     public DecisionConverter(XStream xstream) {
         super( xstream );
     }
